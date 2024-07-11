@@ -379,9 +379,16 @@
 // }
 // export default SignUp;
 
+
+
 import React, { useState } from 'react';
-import axios from 'axios'; // 导入axios
 import { signUp } from '../../api/auth';
+
+interface AxiosError {
+  response?: {
+    data: string;
+  };
+}
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -397,16 +404,12 @@ const SignUp: React.FC = () => {
       return;
     }
     try {
-      await signUp(email, password); // 调用signUp函数，但不需要存储返回的数据
+      await signUp(email, password);
       setMessage('Sign up successful');
       setError('');
     } catch (error) {
-      // 判断错误是否为 Axios 错误并设置用户友好的错误消息
-      if (axios.isAxiosError(error) && error.response) {
-        setError(error.response.data || 'Sign up failed');
-      } else {
-        setError('Sign up failed');
-      }
+      const axiosError = error as AxiosError;
+      setError(axiosError.response?.data || 'Sign up failed');
     }
   };
 

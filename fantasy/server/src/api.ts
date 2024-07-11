@@ -20,7 +20,6 @@ router.post('/', (req, res) => {
   }
 });
 
-
 router.get('/', (req, res) => {
   if (storedData) {
     console.log('Returning data:', storedData);

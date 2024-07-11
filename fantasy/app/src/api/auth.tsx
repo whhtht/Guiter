@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000'; // 替换为你的后端API地址
+const API_URL = 'http://localhost:3000/api'; // 替换为你的后端API地址
 
 interface AxiosErrorResponse {
   response?: {
