@@ -1,18 +1,23 @@
-import { CognitoIdentityProviderClient, SignUpCommand, AdminInitiateAuthCommand, AuthFlowType } from "@aws-sdk/client-cognito-identity-provider";
-import { awsConfig } from '../config/awsConfig';
+import {
+  CognitoIdentityProviderClient,
+  SignUpCommand,
+  AdminInitiateAuthCommand,
+  AuthFlowType,
+} from "@aws-sdk/client-cognito-identity-provider";
 
 const client = new CognitoIdentityProviderClient({
-  region: awsConfig.region,
+  region: "us-east-2",
 });
 
-export async function signUp( password: string, email: string) {
+export async function signUp(email: string, password: string) {
+  console.log(process.env.COGNITO_CLIENT_ID);
   const params = {
-    ClientId: awsConfig.clientId,
+    ClientId: process.env.COGNITO_CLIENT_ID,
     Username: email,
     Password: password,
     UserAttributes: [
       {
-        Name: 'email',
+        Name: "email",
         Value: email,
       },
     ],
@@ -29,8 +34,8 @@ export async function signUp( password: string, email: string) {
 
 export async function signIn(email: string, password: string) {
   const params = {
-    UserPoolId: awsConfig.userPoolId,
-    ClientId: awsConfig.clientId,
+    UserPoolId: process.env.COGNITO_USER_POOL_ID,
+    ClientId: process.env.COGNITO_CLIENT_ID,
     AuthFlow: AuthFlowType.ADMIN_NO_SRP_AUTH,
     AuthParameters: {
       USERNAME: email,
