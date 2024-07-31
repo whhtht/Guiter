@@ -23,7 +23,7 @@ export const signUp = async (email: string, password: string) => {
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
     console.error("Sign up error:", axiosError);
-    throw new Error(axiosError.response?.data.message);
+    throw new Error(axiosError.response?.data.message );
   }
 };
 
@@ -37,7 +37,7 @@ export const signIn = async (email: string, password: string) => {
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    throw new Error(axiosError.response?.data.message);
+    throw new Error(axiosError.response?.data.message );
   }
 };
 
@@ -51,30 +51,22 @@ export const checkEmail = async (email: string) => {
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    console.error("Check email error:", axiosError.response?.data);
-    throw new Error(axiosError.response?.data.message);
+    throw new Error(axiosError.response?.data.message );
   }
 };
 
 // Reset password
-export const resetPassword = async (
-  email: string,
-  code: string,
-  newPassword: string
-) => {
+export const resetPassword = async (email: string, code: string, password:string ) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/auth/checkEmail/resetPassword`,
-      {
-        email,
-        code,
-        newPassword,
-      }
-    );
+    const response = await axios.post(`${API_URL}/auth/checkEmail/resetPassword`, {
+      email,
+      code,
+      password,
+    });
     console.log("Reset password response:", response);
-    return response.data;
+    return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    throw new Error(axiosError.response?.data.message);
+    throw new Error(axiosError.response?.data.message );
   }
 };
