@@ -3,7 +3,7 @@ import SignIn from './components/signIn/page';
 import SignUp from './components/signUp/page';
 import Homepage from './components/home/page';
 import ForgetPassword from './components/forgetPassword/page';
-import ResetPassword from './components/forgetPassword//resetPassword/page';
+import ResetPassword from './components/forgetPassword/resetPassword/page';
 
 function App() {
   return (
