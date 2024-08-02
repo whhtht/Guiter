@@ -27,7 +27,6 @@ Account.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     sub: {
       type: DataTypes.STRING,

@@ -2,15 +2,17 @@ import { Router } from "express";
 import {
   signUpHandler,
   signInHandler,
-  checkEmailHandler,
-  confirmResetPasswordHandler,
+  forgetPasswordHandler,
+  resetPasswordCodeHandler,
+  resetPasswordHandler,
 } from "./auth.controller";
 
 const router = Router();
 
 router.post("/signUp", signUpHandler);
 router.post("/signIn", signInHandler);
-router.post("/checkEmail", checkEmailHandler);
-router.post("/resetPassword", confirmResetPasswordHandler);
+router.post("/forgetPassword", forgetPasswordHandler);
+router.post("/forgetPassword/resetPasswordCode", resetPasswordCodeHandler);
+router.post("/forgetPassword/resetPassword", resetPasswordHandler);
 
 export default router;

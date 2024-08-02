@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { checkEmail } from "../../api/auth/page";
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  TextField,
-} from "@mui/material";
+import { forgetPassword } from "../../api/auth/page";
+import { Box, Grid, Typography, Button, TextField } from "@mui/material";
 
 import guiter_image from "../image/guiter.jpg";
 
@@ -21,7 +15,7 @@ const Forget_Password: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleForgetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email) {
       setError("Please enter your email address.");
@@ -34,15 +28,17 @@ const Forget_Password: React.FC = () => {
       setEmailBackgroundColor("");
     }
     try {
-      await checkEmail(email);
+      await forgetPassword(email);
       setMessage("Sign in successful");
       setError("");
-      navigate("/forgetpassword/resetpassword", { state: { email } });
+      navigate("/forgetPassword/resetPassword", { state: { email } });
+      console.log("Sign in successful", email);
     } catch (error) {
       setError("Invalid email.");
       setMessage("");
       setEmailError(true);
       setEmailBackgroundColor("#FFECE8");
+      console.log("Invalid email.", email);
     }
   };
 
@@ -102,7 +98,7 @@ const Forget_Password: React.FC = () => {
           />
           <Box
             component="form"
-            onSubmit={handleSignIn}
+            onSubmit={handleForgetPassword}
             sx={{
               position: "relative",
               display: "flex",

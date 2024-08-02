@@ -23,7 +23,7 @@ export const signUp = async (email: string, password: string) => {
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
     console.error("Sign up error:", axiosError);
-    throw new Error(axiosError.response?.data.message );
+    throw new Error(axiosError.response?.data.message);
   }
 };
 
@@ -37,36 +37,57 @@ export const signIn = async (email: string, password: string) => {
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    throw new Error(axiosError.response?.data.message );
+    throw new Error(axiosError.response?.data.message);
   }
 };
 
-// Check email
-export const checkEmail = async (email: string) => {
+// Forget password
+export const forgetPassword = async (email: string) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/checkEmail`, {
+    const response = await axios.post(`${API_URL}/auth/forgetPassword`, {
       email,
     });
     console.log("Check email response:", response);
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    throw new Error(axiosError.response?.data.message );
+    throw new Error(axiosError.response?.data.message);
   }
 };
 
-// Reset password
-export const resetPassword = async (email: string, code: string, password:string ) => {
+// Reset password code
+export const resetPasswordCode = async (email: string) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/checkEmail/resetPassword`, {
+    const response = await axios.post(`${API_URL}/auth/forgetPassword/resetPasswordCode`, {
       email,
-      code,
-      password,
     });
+    console.log("Reset password code response:", response);
+    return response;
+  } catch (error) {
+    const axiosError = error as AxiosErrorResponse;
+    throw new Error(axiosError.response?.data.message);
+  }
+}
+
+// Reset password
+export const resetPassword = async (
+  email: string,
+  code: string,
+  newPassword: string
+) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/auth/forgetPassword/resetPassword`,
+      {
+        email,
+        code,
+        newPassword,
+      }
+    );
     console.log("Reset password response:", response);
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    throw new Error(axiosError.response?.data.message );
+    throw new Error(axiosError.response?.data.message);
   }
 };

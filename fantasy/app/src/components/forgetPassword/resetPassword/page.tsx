@@ -1,66 +1,75 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { resetPassword } from '../../../api/auth/page';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Container, Typography, Button, TextField } from "@mui/material";
+import { resetPassword, resetPasswordCode } from "../../../api/auth/page";
 
-const ResetPassword = () => {
+const ResetPassword: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { email } = location.state; // 从上一个页面传递过来的邮箱
-  const [code, setCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const { email } = location.state as { email: string };
 
-  const handleResetPassword = async (e: React.FormEvent) => {
+  const [code, setCode] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+
+  const handlePasswordResetCode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
-      setMessage('');
-      return;
+    try {
+      await resetPasswordCode(email);
+      console.log("Password reset code sent.", email);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
+  const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       await resetPassword(email, code, newPassword);
-      setMessage('Password reset successful! Redirecting to login...');
-      setError('');
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000); // Redirect after 3 seconds
+      navigate("/");
+      console.log("Password has been reset.", email, code, newPassword);
     } catch (error) {
-      setError('Error resetting password');
-      setMessage('');
+      console.log(error);
     }
   };
 
   return (
-    <div>
-      <h2>Reset Password</h2>
-      <form onSubmit={handleResetPassword}>
-        <input
-          type="text"
-          placeholder="Verification Code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <button type="submit">Reset Password</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-    </div>
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Reset Password
+        </Typography>
+        <Box component="form" onSubmit={handlePasswordResetCode}>
+          <Button type="submit" variant="contained" sx={{ mb: 2 }}>
+            Request Password Reset Code
+          </Button>
+        </Box>
+        <Box component="form" onSubmit={handlePasswordReset}>
+          <TextField
+            label="Verification Code"
+            fullWidth
+            margin="normal"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <TextField
+            label="New Password"
+            type="password"
+            fullWidth
+            margin="normal"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
+            Reset Password
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 };
-
 export default ResetPassword;

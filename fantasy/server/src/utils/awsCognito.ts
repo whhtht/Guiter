@@ -68,8 +68,8 @@ export async function signIn(email: string, password: string) {
   }
 }
 
-// Cognito check email
-export async function checkUserEmail(email: string) {
+// Cognito forgot password
+export async function forgetPassword(email: string) {
   const params = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,
     Username: email,
@@ -85,8 +85,8 @@ export async function checkUserEmail(email: string) {
   }
 }
 
-// Cognito reset password
-export async function resetPassword(email: string) {
+// Cognito sent reset password code
+export async function resetPasswordCode(email: string) {
   const params = {
     ClientId: process.env.COGNITO_CLIENT_ID,
     Username: email,
@@ -100,9 +100,8 @@ export async function resetPassword(email: string) {
   }
 }
 
-// Cognito confirm reset password
-export async function confirmResetPassword(
-
+// Cognito reset password
+export async function resetPassword(
   email: string,
   code: string,
   newPassword: string
@@ -113,11 +112,13 @@ export async function confirmResetPassword(
     ConfirmationCode: code,
     Password: newPassword,
   };
+  console.log("resetPassword params:", params);
   try {
     const command = new ConfirmForgotPasswordCommand(params);
     const result = await client.send(command);
     return result;
   } catch (error) {
+    console.error("resetPassword error:", error);
     throw error;
   }
 }
