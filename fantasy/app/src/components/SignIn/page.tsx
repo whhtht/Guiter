@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility, Clear } from "@mui/icons-material";
 
-import guiter_image from "../image/guiter.jpg";
+import guiter_image from "../../images/image/guiter.jpg";
 
 const Sign_in: React.FC = () => {
   // Email Function
@@ -169,342 +169,354 @@ const Sign_in: React.FC = () => {
 
   return (
     <Box>
-      <Grid
-        container
-        sx={{
-          width: "100%",
-          height: "100%",
-          position: "relative",
-        }}
-      >
-        <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-          {/* Guiter Image */}
+      <Grid container>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box
-            component="img"
-            src={guiter_image}
             sx={{
               width: "100%",
-              height: "100%",
-            }}
-          />
-        </Grid>
-        <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-          {/* Welcome Text */}
-          <Box
-            sx={{
-              position: "relative",
-              width: "32px",
-              height: "32px",
-              border: "6px solid #000000",
-              borderRadius: "50%",
-              top: "17%",
-              left: "20%",
-            }}
-          />
-          <Box
-            component="form"
-            onSubmit={handleSignIn}
-            sx={{
-              position: "relative",
               display: "flex",
-              flexDirection: "column",
-              top: "20%",
-              left: "20%",
+              justifyContent: "center",
+              flexDirection: "row",
             }}
           >
-            <Typography
-              sx={{
-                fontFamily: "Helvetica",
-                fontSize: "28px",
-                fontWeight: "700",
-                lineHeight: "36px",
-                textAlign: "left",
-                color: "#1D2129",
-                my: "1%",
-              }}
-            >
-              Welcome to Fantasy
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: "PingFang SC",
-                fontSize: "16px",
-                fontWeight: "400",
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#4E5969",
-              }}
-            >
-              Welcome Back! Please enter your details.
-            </Typography>
-
-            {/* Input Email */}
-            <Typography
-              sx={{
-                fontFamily: "Helvetica",
-                fontSize: "14px",
-                fontWeight: "700",
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#4E5969",
-                mt: "7%",
-              }}
-            >
-              Email
-            </Typography>
-            <TextField
-              variant="outlined"
-              placeholder="Enter your email address..."
-              type={showEmail ? "text" : "password"}
-              error={emailError}
-              value={email}
-              onChange={handeleEmailChange}
-              onFocus={handleFocusEmail}
-              onBlur={handleBlurEmail}
-              size="small"
-              sx={{
-                width: "80%",
-                fontFamily: "Helvetica",
-                fontSize: "14px",
-                fontWeight: "300",
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#86909C",
-                mt: "1%",
-              }}
-              InputProps={{
-                style: {
-                  backgroundColor: emailBackgroundColor,
-                },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle email visibility"
-                      onClick={handleClickShowEmail}
-                      onMouseDown={handleMouseDownEmail}
-                      edge="end"
-                    >
-                      {showEmail ? (
-                        <Visibility fontSize="small" />
-                      ) : (
-                        <VisibilityOff fontSize="small" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            {/* Input Password */}
-            <Typography
-              sx={{
-                fontFamily: "Helvetica",
-                fontSize: "14px",
-                fontWeight: "700",
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#4E5969",
-                mt: "5%",
-              }}
-            >
-              Password
-            </Typography>
-            <TextField
-              variant="outlined"
-              placeholder="Enter your password..."
-              type={showPassword ? "text" : "password"}
-              error={passwordError}
-              value={password}
-              onChange={handelePasswordChange}
-              onFocus={handleFocusPassword}
-              onBlur={handleBlurPassword}
-              size="small"
-              sx={{
-                width: "80%",
-                fontFamily: "Helvetica",
-                fontSize: "14px",
-                fontWeight: "300",
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#86909C",
-                mt: "1%",
-              }}
-              InputProps={{
-                style: {
-                  backgroundColor: passwordBackgroundColor,
-                },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {password && (
-                      <IconButton
-                        aria-label="clear password"
-                        onClick={handleClearPassword}
-                        edge="end"
-                      >
-                        <Clear fontSize="small" />
-                      </IconButton>
-                    )}
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <Visibility fontSize="small" />
-                      ) : (
-                        <VisibilityOff fontSize="small" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            {/* Error and Success Message */}
+            {/* Guiter Image */}
             <Box
               sx={{
-                height: "15px",
+                width: "40%",
               }}
             >
-              {error && (
-                <Typography
-                  color="#F53F3F"
-                  variant="body2"
-                  sx={{ visibility: "visible" }}
-                >
-                  {error}
-                </Typography>
-              )}
-              {message && (
-                <Typography
-                  color="success"
-                  variant="body2"
-                  sx={{ visibility: "visible" }}
-                >
-                  {message}
-                </Typography>
-              )}
-            </Box>
-
-            {/* Remember Me and Forget Password */}
-            <Box
-              sx={{
-                width: "80%",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={rememberMe}
-                    onChange={handleRememberMeChange}
-                  />
-                }
-                label="Remember me"
-              />
-              <Link
-                to="/ForgetPassword"
-                style={{
-                  fontFamily: "Helvetica",
-                  fontSize: "14px",
-                  fontWeight: "400",
-                  lineHeight: "22px",
-                  textAlign: "left",
-                  color: "#4E5969",
-                  textDecoration: "none",
-                }}
-              >
-                Forget password?
-              </Link>
-            </Box>
-
-            {/* Sign in Button */}
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              sx={{
-                width: "80%",
-                height: "40px",
-                position: "relative",
-                fontFamily: "Helvetica",
-                fontSize: "14px",
-                fontWeight: "700",
-                lineHeight: "22px",
-                textAlign: "center",
-                textTransform: "none",
-                backgroundColor: "#0057FE",
-                color: "#FFFFFF",
-                mt: "6%",
-              }}
-            >
-              Sign in
-            </Button>
-
-            {/* As a Guest */}
-            <Link
-              to="/homepage"
-              style={{
-                width: "80%",
-                height: "40px",
-                marginTop: "5%",
-              }}
-            >
-              <Button
-                size="large"
+              <Box
+                component="img"
+                src={guiter_image}
                 sx={{
                   width: "100%",
-                  height: "100%",
-                  fontFamily: "PingFang SC",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  lineHeight: "22px",
-                  textAlign: "center",
-                  textTransform: "none",
-                  backgroundColor: "#FFFFFF",
-                  color: "#4E5969",
-                  border: "1px solid #E5E6E8",
                 }}
-              >
-                Continue as a guest
-              </Button>
-            </Link>
-
-            {/* Don't have an account and sign up */}
-            <Typography
+              />
+            </Box>
+            <Box
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                width: "100%",
-                fontFamily: "Helvetica",
-                fontSize: "14px",
-                fontWeight: "400",
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#86909C",
-                mt: "5%",
+                position: "relative",
+                width: "60%",
               }}
             >
-              Don't have an account?
-              <Link
-                to="/signUp"
-                style={{
-                  textDecoration: "none",
-                  fontFamily: "Helvetica",
-                  fontSize: "14px",
-                  fontWeight: "400",
-                  lineHeight: "22px",
-                  textAlign: "left",
-                  color: "#0057FE",
-                  marginLeft: "1%",
+              {/* Welcome Text */}
+              <Box
+                sx={{
+                  position: "relative",
+                  width: "32px",
+                  height: "32px",
+                  border: "6px solid #000000",
+                  borderRadius: "50%",
+                  top: "12%",
+                  left: "20%",
+                }}
+              />
+              <Box
+                component="form"
+                onSubmit={handleSignIn}
+                sx={{
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  top: "15%",
+                  left: "20%",
                 }}
               >
-                Sign up
-              </Link>
-            </Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Helvetica",
+                    fontSize: "28px",
+                    fontWeight: "700",
+                    lineHeight: "36px",
+                    textAlign: "left",
+                    color: "#1D2129",
+                    my: "1%",
+                  }}
+                >
+                  Welcome to Fantasy
+                </Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "PingFang SC",
+                    fontSize: "16px",
+                    fontWeight: "400",
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#4E5969",
+                  }}
+                >
+                  Welcome Back! Please enter your details.
+                </Typography>
+
+                {/* Input Email */}
+                <Typography
+                  sx={{
+                    fontFamily: "Helvetica",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#4E5969",
+                    mt: "5%",
+                  }}
+                >
+                  Email
+                </Typography>
+                <TextField
+                  variant="outlined"
+                  placeholder="Enter your email address..."
+                  type={showEmail ? "text" : "password"}
+                  error={emailError}
+                  value={email}
+                  onChange={handeleEmailChange}
+                  onFocus={handleFocusEmail}
+                  onBlur={handleBlurEmail}
+                  size="small"
+                  sx={{
+                    width: "60%",
+                    fontFamily: "Helvetica",
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#86909C",
+                    mt: "1%",
+                  }}
+                  InputProps={{
+                    style: {
+                      backgroundColor: emailBackgroundColor,
+                    },
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle email visibility"
+                          onClick={handleClickShowEmail}
+                          onMouseDown={handleMouseDownEmail}
+                          edge="end"
+                        >
+                          {showEmail ? (
+                            <Visibility fontSize="small" />
+                          ) : (
+                            <VisibilityOff fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                {/* Input Password */}
+                <Typography
+                  sx={{
+                    fontFamily: "Helvetica",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#4E5969",
+                    mt: "3%",
+                  }}
+                >
+                  Password
+                </Typography>
+                <TextField
+                  variant="outlined"
+                  placeholder="Enter your password..."
+                  type={showPassword ? "text" : "password"}
+                  error={passwordError}
+                  value={password}
+                  onChange={handelePasswordChange}
+                  onFocus={handleFocusPassword}
+                  onBlur={handleBlurPassword}
+                  size="small"
+                  sx={{
+                    width: "60%",
+                    fontFamily: "Helvetica",
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#86909C",
+                    mt: "1%",
+                  }}
+                  InputProps={{
+                    style: {
+                      backgroundColor: passwordBackgroundColor,
+                    },
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {password && (
+                          <IconButton
+                            aria-label="clear password"
+                            onClick={handleClearPassword}
+                            edge="end"
+                          >
+                            <Clear fontSize="small" />
+                          </IconButton>
+                        )}
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <Visibility fontSize="small" />
+                          ) : (
+                            <VisibilityOff fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                {/* Error and Success Message */}
+                <Box
+                  sx={{
+                    height: "15px",
+                  }}
+                >
+                  {error && (
+                    <Typography
+                      color="#F53F3F"
+                      variant="body2"
+                      sx={{ visibility: "visible" }}
+                    >
+                      {error}
+                    </Typography>
+                  )}
+                  {message && (
+                    <Typography
+                      color="success"
+                      variant="body2"
+                      sx={{ visibility: "visible" }}
+                    >
+                      {message}
+                    </Typography>
+                  )}
+                </Box>
+
+                {/* Remember Me and Forget Password */}
+                <Box
+                  sx={{
+                    width: "60%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={rememberMe}
+                        onChange={handleRememberMeChange}
+                      />
+                    }
+                    label="Remember me"
+                  />
+                  <Link
+                    to="/ForgetPassword"
+                    style={{
+                      fontFamily: "Helvetica",
+                      fontSize: "14px",
+                      fontWeight: "400",
+                      lineHeight: "22px",
+                      textAlign: "left",
+                      color: "#4E5969",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Forget password?
+                  </Link>
+                </Box>
+
+                {/* Sign in Button */}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    width: "60%",
+                    height: "40px",
+                    position: "relative",
+                    fontFamily: "Helvetica",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    lineHeight: "22px",
+                    textAlign: "center",
+                    textTransform: "none",
+                    backgroundColor: "#0057FE",
+                    color: "#FFFFFF",
+                    mt: "4%",
+                  }}
+                >
+                  Sign in
+                </Button>
+
+                {/* As a Guest */}
+                <Link
+                  to="/homepage"
+                  style={{
+                    width: "60%",
+                    height: "40px",
+                    marginTop: "3%",
+                  }}
+                >
+                  <Button
+                    size="large"
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      fontFamily: "PingFang SC",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      lineHeight: "22px",
+                      textAlign: "center",
+                      textTransform: "none",
+                      backgroundColor: "#FFFFFF",
+                      color: "#4E5969",
+                      border: "1px solid #E5E6E8",
+                    }}
+                  >
+                    Continue as a guest
+                  </Button>
+                </Link>
+
+                {/* Don't have an account and sign up */}
+                <Typography
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                    fontFamily: "Helvetica",
+                    fontSize: "14px",
+                    fontWeight: "400",
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#86909C",
+                    mt: "3%",
+                  }}
+                >
+                  Don't have an account?
+                  <Link
+                    to="/signUp"
+                    style={{
+                      textDecoration: "none",
+                      fontFamily: "Helvetica",
+                      fontSize: "14px",
+                      fontWeight: "400",
+                      lineHeight: "22px",
+                      textAlign: "left",
+                      color: "#0057FE",
+                      marginLeft: "1%",
+                    }}
+                  >
+                    Sign up
+                  </Link>
+                </Typography>
+              </Box>
+            </Box>
           </Box>
         </Grid>
       </Grid>

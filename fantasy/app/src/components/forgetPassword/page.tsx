@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { forgetPassword } from "../../api/auth/page";
 import { Box, Grid, Typography, Button, TextField } from "@mui/material";
 
-import guiter_image from "../image/guiter.jpg";
+import guiter_image from "../../images/image/guiter.jpg";
 
 const Forget_Password: React.FC = () => {
   // Email Function

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility, Clear } from "@mui/icons-material";
 
-import guiter_image from "../image/guiter.jpg";
+import guiter_image from "../../images/image/guiter.jpg";
 
 const SignUp: React.FC = () => {
   // Email, Password, Confirm Password Function
