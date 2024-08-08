@@ -1,66 +1,23 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { forgetPassword } from "../../api/auth/page";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useForgetPassword } from "./function";
 import { Box, Grid, Typography, Button, TextField } from "@mui/material";
 
-import guiter_image from "../../images/image/guiter.jpg";
+import guiter_image from "../../images/sign.images/guiter.jpg";
 
 const Forget_Password: React.FC = () => {
-  // Email Function
-  const [email, setEmail] = useState<string>("");
-  const [emailError, setEmailError] = useState<boolean>(false);
-  const [emailBackgroundColor, setEmailBackgroundColor] = useState<string>("");
-
-  // Message Function
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const navigate = useNavigate();
-  const handleForgetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email) {
-      setError("Please enter your email address.");
-      setEmailError(true);
-      setEmailBackgroundColor("#FFECE8");
-      return;
-    } else {
-      setError("");
-      setEmailError(false);
-      setEmailBackgroundColor("");
-    }
-    try {
-      await forgetPassword(email);
-      setMessage("Sign in successful");
-      setError("");
-      navigate("/forgetPassword/resetPassword", { state: { email } });
-      console.log("Sign in successful", email);
-    } catch (error) {
-      setError("Invalid email.");
-      setMessage("");
-      setEmailError(true);
-      setEmailBackgroundColor("#FFECE8");
-      console.log("Invalid email.", email);
-    }
-  };
-
-  // Email Error Function
-  const handeleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputemail = event.target.value;
-    setEmail(inputemail);
-    if (!inputemail) {
-      setEmailError(false);
-      setEmailBackgroundColor("");
-    }
-  };
-  const handleFocusEmail = () => {
-    if (emailError) {
-      setEmailBackgroundColor("#FDCDC5");
-    }
-  };
-  const handleBlurEmail = () => {
-    if (emailError) {
-      setEmailBackgroundColor("#FFECE8");
-    }
-  };
+  // Function
+  const {
+    handleForgetPassword,
+    email,
+    emailError,
+    emailBackgroundColor,
+    handeleEmailChange,
+    handleBlurEmail,
+    handleFocusEmail,
+    error,
+    message,
+  } = useForgetPassword();
 
   return (
     <Box>

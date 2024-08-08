@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [ "src", "node_modules/@types", "src/styles/homepage"]
+  "include": [ "src", "node_modules/@types", "src/styles/homepage.style"]
 }

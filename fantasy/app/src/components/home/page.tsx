@@ -21,7 +21,7 @@ import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
 // Side picture
-import ExampleImages from "../../images/sideImages/colors.jpg";
+//import ExampleImages from "../../images/side.images/colors.jpg";
 
 // Importing styles
 import {
@@ -33,9 +33,12 @@ import {
   buttonStyle,
   iconStyle_1,
   iconStyle_2,
-  roboto_16px,
   roboto_14px,
+  roboto_16px,
+  roboto_20px,
   roboto_30px,
+  roboto_14px_center,
+  roboto_20px_center,
   linkStyle,
   componentSpace,
   carouselImage,
@@ -47,19 +50,26 @@ import {
   carouselBox,
   sliceBox,
   productList,
-  roboto_20px,
-  roboto_14px_center,
-  roboto_20px_center,
   serviceStyle,
   serviceBox,
   serviceList,
-} from "../../styles/homepage/hompage.style.page";
+  categoryStyle,
+  categoryLeft,
+  categoryLeftBox,
+  categoryLeftImage,
+  categoryRight,
+  categoryRightBox,
+  categoryRightImage,
+} from "../../styles/homepage.style/page";
 
 // Featured guitars
-import { featuredGuitars } from "../../images/featuredGuitars/page";
-
+import { featuredGuitars } from "../../lists/featuredGuitars.list/page";
 // New arrivals
-import { newArrivals } from "../../images/newArrivals/page";
+import { newArrivals } from "../../lists/newArrivals.list/page";
+// Service list
+import { serviceItems } from "../../lists/service.list/page";
+// Category list
+import { classical, filterCategory } from "../../lists/category.list/page";
 
 const Homepage: React.FC = () => {
   // Items for the shop
@@ -91,41 +101,6 @@ const Homepage: React.FC = () => {
         : prevIndexNewArrivals
     );
   };
-
-  const items = [
-    {
-      id: 1,
-      name: "Guitar 1",
-      backgroundcolor: "#F0F0F0",
-      title: "Free and Insured Shipping on Every Order",
-      text: "",
-      Link: "/",
-    },
-    {
-      id: 2,
-      name: "Guitar 2",
-      backgroundcolor: "#F0F0F0",
-      title: "Expert Customer Service",
-      text: "",
-      Link: "/",
-    },
-    {
-      id: 3,
-      name: "Guitar 3",
-      backgroundcolor: "#F0F0F0",
-      title: "In-Store Pick Up",
-      text: "We provide flexibility for you to pick up your guitars in person.",
-      Link: "/",
-    },
-    {
-      id: 4,
-      name: "Guitar 4",
-      backgroundcolor: "#F0F0F0",
-      title: "Pro Selection on Each Guitar",
-      text: "Our experts carefully review each guitar to guarantee you the quality.",
-      Link: "/",
-    },
-  ];
 
   return (
     <Box>
@@ -308,15 +283,15 @@ const Homepage: React.FC = () => {
 
         {/* Part 3 */}
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Carousel prevIcon={null} nextIcon={null}>
-            <Carousel.Item interval={2000}>
+          <Carousel prevIcon={null} nextIcon={null} variant="dark">
+            <Carousel.Item interval={1000}>
               <Box component={Link} to="/">
-                <Box component="img" src={ExampleImages} sx={carouselImage} />
+                <Box component="img" sx={carouselImage} />
               </Box>
             </Carousel.Item>
-            <Carousel.Item interval={2000}>
+            <Carousel.Item interval={1000}>
               <Box component={Link} to="/">
-                <Box component="img" src={ExampleImages} sx={carouselImage} />
+                <Box component="img" sx={carouselImage} />
               </Box>
             </Carousel.Item>
           </Carousel>
@@ -333,18 +308,10 @@ const Homepage: React.FC = () => {
 
           {/* Shop Items List */}
           <Box sx={listStyle}>
-            <IconButton
-              onClick={handlePrevItems}
-              disabled={indexItems === 0}
-              sx={leftButton}
-            >
+            <IconButton onClick={handlePrevItems} sx={leftButton}>
               <ArrowBackIos sx={arrowBack} />
             </IconButton>
-            <IconButton
-              onClick={handleNextItems}
-              disabled={indexItems >= featuredGuitars.length - itemToShow}
-              sx={rightButton}
-            >
+            <IconButton onClick={handleNextItems} sx={rightButton}>
               <ArrowForwardIos sx={arrowForward} />
             </IconButton>
             <Box sx={carouselBox}>
@@ -398,20 +365,10 @@ const Homepage: React.FC = () => {
 
           {/* New Arrivals List */}
           <Box sx={listStyle}>
-            <IconButton
-              onClick={handlePrevNewArrivals}
-              disabled={indexNewArrivals === 0}
-              sx={leftButton}
-            >
+            <IconButton onClick={handlePrevNewArrivals} sx={leftButton}>
               <ArrowBackIos sx={arrowBack} />
             </IconButton>
-            <IconButton
-              onClick={handleNextNewArrivals}
-              disabled={
-                indexNewArrivals >= newArrivals.length - newArrivalsToShow
-              }
-              sx={rightButton}
-            >
+            <IconButton onClick={handleNextNewArrivals} sx={rightButton}>
               <ArrowForwardIos sx={arrowForward} />
             </IconButton>
             <Box sx={carouselBox}>
@@ -458,7 +415,7 @@ const Homepage: React.FC = () => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           {/* Service */}
           <Box sx={serviceStyle}>
-            {items.map((item) => (
+            {serviceItems.map((item) => (
               <Box key={item.id} sx={serviceBox}>
                 <Box
                   component={Link}
@@ -495,17 +452,54 @@ const Homepage: React.FC = () => {
               Browse by category
             </Typography>
           </Box>
+          {/* Category */}
+          <Box sx={categoryStyle}>
+            <Box sx={categoryLeft}>
+              <Box sx={categoryLeftBox}>
+                <Typography sx={{ ...roboto_20px, color: "#000000D9" }}>
+                  {classical.name}
+                </Typography>
+                <Box
+                  component="img"
+                  sx={{
+                    ...categoryLeftImage,
+                    backgroundColor: classical.color,
+                  }}
+                />
+              </Box>
+            </Box>
+            <Box sx={categoryRight}>
+              <Grid container spacing={3}>
+                {filterCategory.map((category) => (
+                  <Grid item key={category.id} xs={6}>
+                    <Box sx={categoryRightBox}>
+                      <Typography sx={{ ...roboto_20px, color: "#000000D9" }}>
+                        {category.name}
+                      </Typography>
+                      <Box
+                        sx={{
+                          ...categoryRightImage,
+                          backgroundColor: category.color,
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          </Box>
+        </Grid>
 
-
-
-
-
-
-
-
-
-
-          
+        {/* Part 8 */}
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Box
+            sx={{
+              width: "100%",
+              height: "438px",
+              backgroundColor: "#D9D9D9",
+              margin: "100px 0px 0px 0px",
+            }}
+          ></Box>
         </Grid>
       </Grid>
     </Box>
