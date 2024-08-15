@@ -1,319 +1,356 @@
 // Common style
-export const mainStyle = {
-    width: "100%",
-    padding: "16px 72px 0px 72px",
-  };
-  
-  export const headerStyle = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    my: "15px",
-  };
-  
-  export const linkStyle = {
-    mx: "10px",
-    textDecoration: "none",
-  };
-  
-  export const titleStyle = {
-    padding: "0px 72px 0px 72px",
-    m: "56px 0px 26px 0px",
-  };
-  
-  // Font style
-  export const roboto_16px = {
-    fontFamily: "Roboto",
-    fontSize: "16px",
-    fontWeight: 400,
-    lineHeight: "24px",
-    textAlign: "left",
-    textDecoration: "none",
-  };
-  
-  export const roboto_14px = {
-    fontFamily: "Roboto",
-    fontSize: "14px",
-    fontWeight: 400,
-    lineHeight: "22px",
-    textAlign: "left",
-    textDecoration: "none",
-  };
-  
-  export const roboto_14px_center = {
-    display: "inline-block",
-    width: "85%",
-    fontFamily: "Roboto",
-    fontSize: "14px",
-    fontWeight: 400,
-    lineHeight: "22px",
-    textAlign: "center",
-    textDecoration: "none",
-  };
-  
-  export const roboto_20px = {
-    fontFamily: "Roboto",
-    fontSize: "20px",
-    fontWeight: 500,
-    lineHeight: "28px",
-    textAlign: "left",
-    textDecoration: "none",
-  };
-  
-  export const roboto_20px_center = {
-    display: "inline-block",
-    fontFamily: "Roboto",
-    fontSize: "20px",
-    fontWeight: 500,
-    lineHeight: "28px",
-    textAlign: "center",
-    textDecoration: "none",
-  };
-  
-  export const roboto_30px = {
-    display: "inline-block",
-    fontFamily: "Roboto",
-    fontSize: "30px",
-    fontWeight: 500,
-    lineHeight: "40px",
-    textAlign: "left",
-    textDecoration: "none",
-  };
-  
-  // Logo style
-  export const logoName = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "120px",
-    height: "40px",
-    mx: "8px",
-    gap: "16px",
-    fontFamily: "Roboto",
-    fontSize: "24px",
-    fontWeight: 500,
-    lineHeight: "28px",
-    textAlign: "left",
-    color: "#000000D9",
-  };
-  
-  // Search bar style
-  export const searchBar = {
-    flexGrow: 1,
-    height: "40px",
-    mx: "5px",
-    borderRadius: "4px",
-    border: "1px solid #02000C",
-    fontFamily: "Roboto",
-    fontSize: "14px",
-    fontWeight: 400,
-    lineHeight: "22px",
-    textAlign: "left",
-    color: "#595959",
-  };
-  
-  // Button style
-  export const buttonStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "40px",
-    color: "#02000C",
+const titleStyle = {
+  padding: "0px 72px 0px 72px",
+  m: "56px 0px 26px 0px",
+};
+
+const imageStyle = {
+  width: "100%",
+  height: "100%",
+};
+
+// Font style
+const roboto_16px = {
+  fontFamily: "Roboto",
+  fontSize: "16px",
+  fontWeight: 500,
+  lineHeight: "24px",
+  textAlign: "left",
+  color: "#FFFFFF",
+};
+
+const roboto_16px_productName = {
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  textOverflow: "ellipsis",
+  width: "100%",
+  height: "48px",
+  fontFamily: "Roboto",
+  fontSize: "16px",
+  fontWeight: 400,
+  lineHeight: "24px",
+  textAlign: "left",
+  textDecoration: "none",
+  color: "#02000C",
+  overflow: "hidden",
+};
+
+const roboto_14px = {
+  fontFamily: "Roboto",
+  fontSize: "14px",
+  fontWeight: 400,
+  lineHeight: "22px",
+  textAlign: "left",
+  textDecoration: "none",
+};
+
+const roboto_14px_service = {
+  display: "inline-block",
+  width: "85%",
+  fontFamily: "Roboto",
+  fontSize: "14px",
+  fontWeight: 400,
+  lineHeight: "22px",
+  textAlign: "center",
+  textDecoration: "none",
+  color: "#02000C",
+};
+
+const roboto_20px = {
+  fontFamily: "Roboto",
+  fontSize: "20px",
+  fontWeight: 500,
+  lineHeight: "28px",
+  textAlign: "left",
+  textDecoration: "none",
+};
+
+const roboto_20px_service = {
+  display: "inline-block",
+  fontFamily: "Roboto",
+  fontSize: "20px",
+  fontWeight: 500,
+  lineHeight: "28px",
+  textAlign: "center",
+  textDecoration: "none",
+  color: "#000000D9",
+};
+
+const roboto_20px_categoryRight = {
+  width: "135px",
+  fontFamily: "Roboto",
+  fontSize: "20px",
+  fontWeight: 500,
+  lineHeight: "28px",
+  textAlign: "left",
+  textDecoration: "none",
+  color: "#02000C",
+};
+
+const roboto_30px = {
+  display: "inline-block",
+  fontFamily: "Roboto",
+  fontSize: "30px",
+  fontWeight: 700,
+  lineHeight: "40px",
+  textAlign: "left",
+  textDecoration: "none",
+};
+
+const roboto_carousel_title = {
+  fontFamily: "Roboto",
+  fontSize: "54px",
+  fontWeight: 700,
+  lineHeight: "63.28px",
+  textAlign: "left",
+  color: "#02000C",
+};
+
+const roboto_carousel_subtitle = {
+  fontFamily: "Roboto",
+  fontSize: "24px",
+  fontWeight: 400,
+  lineHeight: "28.13px",
+  textAlign: "left",
+  color: "#02000C",
+  margin: "28px 0px 40px 0px",
+};
+
+// Button style
+const buttonStyle_black = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  color: "#FFFFFF",
+  backgroundColor: "#02000C",
+  textTransform: "none",
+  textDecoration: "none",
+  "&:hover": {
+    backgroundColor: "#02000C",
+  },
+  "&.Mui-focusVisible": {
+    boxShadow: "0 0 0 2px #5796dc",
+  },
+};
+
+const carousel_button = {
+  width: "232px",
+  height: "48px",
+  textDecoration: "none",
+};
+
+// Carousel style
+const carouselImage = {
+  positions: "relative",
+  display: "block",
+  width: "100%",
+  height: "522px",
+  backgroundColor: "#D9D9D9",
+};
+
+const carouselContent = {
+  position: "absolute",
+  display: "flex",
+  flexDirection: "column",
+  width: "440px",
+  height: "126px",
+  top: "110px",
+  left: "82px",
+};
+
+// Product list style
+const listStyle = {
+  position: "relative",
+  padding: "0px 72px",
+};
+
+const leftButton = {
+  position: "absolute",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "50px",
+  height: "50px",
+  left: "55px",
+  top: "35%",
+  backgroundColor: "#FFFFFF",
+  borderRadius: "50%",
+  boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+  transform: "translateY(-50%)",
+  zIndex: 2,
+  "&:hover": {
     backgroundColor: "#FFFFFF",
-    textTransform: "none",
-  };
-  
-  export const componentSpace = {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  };
-  
-  // Icon style
-  export const iconStyle_1 = {
-    width: "32px",
-    height: "32px",
-  };
-  
-  export const iconStyle_2 = {
-    width: "22px",
-    height: "22px",
-  };
-  
-  // Carousel style
-  export const carouselImage = {
-    display: "block",
-    width: "100%",
-    height: "522px",
-    backgroundColor: "#D9D9D9",
-  };
-  
-  // Product list style
-  export const listStyle = {
-    position: "relative",
-    padding: "0px 72px",
-  };
-  
-  export const leftButton = {
-    position: "absolute",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50px",
-    height: "50px",
-    left: "55px",
-    top: "43%",
+  },
+  "&:active": {
     backgroundColor: "#FFFFFF",
-    borderRadius: "50%",
-    boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
-    transform: "translateY(-50%)",
-    zIndex: 2,
-    "&:hover": {
-      backgroundColor: "#FFFFFF",
-    },
-    "&:active": {
-      backgroundColor: "#FFFFFF",
-    },
-  };
-  
-  export const arrowBack = {
-    color: "#02000C",
-    fontSize: "20px",
-    transform: "translateX(20%)",
-  };
-  
-  export const rightButton = {
-    position: "absolute",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50px",
-    height: "50px",
-    right: "55px",
-    top: "43%",
-    PointerEvents:"auto",
+  },
+};
+
+const arrowBack = {
+  color: "#02000C",
+  fontSize: "20px",
+  transform: "translateX(20%)",
+};
+
+const rightButton = {
+  position: "absolute",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "50px",
+  height: "50px",
+  right: "55px",
+  top: "35%",
+  PointerEvents: "auto",
+  backgroundColor: "#FFFFFF",
+  borderRadius: "50%",
+  boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+  transform: "translateY(-50%)",
+  zIndex: 1,
+  "&:hover": {
     backgroundColor: "#FFFFFF",
-    borderRadius: "50%",
-    boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
-    transform: "translateY(-50%)",
-    zIndex: 1,
-    "&:hover": {
-      backgroundColor: "#FFFFFF",
-    },
-    "&:active": {
-      backgroundColor: "#FFFFFF",
-    },
-  };
-  
-  export const arrowForward = {
-    color: "#02000C",
-    fontSize: "20px",
-    transform: "translateX(10%)",
-  };
-  
-  export const carouselBox = {
-    positions: "relative",
-    display: "flex",
-    flexdirection: "row",
-    overflow: "hidden",
-  };
-  
-  export const sliceBox = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    width: "calc(100% / 5 - 16px)",
-    mx: "8px",
-  };
-  
-  export const productList = {
-    width: "250px",
-    height: "250px",
-    borderRadius: "8px",
-  };
-  
-  // Service style
-  export const serviceStyle = {
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    padding: "0px 72px 0px 72px",
-    margin: "100px 0px 90px 0px",
-  };
-  
-  export const serviceBox = {
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "column",
-    textAlign: "center",
-    width: "calc(100% / 4 - 80px)",
-    mx: "40px",
-  };
-  
-  export const serviceList = {
-    width: "178px",
-    height: "178px",
-    borderRadius: "90%",
-    margin: "0px 0px 10px 0px",
-  };
-  
-  // Category style
-  export const categoryStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    padding: "0px 72px",
-  };
-  export const categoryLeft = {
-    width: "432px",
-    height: "374px",
-    background: "#F0F0F0",
-    borderRadius: "8px",
-    flexShrink: 0,
-    padding: "0px 20px 0px 50px",
-    margin: "0px 20px 0px 0px",
-  };
-  
-  export const categoryLeftBox = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    height: "100%",
-  };
-  
-  export const categoryLeftImage = {
-    width: "197px",
-    height: "310px",
-    borderRadius: "8px",
-  };
-  
-  export const categoryRight = {
-    width: "100%",
-    height: "374px",
-  };
-  
-  export const categoryRightBox = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    height: "100%",
-    borderRadius: "8px",
-    background: "#F0F0F0",
-    padding: "18.5px 20px 18.5px 60px",
-  };
-  
-  export const categoryRightImage = {
-    width: "168px",
-    height: "138px",
-    borderRadius: "8px",
-  };
-  
+  },
+  "&:active": {
+    backgroundColor: "#FFFFFF",
+  },
+};
+
+const arrowForward = {
+  color: "#02000C",
+  fontSize: "20px",
+  transform: "translateX(10%)",
+};
+
+const carouselBox = {
+  positions: "relative",
+  display: "flex",
+  flexdirection: "row",
+  overflow: "hidden",
+  py: "3px",
+};
+
+const sliceBox = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  width: "calc(100% / 5 - 16px)",
+  mx: "8px",
+};
+
+const productList = {
+  width: "250px",
+  height: "250px",
+  borderRadius: "8px",
+};
+
+// Service style
+const serviceStyle = {
+  display: "flex",
+  justifyContent: "center",
+  width: "100%",
+  padding: "0px 72px 0px 72px",
+  margin: "100px 0px 20px 0px",
+};
+
+const serviceBox = {
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+  textAlign: "center",
+  width: "calc(100% / 4 - 80px)",
+  mx: "40px",
+};
+
+const serviceList = {
+  width: "113px",
+  height: "113px",
+  borderRadius: "90%",
+  margin: "0px 0px 10px 0px",
+};
+
+// Category style
+const categoryStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexDirection: "row",
+  width: "100%",
+  padding: "0px 72px",
+};
+const categoryLeft = {
+  width: "432px",
+  height: "374px",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexDirection: "row",
+  background: "#FFEACE",
+  borderRadius: "8px",
+  flexShrink: 0,
+  padding: "0px 20px 0px 50px",
+  margin: "0px 20px 0px 0px",
+};
+
+const categoryLeftImage = {
+  width: "211px",
+  height: "329px",
+};
+
+const categoryRight = {
+  width: "100%",
+  height: "374px",
+};
+
+const categoryRightBox = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexDirection: "row",
+  width: "100%",
+  height: "175px",
+  borderRadius: "8px",
+  background: "#FFEACE",
+  padding: "0px 20px 0px 20px",
+};
+
+const categoryRightImage = {
+  height: "175px",
+};
+
+export const homeStyles = {
+  titleStyle,
+  imageStyle,
+  roboto_16px,
+  roboto_16px_productName,
+  roboto_14px,
+  roboto_14px_service,
+  roboto_20px,
+  roboto_20px_service,
+  roboto_20px_categoryRight,
+  roboto_30px,
+  roboto_carousel_title,
+  roboto_carousel_subtitle,
+  buttonStyle_black,
+  carousel_button,
+  carouselImage,
+  carouselContent,
+  listStyle,
+  leftButton,
+  arrowBack,
+  rightButton,
+  arrowForward,
+  carouselBox,
+  sliceBox,
+  productList,
+  serviceStyle,
+  serviceBox,
+  serviceList,
+  categoryStyle,
+  categoryLeft,
+  categoryLeftImage,
+  categoryRight,
+  categoryRightBox,
+  categoryRightImage,
+};

@@ -55,6 +55,7 @@ export const helvetica_input = {
   lineHeight: "22px",
   textAlign: "left",
   color: "#86909C",
+  borderRadius: "8px",
   border: "1px solid #E5E6EB",
 };
 

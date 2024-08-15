@@ -1,75 +1,87 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Box, Container, Typography, Button, TextField } from "@mui/material";
-import { resetPassword, resetPasswordCode } from "../../../api/auth/page";
+import React, { useState, useEffect } from "react";
+import { Autocomplete, TextField, Box } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const ResetPassword: React.FC = () => {
-  const location = useLocation();
+const SearchBarWithHover: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchHistory, setSearchHistory] = useState<string[]>(
+    JSON.parse(localStorage.getItem("searchHistory") || "[]")
+  );
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
-  const { email } = location.state as { email: string };
+  const location = useLocation();
 
-  const [code, setCode] = useState<string>("");
-  const [newPassword, setNewPassword] = useState<string>("");
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      const searchPath = `/${encodeURIComponent(searchTerm)}`;
+      navigate(searchPath);
 
-  const handlePasswordResetCode = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await resetPasswordCode(email);
-      console.log("Password reset code sent.", email);
-    } catch (error) {
-      console.log(error);
+      // Check if navigation is successful based on path change
+      if (location.pathname !== searchPath) {
+        if (searchTerm && !searchHistory.includes(searchTerm)) {
+          const updatedHistory = [searchTerm, ...searchHistory.slice(0, 8)];
+          setSearchHistory(updatedHistory);
+          localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+        }
+      }
     }
   };
 
-  const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await resetPassword(email, code, newPassword);
-      navigate("/");
-      console.log("Password has been reset.", email, code, newPassword);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    const searchQuery = decodeURIComponent(location.pathname.split("/")[1] || "");
+    if (searchQuery && !searchHistory.includes(searchQuery)) {
+      const updatedHistory = [searchQuery, ...searchHistory.slice(0, 8)];
+      setSearchHistory(updatedHistory);
+      localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
     }
-  };
+  }, [location.pathname, searchHistory]);
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Reset Password
-        </Typography>
-        <Box component="form" onSubmit={handlePasswordResetCode}>
-          <Button type="submit" variant="contained" sx={{ mb: 2 }}>
-            Request Password Reset Code
-          </Button>
-        </Box>
-        <Box component="form" onSubmit={handlePasswordReset}>
+    <Box
+      onMouseEnter={() => setShowDropdown(true)}
+      onMouseLeave={() => setShowDropdown(false)}
+      sx={{ position: "relative", width: "300px", margin: "20px auto" }}
+    >
+      <Autocomplete
+        freeSolo
+        options={showDropdown ? searchHistory : []}
+        renderInput={(params) => (
           <TextField
-            label="Verification Code"
-            fullWidth
-            margin="normal"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
+            {...params}
+            placeholder="Find guitars you love..."
+            variant="outlined"
+            size="small"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
+            value={searchTerm}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "4px",
+                backgroundColor: "#FFFFFF",
+                borderColor: "#ccc",
+                "&:hover fieldset": {
+                  borderColor: "#6200EE",
+                },
+              },
+            }}
           />
-          <TextField
-            label="New Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-          >
-            Reset Password
-          </Button>
-        </Box>
-      </Box>
-    </Container>
+        )}
+        sx={{
+          "& .MuiAutocomplete-listbox": {
+            display: showDropdown ? "block" : "none",
+            position: "absolute",
+            top: "40px",
+            left: 0,
+            width: "100%",
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            zIndex: 1,
+          },
+        }}
+      />
+    </Box>
   );
 };
-export default ResetPassword;
+
+export default SearchBarWithHover;

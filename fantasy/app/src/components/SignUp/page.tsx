@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSignUp } from "./function";
+import { useSignUp } from "../../hooks/useSignUp.hook/page";
 import {
   Box,
   Grid,
@@ -39,7 +39,6 @@ import {
 } from "../../styles/signup.style/page";
 
 const Sign_up: React.FC = () => {
-
   // Function
   const {
     handleSignUp,
@@ -227,23 +226,23 @@ const Sign_up: React.FC = () => {
                 {/* Error and Success Message */}
                 <Box sx={messageBox}>
                   {error && (
-                <Typography
-                  color="#F53F3F"
-                  variant="body2"
-                  sx={messageStyle}
-                >
-                  {error}
-                </Typography>
-              )}
-              {message && (
-                <Typography
-                  color="success"
-                  variant="body2"
-                  sx={messageStyle}
-                >
-                  {message}
-                </Typography>
-              )}
+                    <Typography
+                      color="#F53F3F"
+                      variant="body2"
+                      sx={messageStyle}
+                    >
+                      {error}
+                    </Typography>
+                  )}
+                  {message && (
+                    <Typography
+                      color="success"
+                      variant="body2"
+                      sx={messageStyle}
+                    >
+                      {message}
+                    </Typography>
+                  )}
                 </Box>
 
                 {/* Remember Me */}

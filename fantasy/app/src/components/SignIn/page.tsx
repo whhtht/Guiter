@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSignIn } from "./function";
+import { useSignIn } from "../../hooks/useSignIn.hook/page";
 
 // Mui Imports
 import {
@@ -20,103 +20,70 @@ import { VisibilityOff, Visibility, Clear } from "@mui/icons-material";
 import guiter_image from "../../images/sign.images/guiter.jpg";
 
 // Component
-import {
-  circuleStyle,
-  helvetica_email,
-  helvetica_title,
-  helvetica_input,
-  imageStyle,
-  mainStyle,
-  pingFangSC_subtitle,
-  textStyles,
-  titleStyle,
-  helvetica_password,
-  messageStyle,
-  messageBox,
-  rememberMeBox,
-  helvetica_forgetPassword,
-  helvetica_button,
-  pingFangSC_guest,
-  linkStyle,
-  helvetica_noAccount,
-  helvetica_sign,
-} from "../../styles/signin.style/page";
+import * as homepage from "../../styles/signin.style/page";
 
 const Sign_in: React.FC = () => {
   // Function
-  const {
-    email,
-    showEmail,
-    emailError,
-    emailBackgroundColor,
-    handeleEmailChange,
-    handleFocusEmail,
-    handleBlurEmail,
-    handleClickShowEmail,
-    handleMouseDownEmail,
-    password,
-    showPassword,
-    passwordError,
-    passwordBackgroundColor,
-    handelePasswordChange,
-    handleFocusPassword,
-    handleBlurPassword,
-    handleClearPassword,
-    handleClickShowPassword,
-    handleMouseDownPassword,
-    handleSignIn,
-    error,
-    message,
-    rememberMe,
-    handleRememberMeChange,
-  } = useSignIn();
+  const functions = useSignIn();
 
   return (
     <Box>
       <Grid container>
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Box sx={mainStyle}>
+          <Box sx={homepage.styles.mainStyle}>
             {/* Image */}
-            <Box component="img" src={guiter_image} sx={imageStyle} />
-            <Box sx={textStyles}>
+            <Box
+              component="img"
+              src={guiter_image}
+              sx={homepage.styles.imageStyle}
+            />
+            <Box sx={homepage.styles.textStyles}>
               {/* Circule */}
-              <Box sx={circuleStyle} />
+              <Box sx={homepage.styles.circuleStyle} />
 
               {/* Title */}
-              <Box component="form" onSubmit={handleSignIn} sx={titleStyle}>
-                <Typography sx={helvetica_title}>Welcome to Fantasy</Typography>
+              <Box
+                component="form"
+                onSubmit={functions.handleSignIn}
+                sx={homepage.styles.titleStyle}
+              >
+                <Typography sx={homepage.styles.helvetica_title}>
+                  Welcome to Fantasy
+                </Typography>
 
                 {/* Subtitle */}
-                <Typography sx={pingFangSC_subtitle}>
+                <Typography sx={homepage.styles.pingFangSC_subtitle}>
                   Welcome Back! Please enter your details.
                 </Typography>
 
                 {/* Input Email */}
-                <Typography sx={helvetica_email}>Email</Typography>
+                <Typography sx={homepage.styles.helvetica_email}>
+                  Email
+                </Typography>
                 <TextField
                   variant="outlined"
                   placeholder="Enter your email address..."
-                  type={showEmail ? "text" : "password"}
-                  error={emailError}
-                  value={email}
-                  onChange={handeleEmailChange}
-                  onFocus={handleFocusEmail}
-                  onBlur={handleBlurEmail}
+                  type={functions.showEmail ? "text" : "password"}
+                  error={functions.emailError}
+                  value={functions.email}
+                  onChange={functions.handeleEmailChange}
+                  onFocus={functions.handleFocusEmail}
+                  onBlur={functions.handleBlurEmail}
                   size="small"
-                  sx={helvetica_input}
+                  sx={homepage.styles.helvetica_input}
                   InputProps={{
                     style: {
-                      backgroundColor: emailBackgroundColor,
+                      backgroundColor: functions.emailBackgroundColor,
                     },
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle email visibility"
-                          onClick={handleClickShowEmail}
-                          onMouseDown={handleMouseDownEmail}
+                          onClick={functions.handleClickShowEmail}
+                          onMouseDown={functions.handleMouseDownEmail}
                           edge="end"
                         >
-                          {showEmail ? (
+                          {functions.showEmail ? (
                             <Visibility fontSize="small" />
                           ) : (
                             <VisibilityOff fontSize="small" />
@@ -128,28 +95,30 @@ const Sign_in: React.FC = () => {
                 />
 
                 {/* Input Password */}
-                <Typography sx={helvetica_password}>Password</Typography>
+                <Typography sx={homepage.styles.helvetica_password}>
+                  Password
+                </Typography>
                 <TextField
                   variant="outlined"
                   placeholder="Enter your password..."
-                  type={showPassword ? "text" : "password"}
-                  error={passwordError}
-                  value={password}
-                  onChange={handelePasswordChange}
-                  onFocus={handleFocusPassword}
-                  onBlur={handleBlurPassword}
+                  type={functions.showPassword ? "text" : "password"}
+                  error={functions.passwordError}
+                  value={functions.password}
+                  onChange={functions.handelePasswordChange}
+                  onFocus={functions.handleFocusPassword}
+                  onBlur={functions.handleBlurPassword}
                   size="small"
-                  sx={helvetica_input}
+                  sx={homepage.styles.helvetica_input}
                   InputProps={{
                     style: {
-                      backgroundColor: passwordBackgroundColor,
+                      backgroundColor: functions.passwordBackgroundColor,
                     },
                     endAdornment: (
                       <InputAdornment position="end">
-                        {password && (
+                        {functions.password && (
                           <IconButton
                             aria-label="clear password"
-                            onClick={handleClearPassword}
+                            onClick={functions.handleClearPassword}
                             edge="end"
                           >
                             <Clear fontSize="small" />
@@ -157,11 +126,11 @@ const Sign_in: React.FC = () => {
                         )}
                         <IconButton
                           aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
+                          onClick={functions.handleClickShowPassword}
+                          onMouseDown={functions.handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? (
+                          {functions.showPassword ? (
                             <Visibility fontSize="small" />
                           ) : (
                             <VisibilityOff fontSize="small" />
@@ -173,39 +142,42 @@ const Sign_in: React.FC = () => {
                 />
 
                 {/* Error and Success Message */}
-                <Box sx={messageBox}>
-                  {error && (
+                <Box sx={homepage.styles.messageBox}>
+                  {functions.error && (
                     <Typography
                       color="#F53F3F"
                       variant="body2"
-                      sx={messageStyle}
+                      sx={homepage.styles.messageStyle}
                     >
-                      {error}
+                      {functions.error}
                     </Typography>
                   )}
-                  {message && (
+                  {functions.message && (
                     <Typography
                       color="success"
                       variant="body2"
-                      sx={messageStyle}
+                      sx={homepage.styles.messageStyle}
                     >
-                      {message}
+                      {functions.message}
                     </Typography>
                   )}
                 </Box>
 
                 {/* Remember Me and Forget Password */}
-                <Box sx={rememberMeBox}>
+                <Box sx={homepage.styles.rememberMeBox}>
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={rememberMe}
-                        onChange={handleRememberMeChange}
+                        checked={functions.rememberMe}
+                        onChange={functions.handleRememberMeChange}
                       />
                     }
                     label="Remember me"
                   />
-                  <Link to="/ForgetPassword" style={helvetica_forgetPassword}>
+                  <Link
+                    to="/ForgetPassword"
+                    style={homepage.styles.helvetica_forgetPassword}
+                  >
                     Forget password?
                   </Link>
                 </Box>
@@ -215,22 +187,22 @@ const Sign_in: React.FC = () => {
                   type="submit"
                   variant="contained"
                   size="large"
-                  sx={helvetica_button}
+                  sx={homepage.styles.helvetica_button}
                 >
                   Sign in
                 </Button>
 
                 {/* As a Guest */}
-                <Link to="/homepage" style={linkStyle}>
-                  <Button size="large" sx={pingFangSC_guest}>
+                <Link to="/home" style={homepage.styles.linkStyle}>
+                  <Button size="large" sx={homepage.styles.pingFangSC_guest}>
                     Continue as a guest
                   </Button>
                 </Link>
 
                 {/* Don't have an account and sign up */}
-                <Typography sx={helvetica_noAccount}>
+                <Typography sx={homepage.styles.helvetica_noAccount}>
                   Don't have an account?
-                  <Link to="/signUp" style={helvetica_sign}>
+                  <Link to="/signUp" style={homepage.styles.helvetica_sign}>
                     Sign up
                   </Link>
                 </Typography>

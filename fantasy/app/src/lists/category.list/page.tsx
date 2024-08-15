@@ -1,36 +1,42 @@
-export const categoryList = [
+const list = [
   {
     id: "1",
     name: "Classical Guitar",
-    image: " ",
-    color: "#E0E0E0",
+    image: "/src/images/category.images/classicalGuitar.png",
+    link: "/",
   },
   {
     id: "2",
     name: "Acoustic Guitar",
-    image: " ",
-    color: "#E0E0E0",
+    image: "/src/images/category.images/acousticGuitar.png",
+    link: "/",
   },
   {
     id: "3",
     name: "Ukulele",
-    image: " ",
-    color: "#E0E0E0",
+    image: "/src/images/category.images/ukulele.png",
+    link: "/",
   },
   {
     id: "4",
     name: "Semi-Acoustic Guitar",
-    image: " ",
-    color: "#E0E0E0",
+    image: "/src/images/category.images/semi-AcousticGuitar.png",
+    link: "/",
   },
   {
     id: "5",
     name: "Banjo",
-    image: " ",
-    color: "#E0E0E0",
+    image: "/src/images/category.images/banjo.png",
+    link: "/",
   },
 ];
 
-export const classical = categoryList[0];
+const classical = list[0];
 
-export const filterCategory = categoryList.filter((item) => item.id !== "1");
+const filterCategory = list.filter((item) => item.id !== "1");
+
+export const table = {
+  list,
+  classical,
+  filterCategory,
+};

@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [ "src", "node_modules/@types", "src/styles/homepage.style"]
+  "include": [ "src", "node_modules/@types", "src/styles/homepage.style", "src/hooks/useSignUp.hook/page.tsx"]
 }

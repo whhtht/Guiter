@@ -1,5 +1,5 @@
 // Common styles
-export const mainStyle = {
+const mainStyle = {
     display: "flex",
     justifyContent: "space-between",
     flexDirection: "row",
@@ -8,7 +8,7 @@ export const mainStyle = {
   };
   
   // Font styles
-  export const helvetica_title = {
+  const helvetica_title = {
     fontFamily: "Helvetica",
     fontSize: "28px",
     fontWeight: "700",
@@ -18,7 +18,7 @@ export const mainStyle = {
     m: "35px 0px 10px 0px",
   };
   
-  export const pingFangSC_subtitle = {
+  const pingFangSC_subtitle = {
     fontFamily: "PingFang SC",
     fontSize: "16px",
     fontWeight: "400",
@@ -27,7 +27,7 @@ export const mainStyle = {
     color: "#4E5969",
   };
   
-  export const helvetica_email = {
+  const helvetica_email = {
     fontFamily: "Helvetica",
     fontSize: "14px",
     fontWeight: "700",
@@ -37,7 +37,7 @@ export const mainStyle = {
     m: "45px 0px 10px 0px",
   };
   
-  export const helvetica_password = {
+  const helvetica_password = {
     fontFamily: "Helvetica",
     fontSize: "14px",
     fontWeight: "700",
@@ -47,7 +47,7 @@ export const mainStyle = {
     m: "25px 0px 10px 0px",
   };
   
-  export const helvetica_input = {
+  const helvetica_input = {
     width: "432px",
     fontFamily: "Helvetica",
     fontSize: "14px",
@@ -55,10 +55,11 @@ export const mainStyle = {
     lineHeight: "22px",
     textAlign: "left",
     color: "#86909C",
+    borderRadius:"8px",
     border: "1px solid #E5E6EB",
   };
   
-  export const helvetica_forgetPassword = {
+  const helvetica_forgetPassword = {
     fontFamily: "Helvetica",
     fontSize: "14px",
     fontWeight: "400",
@@ -68,7 +69,7 @@ export const mainStyle = {
     textDecoration: "none",
   };
   
-  export const helvetica_button = {
+  const helvetica_button = {
     width: "432px",
     height: "40px",
     position: "relative",
@@ -83,7 +84,7 @@ export const mainStyle = {
     mt: "40px",
   };
   
-  export const pingFangSC_guest = {
+  const pingFangSC_guest = {
     width: "100%",
     height: "100%",
     fontFamily: "PingFang SC",
@@ -97,7 +98,7 @@ export const mainStyle = {
     border: "1px solid #E5E6E8",
   };
   
-  export const helvetica_noAccount = {
+  const helvetica_noAccount = {
     display: "flex",
     flexDirection: "row",
     width: "432px",
@@ -110,7 +111,7 @@ export const mainStyle = {
     mt: "30px",
   };
   
-  export const helvetica_sign = {
+  const helvetica_sign = {
     textDecoration: "none",
     fontFamily: "Helvetica",
     fontSize: "14px",
@@ -122,14 +123,14 @@ export const mainStyle = {
   };
   
   // Image styles
-  export const imageStyle = {
+  const imageStyle = {
     width: "45%",
     height: "100%",
     flexShrink: 0,
   };
   
   // Text styles
-  export const textStyles = {
+  const textStyles = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
@@ -139,7 +140,7 @@ export const mainStyle = {
   };
   
   // Circule styles
-  export const circuleStyle = {
+  const circuleStyle = {
     width: "32px",
     height: "32px",
     border: "6px solid #000000",
@@ -147,23 +148,23 @@ export const mainStyle = {
   };
   
   //Title styles
-  export const titleStyle = {
+  const titleStyle = {
     position: "relative",
     display: "flex",
     flexDirection: "column",
   };
   
   // Message styles
-  export const messageBox = {
+  const messageBox = {
     width: "432px",
     height: "20px",
   };
-  export const messageStyle = {
+  const messageStyle = {
     visibility: "visible",
   };
   
   // Remember me and Forget password styles
-  export const rememberMeBox = {
+  const rememberMeBox = {
     width: "432px",
     height: "24px",
     display: "flex",
@@ -172,9 +173,30 @@ export const mainStyle = {
   };
   
   // Link styles
-  export const linkStyle = {
+  const linkStyle = {
     width: "432px",
     height: "40px",
     marginTop: "25px",
   };
   
+  export const styles = {
+    mainStyle,
+    helvetica_title,
+    pingFangSC_subtitle,
+    helvetica_email,
+    helvetica_password,
+    helvetica_input,
+    helvetica_forgetPassword,
+    helvetica_button,
+    pingFangSC_guest,
+    helvetica_noAccount,
+    helvetica_sign,
+    imageStyle,
+    textStyles,
+    circuleStyle,
+    titleStyle,
+    messageBox,
+    messageStyle,
+    rememberMeBox,
+    linkStyle,
+  };
