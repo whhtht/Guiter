@@ -14,7 +14,7 @@ export const useLocation = (
   const [storedZipCode, setStoredZipCode] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
 
-  const apiKey = "AIzaSyD1Dj4dgfme8L4PXpePOnpsIUprpmjA3QI";
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
   // 自动获取当前位置
   const handleUseCurrentLocation = useCallback(() => {
@@ -64,7 +64,7 @@ export const useLocation = (
     } else {
       setError("Geolocation is not supported by this browser.");
     }
-  }, [setOpen]);
+  }, [apiKey, setOpen]);
 
   // 打开dialog
   const handleDialogOpen = () => {
