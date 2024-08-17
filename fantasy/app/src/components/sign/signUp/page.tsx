@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSignUp } from "../../hooks/useSignUp.hook/page";
+import { useSignUp } from "../../../hooks/useSignUp.hook/page";
 import {
   Box,
   Grid,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility, Clear } from "@mui/icons-material";
 
-import guiter_image from "../../images/sign.images/guiter.jpg";
+import guiter_image from "../../../images/sign.images/guiter.jpg";
 
 import {
   mainStyle,
@@ -36,7 +36,7 @@ import {
   helvetica_button,
   helvetica_sign,
   helvetica_haveAccount,
-} from "../../styles/signup.style/page";
+} from "../../../styles/signup.style/page";
 
 const Sign_up: React.FC = () => {
   // Function

@@ -1,24 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
-import { useHome } from "../../hooks/useHome.hook/page";
+import { useHome } from "../../../hooks/useHome.hook/page";
+import Header from "../../layout/header/page";
 
 // Mui Components
 import { Box, Grid, Button, Typography, IconButton } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
 // Side picture
-import * as carousel from "../../lists/side.list/page";
+import * as carousel from "../../../lists/side.list/page";
 // Importing styles
-import * as styles from "../../styles/homepage.style/page";
+import * as styles from "../../../styles/homepage.style/page";
 // Featured guitars list
-import { featuredGuitars } from "../../lists/featuredGuitars.list/page";
+import { featuredGuitars } from "../../../lists/featuredGuitars.list/page";
 // New arrivals list
-import { newArrivals } from "../../lists/newArrivals.list/page";
+import { newArrivals } from "../../../lists/newArrivals.list/page";
 // Service list
-import { serviceItems } from "../../lists/service.list/page";
+import { serviceItems } from "../../../lists/service.list/page";
 // Category list
-import * as category from "../../lists/category.list/page";
+import * as category from "../../../lists/category.list/page";
 
 const Homepage: React.FC = () => {
   // import useHome hook
@@ -26,6 +27,7 @@ const Homepage: React.FC = () => {
 
   return (
     <Box>
+      <Header />
       <Grid container>
         {/* Part 1 */}
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>

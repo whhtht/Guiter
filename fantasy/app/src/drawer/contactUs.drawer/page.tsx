@@ -1,7 +1,6 @@
 import React from "react";
-import { Drawer, Box, IconButton, Typography, Button } from "@mui/material";
+import { Drawer, Box, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
 
 import * as styles from "../../styles/layout.style/header.style/page";
 
@@ -13,22 +12,6 @@ interface DrawerProps {
 const ContactUsDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
   return (
     <Box>
-      <Button
-        variant="text"
-        startIcon={<PhoneEnabledIcon sx={styles.headerstyles.iconStyle_22px} />}
-        disableFocusRipple
-        sx={styles.headerstyles.buttonStyle_white}
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        <Typography
-          variant="body1"
-          sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
-        >
-          Contact Us
-        </Typography>
-      </Button>
       <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
         <Box sx={styles.headerstyles.drawerStyle}>
           <Box sx={styles.headerstyles.drawerFrame}>

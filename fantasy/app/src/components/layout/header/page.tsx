@@ -12,8 +12,12 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import StoreIcon from "@mui/icons-material/Store";
+import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 import { useHeader } from "../../../hooks/useHeader.hook/page";
+import { useLocation } from "../../../hooks/useLocation.hook/page";
 import * as styles from "../../../styles/layout.style/header.style/page";
 import * as category from "../../../lists/category.list/page";
 import LocationDrawer from "../../../drawer/location.drawer/page";
@@ -22,6 +26,13 @@ import ContactUsDrawer from "../../../drawer/contactUs.drawer/page";
 
 const Header: React.FC = () => {
   const functions = useHeader();
+  const locationFunctions = useLocation(functions.setOpenLocation);
+
+  console.log(
+    "locationFunctions.storedzipcode",
+    locationFunctions.storedZipCode
+  );
+
   return (
     <Box>
       {/* Part 1 */}
@@ -106,7 +117,7 @@ const Header: React.FC = () => {
                 <Button
                   key={category.id}
                   component={Link}
-                  to={category.link}
+                  to={`/home/${category.name}`}
                   disableFocusRipple
                   sx={styles.headerstyles.buttonStyle_white}
                 >
@@ -128,6 +139,28 @@ const Header: React.FC = () => {
           <Box sx={styles.headerstyles.componentSpace}>
             {/* Deliver */}
             <Box sx={styles.headerstyles.linkFrame}>
+              <Button
+                variant="text"
+                startIcon={
+                  <LocalShippingIcon sx={styles.headerstyles.iconStyle_22px} />
+                }
+                disableFocusRipple
+                sx={styles.headerstyles.buttonStyle_white}
+                onClick={() => {
+                  functions.setOpenLocation(true);
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
+                >
+                  Deliver to{" "}
+                  {locationFunctions.storedZipCode
+                    ? locationFunctions.storedZipCode
+                    : " M5G 2G4 "}
+                </Typography>
+              </Button>
+
               <LocationDrawer
                 open={functions.openLocation}
                 setOpen={functions.setOpenLocation}
@@ -136,6 +169,24 @@ const Header: React.FC = () => {
 
             {/* Pick up */}
             <Box sx={styles.headerstyles.linkFrame}>
+              <Button
+                variant="text"
+                startIcon={
+                  <StoreIcon sx={styles.headerstyles.iconStyle_22px} />
+                }
+                disableFocusRipple
+                sx={styles.headerstyles.buttonStyle_white}
+                onClick={() => {
+                  functions.setOpenPickUp(true);
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
+                >
+                  Pick up at Toronto Downtown
+                </Typography>
+              </Button>
               <PickUpDrawer
                 open={functions.openPickUp}
                 setOpen={functions.setOpenPickUp}
@@ -144,6 +195,24 @@ const Header: React.FC = () => {
 
             {/* Contact Us */}
             <Box sx={styles.headerstyles.linkFrame}>
+              <Button
+                variant="text"
+                startIcon={
+                  <PhoneEnabledIcon sx={styles.headerstyles.iconStyle_22px} />
+                }
+                disableFocusRipple
+                sx={styles.headerstyles.buttonStyle_white}
+                onClick={() => {
+                  functions.setOpenContactUs(true);
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
+                >
+                  Contact Us
+                </Typography>
+              </Button>
               <ContactUsDrawer
                 open={functions.openContactUs}
                 setOpen={functions.setOpenContactUs}

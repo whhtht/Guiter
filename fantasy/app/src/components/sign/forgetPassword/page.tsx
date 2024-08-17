@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForgetPassword } from "./function";
 import { Box, Grid, Typography, Button, TextField } from "@mui/material";
 
-import guiter_image from "../../images/sign.images/guiter.jpg";
+import guiter_image from "../../../images/sign.images/guiter.jpg";
 
 const Forget_Password: React.FC = () => {
   // Function

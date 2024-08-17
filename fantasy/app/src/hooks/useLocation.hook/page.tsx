@@ -31,6 +31,7 @@ export const useLocation = (
             setError("");
             setDialogOpen(false);
             setOpen(false);
+            window.location.reload();
 
             localStorage.setItem("PostalCode", postalCode);
             setStoredZipCode(postalCode);
@@ -38,6 +39,7 @@ export const useLocation = (
             setError("No address found for these coordinates.");
             setDialogOpen(false);
             setOpen(false);
+            window.location.reload();
           }
         })
         .catch((err) => {
@@ -45,6 +47,7 @@ export const useLocation = (
           console.error(err);
           setDialogOpen(false);
           setOpen(false);
+          window.location.reload();
         });
     };
 
@@ -125,6 +128,7 @@ export const useLocation = (
         localStorage.setItem("PostalCode", postalCode);
         setStoredZipCode(postalCode);
         setOpen(false);
+        window.location.reload();
       } else {
         setError("No address found for this postal code.");
       }

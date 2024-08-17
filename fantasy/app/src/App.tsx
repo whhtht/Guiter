@@ -1,34 +1,27 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "@fontsource/roboto";
-import SignIn from "./components/signIn/page";
-import SignUp from "./components/signUp/page";
-import ForgetPassword from "./components/forgetPassword/page";
-import ResetPassword from "./components/forgetPassword//resetPassword/page";
-import Home from "./components/home/page";
-import ProductList from "./components/productList/page";
-import ProductDetail from "./components/productDetail/page";
-import NotFound from "./components/notfound/page";
-import Layout from "./components/layout/page";
+import Signin from "./components/sign/signIn/page";
+import Signup from "./components/sign/signUp/page";
+import Forgetpassword from "./components/sign/forgetPassword/page";
+import Resetpassword from "./components/sign/forgetPassword//resetPassword/page";
+import Home from "./components/home/main/page";
+import Productlist from "./components/home/productList/page";
+import Productdetail from "./components/home/productDetail/page";
+import Notfound from "./components/notfound/page";
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/signUp" element={<SignUp />} />
-          <Route path="/forgetPassword" element={<ForgetPassword />} />
-          <Route path="/resetPassword" element={<ResetPassword />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/home/:category" element={<ProductList />} />
-          <Route
-            path="/home/:category/:productId"
-            element={<ProductDetail />}
-          />
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/" element={<Signin />} />
+        <Route path="/signUp" element={<Signup />} />
+        <Route path="/forgetPassword" element={<Forgetpassword />} />
+        <Route path="/resetPassword" element={<Resetpassword />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/home/:category" element={<Productlist />} />
+        <Route path="/home/:category/:productId" element={<Productdetail />} />
+        <Route path="*" element={<Notfound />} />
+      </Routes>
     </Router>
   );
 }

@@ -13,7 +13,6 @@ import {
   DialogActions,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import * as styles from "../../styles/layout.style/header.style/page";
@@ -29,31 +28,20 @@ const LocationDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
 
   return (
     <Box>
-      <Button
-        variant="text"
-        startIcon={
-          <LocalShippingIcon sx={styles.headerstyles.iconStyle_22px} />
-        }
-        disableFocusRipple
-        sx={styles.headerstyles.buttonStyle_white}
-        onClick={() => {
-          setOpen(true);
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          window.location.reload();
         }}
       >
-        <Typography
-          variant="body1"
-          sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
-        >
-          Deliver to{" "}
-          {location.storedZipCode ? location.storedZipCode : " M5G 2G4 "}
-        </Typography>
-      </Button>
-      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
         <Box sx={styles.headerstyles.drawerStyle}>
           <Box sx={styles.headerstyles.drawerFrame}>
             <IconButton
               onClick={() => {
                 setOpen(false);
+                window.location.reload();
               }}
             >
               <CloseIcon fontSize="large" sx={{ color: "#02000C" }} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { forgetPassword } from "../../api/auth/page";
+import { forgetPassword } from "../../../api/auth/page";
 
 export const useForgetPassword = () => {
   // Email Function
@@ -59,7 +59,7 @@ export const useForgetPassword = () => {
     }
   };
 
-  return{
+  return {
     email,
     emailError,
     emailBackgroundColor,
