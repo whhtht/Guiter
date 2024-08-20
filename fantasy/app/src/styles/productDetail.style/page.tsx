@@ -375,6 +375,136 @@ const mayLike_frame = {
   margin: "48px 0px 0px 0px",
 };
 
+const left_iconbutton = {
+  position: "absolute",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "50px",
+  height: "50px",
+  left: "-19px",
+  top: "38%",
+  backgroundColor: "#FFFFFF",
+  borderRadius: "50%",
+  boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+  transform: "translateY(-50%)",
+  zIndex: 2,
+  "&:hover": {
+    backgroundColor: "#FFFFFF",
+  },
+  "&:active": {
+    backgroundColor: "#FFFFFF",
+  },
+};
+
+const right_iconbutton = {
+  position: "absolute",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "50px",
+  height: "50px",
+  right: "-17px",
+  top: "38%",
+  PointerEvents: "auto",
+  backgroundColor: "#FFFFFF",
+  borderRadius: "50%",
+  boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+  transform: "translateY(-50%)",
+  zIndex: 1,
+  "&:hover": {
+    backgroundColor: "#FFFFFF",
+  },
+  "&:active": {
+    backgroundColor: "#FFFFFF",
+  },
+};
+
+const iconbutton_frame = {
+  position: "relative",
+  width: "100%",
+  margin: "20px 0px 0px 0px",
+};
+
+const iconbutton_left_style = {
+  color: "#02000C",
+  fontSize: "20px",
+  transform: "translateX(20%)",
+};
+
+const iconbutton_right_style = {
+  color: "#02000C",
+  fontSize: "20px",
+  transform: "translateX(10%)",
+};
+
+const mayLike_list_frame = {
+  display: "flex",
+  flexdirection: "row",
+  overflow: "hidden",
+};
+
+const mayLike_list_size = {
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+  width: "calc(100% / 5)",
+};
+
+const mayLike_list_box = {
+  width: "250px",
+  height: "250px",
+  borderRadius: "8px",
+};
+
+const mayLike_list_image = {
+  width: "100%",
+  height: "100%",
+};
+
+const mayLike_text_frame = {
+  display: "flex",
+  flexDirection: "column",
+  width: "250px",
+};
+
+const mayLike_text_title = {
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  textOverflow: "ellipsis",
+  width: "100%",
+  height: "48px",
+  fontFamily: "Roboto",
+  fontSize: "16px",
+  fontWeight: 400,
+  lineHeight: "24px",
+  textAlign: "left",
+  textDecoration: "none",
+  color: "#02000C",
+  overflow: "hidden",
+};
+
+const mayLike_text_condition = {
+  fontFamily: "Roboto",
+  fontSize: "14px",
+  fontWeight: 400,
+  lineHeight: "22px",
+  textAlign: "left",
+  textDecoration: "none",
+  color: "#76757C",
+};
+
+const mayLike_text_price = {
+  fontFamily: "Roboto",
+  fontSize: "20px",
+  fontWeight: 500,
+  lineHeight: "28px",
+  textAlign: "left",
+  textDecoration: "none",
+  color: "#000000D9",
+};
+
 // Font Styles
 const roboto_14px = {
   fontFamily: "Roboto",
@@ -511,6 +641,19 @@ export const detailstyles = {
   shipments_frame,
   shipments_text,
   mayLike_frame,
+  iconbutton_frame,
+  left_iconbutton,
+  right_iconbutton,
+  iconbutton_left_style,
+  iconbutton_right_style,
+  mayLike_list_frame,
+  mayLike_list_size,
+  mayLike_list_box,
+  mayLike_list_image,
+  mayLike_text_frame,
+  mayLike_text_title,
+  mayLike_text_condition,
+  mayLike_text_price,
   roboto_14px,
   roboto_14px_76757C,
   roboto_14px_02000C,

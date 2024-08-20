@@ -39,7 +39,7 @@ const classicalGuitar = [
         title: "image5",
       },
       {
-        image: "/src/images/classicalGuitar.images/image.png",
+        image: "/src/images/classicalGuitar.images/image6.png",
         title: "image6",
       },
     ],

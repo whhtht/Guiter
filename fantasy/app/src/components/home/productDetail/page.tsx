@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { useHome } from "../../../hooks/useHome.hook/page";
+import { useProductDetail } from "../../../hooks/useProductDetail.hook/page";
+import { product } from "../../../lists/classicalGuitar.list/page";
+import { newArrivals } from "../../../lists/newArrivals.list/page";
+import LocationDrawer from "../../../drawer/location.drawer/page";
+import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
+import Header from "../../layout/header/page";
+import Footer from "../../layout/footer/page";
 
 // Mui Components
 import {
@@ -27,26 +33,8 @@ import StoreIcon from "@mui/icons-material/Store";
 import CloseIcon from "@mui/icons-material/Close";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
-import { product } from "../../../lists/classicalGuitar.list/page";
-import Header from "../../layout/header/page";
-import { useLocation } from "../../../hooks/useLocation.hook/page";
-import LocationDrawer from "../../../drawer/location.drawer/page";
-import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
-import { newArrivals } from "../../../lists/newArrivals.list/page";
-import Footer from "../../layout/footer/page";
-
+// Styles
 import * as styles from "../../../styles/productDetail.style/page";
-
-type Product = {
-  id: number;
-  name: string;
-  condition: string;
-  price: string;
-  newprice: string;
-  review: { main: string; list: string[] };
-  image: ImageItems[];
-};
-type ImageItems = { image: string; title: string };
 
 const ProductDetail: React.FC = () => {
   const { category, productId } = useParams<{
@@ -54,48 +42,7 @@ const ProductDetail: React.FC = () => {
     productId: string;
   }>();
 
-  const products: Product = product.classicalGuitar[0];
-  const specifications = product.specification[0].list;
-  const labels = product.specification[0].label;
-
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  // const startIndex = Math.max(0, selectedImageIndex - 4);
-  // const endIndex = Math.min(products.image.length, startIndex + 5);
-
-  const [viewAll, setViewAll] = useState(false);
-  const handleViewAll = () => {
-    setViewAll(!viewAll);
-  };
-
-  const handleNextImage = () => {
-    setSelectedImageIndex((prevIndex) => (prevIndex < 4 ? prevIndex + 1 : 0));
-  };
-
-  const [review, setRewiew] = useState(false);
-  const handleToggleReview = () => {
-    setRewiew(!review);
-  };
-
-  const [specifiation, setSpecifiation] = useState(false);
-  const handleToggleSpecifiation = () => {
-    setSpecifiation(!specifiation);
-  };
-
-  const [shippingPolice, setShippingPolice] = useState(false);
-  const handleToggleShippingPolice = () => {
-    setShippingPolice(!shippingPolice);
-  };
-
-  const [returnPolice, setReturnPolice] = useState(false);
-  const handleToggleReturn = () => {
-    setReturnPolice(!returnPolice);
-  };
-
-  const [openLocation, setOpenLocation] = React.useState(false);
-  const [openPickUp, setOpenPickUp] = React.useState(false);
-  const locationFunctions = useLocation(setOpenLocation);
-
-  const functions = useHome();
+  const hook = useProductDetail();
 
   return (
     <Box>
@@ -113,14 +60,7 @@ const ProductDetail: React.FC = () => {
                 >
                   <Typography
                     variant="body1"
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      lineHeight: "22px",
-                      textAlign: "left",
-                      color: "#76757C",
-                    }}
+                    sx={styles.detailstyles.roboto_14px_76757C}
                   >
                     Home
                   </Typography>
@@ -163,35 +103,40 @@ const ProductDetail: React.FC = () => {
                     <Box sx={styles.detailstyles.picture_list_frame}>
                       <Box sx={styles.detailstyles.image_list_frame}>
                         <ImageList cols={1} sx={styles.detailstyles.imageList}>
-                          {products.image.slice(0, 5).map((item, index) => (
-                            <ImageListItem
-                              key={item.image}
-                              onClick={() => setSelectedImageIndex(index)}
-                            >
-                              <Box
-                                sx={{
-                                  ...styles.detailstyles.image_list_background,
-                                  border:
-                                    selectedImageIndex === index
-                                      ? "1px solid #02000C"
-                                      : "none",
-                                }}
+                          {hook.products.image
+                            .slice(0, 5)
+                            .map((item, index) => (
+                              <ImageListItem
+                                key={item.image}
+                                onClick={() =>
+                                  hook.setSelectedImageIndex(index)
+                                }
                               >
                                 <Box
-                                  component="img"
-                                  src={item.image}
-                                  alt={item.title}
-                                  loading="lazy"
-                                  sx={styles.detailstyles.imageItem}
-                                />
-                              </Box>
-                            </ImageListItem>
-                          ))}
-                          {products.image.length > 5 && (
+                                  sx={{
+                                    ...styles.detailstyles
+                                      .image_list_background,
+                                    border:
+                                      hook.selectedImageIndex === index
+                                        ? "1px solid #02000C"
+                                        : "none",
+                                  }}
+                                >
+                                  <Box
+                                    component="img"
+                                    src={item.image}
+                                    alt={item.title}
+                                    loading="lazy"
+                                    sx={styles.detailstyles.imageItem}
+                                  />
+                                </Box>
+                              </ImageListItem>
+                            ))}
+                          {hook.products.image.length > 5 && (
                             <Box
                               sx={styles.detailstyles.viewAll}
                               onClick={() => {
-                                handleViewAll();
+                                hook.handleViewAll();
                               }}
                             >
                               <Typography
@@ -204,8 +149,8 @@ const ProductDetail: React.FC = () => {
                         </ImageList>
                       </Box>
                       <Dialog
-                        open={viewAll}
-                        onClose={handleViewAll}
+                        open={hook.viewAll}
+                        onClose={hook.handleViewAll}
                         maxWidth={false}
                         sx={styles.detailstyles.dialogFrame}
                       >
@@ -217,7 +162,7 @@ const ProductDetail: React.FC = () => {
                           </Typography>
                           <IconButton
                             aria-label="close"
-                            onClick={handleViewAll}
+                            onClick={hook.handleViewAll}
                             sx={styles.detailstyles.iconColor}
                           >
                             <CloseIcon fontSize="large" />
@@ -225,7 +170,7 @@ const ProductDetail: React.FC = () => {
                         </DialogTitle>
                         <DialogContent>
                           <ImageList cols={3}>
-                            {products.image.map((item) => (
+                            {hook.products.image.map((item) => (
                               <ImageListItem
                                 key={item.image}
                                 sx={styles.detailstyles.dialog_image_list_frame}
@@ -256,14 +201,18 @@ const ProductDetail: React.FC = () => {
                         <Box
                           component="img"
                           src={
-                            products.image.slice(0, 5)[selectedImageIndex].image
+                            hook.products.image.slice(0, 5)[
+                              hook.selectedImageIndex
+                            ].image
                           }
                           alt={
-                            products.image.slice(0, 5)[selectedImageIndex].title
+                            hook.products.image.slice(0, 5)[
+                              hook.selectedImageIndex
+                            ].title
                           }
                         />
                         <IconButton
-                          onClick={handleNextImage}
+                          onClick={hook.handleNextImage}
                           sx={styles.detailstyles.arrowForward}
                         >
                           <ArrowForwardIosIcon />
@@ -401,9 +350,9 @@ const ProductDetail: React.FC = () => {
                             Review from us
                           </Typography>
                           <IconButton
-                            onClick={handleToggleReview}
+                            onClick={hook.handleToggleReview}
                             sx={{
-                              transform: review
+                              transform: hook.review
                                 ? "rotate(180deg)"
                                 : "rotate(0deg)",
                               transition: "transform 0.3s",
@@ -415,7 +364,7 @@ const ProductDetail: React.FC = () => {
                         <Box
                           sx={{
                             ...styles.detailstyles.review_frame,
-                            WebkitLineClamp: review ? "none" : 5,
+                            WebkitLineClamp: hook.review ? "none" : 5,
                           }}
                         >
                           <Typography
@@ -441,10 +390,10 @@ const ProductDetail: React.FC = () => {
                           </Box>
                         </Box>
                         <Typography
-                          onClick={handleToggleReview}
+                          onClick={hook.handleToggleReview}
                           sx={styles.detailstyles.review_more}
                         >
-                          {review ? "View less" : "View more"}
+                          {hook.review ? "View less" : "View more"}
                         </Typography>
                       </Box>
                     ))}
@@ -459,9 +408,9 @@ const ProductDetail: React.FC = () => {
                             Specifications
                           </Typography>
                           <IconButton
-                            onClick={handleToggleSpecifiation}
+                            onClick={hook.handleToggleSpecifiation}
                             sx={{
-                              transform: specifiation
+                              transform: hook.specifiation
                                 ? "rotate(180deg)"
                                 : "rotate(0deg)",
                               transition: "transform 0.3s",
@@ -471,38 +420,46 @@ const ProductDetail: React.FC = () => {
                           </IconButton>
                         </Box>
                         <Collapse
-                          in={specifiation}
+                          in={hook.specifiation}
                           collapsedSize={0}
                           sx={styles.detailstyles.collapse_border}
                         >
                           <Box sx={styles.detailstyles.collapse_padding}>
-                            {Object.keys(specifications).map((key, index) => (
-                              <Box
-                                key={index}
-                                sx={styles.detailstyles.specifiation_frame}
-                              >
+                            {Object.keys(hook.specifications).map(
+                              (key, index) => (
                                 <Box
-                                  sx={styles.detailstyles.specifiation_width}
+                                  key={index}
+                                  sx={styles.detailstyles.specifiation_frame}
                                 >
+                                  <Box
+                                    sx={styles.detailstyles.specifiation_width}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      sx={
+                                        styles.detailstyles.roboto_14px_000000
+                                      }
+                                    >
+                                      {
+                                        hook.labels[
+                                          key as keyof typeof hook.specifications
+                                        ]
+                                      }
+                                    </Typography>
+                                  </Box>
                                   <Typography
                                     variant="body1"
-                                    sx={styles.detailstyles.roboto_14px_000000}
+                                    sx={styles.detailstyles.roboto_14px_02000C}
                                   >
-                                    {labels[key as keyof typeof specifications]}
+                                    {
+                                      hook.specifications[
+                                        key as keyof typeof hook.specifications
+                                      ]
+                                    }
                                   </Typography>
                                 </Box>
-                                <Typography
-                                  variant="body1"
-                                  sx={styles.detailstyles.roboto_14px_02000C}
-                                >
-                                  {
-                                    specifications[
-                                      key as keyof typeof specifications
-                                    ]
-                                  }
-                                </Typography>
-                              </Box>
-                            ))}
+                              )
+                            )}
                           </Box>
                         </Collapse>
 
@@ -514,9 +471,9 @@ const ProductDetail: React.FC = () => {
                             Shipping Police
                           </Typography>
                           <IconButton
-                            onClick={handleToggleShippingPolice}
+                            onClick={hook.handleToggleShippingPolice}
                             sx={{
-                              transform: shippingPolice
+                              transform: hook.shippingPolice
                                 ? "rotate(180deg)"
                                 : "rotate(0deg)",
                               transition: "transform 0.3s",
@@ -526,7 +483,7 @@ const ProductDetail: React.FC = () => {
                           </IconButton>
                         </Box>
                         <Collapse
-                          in={shippingPolice}
+                          in={hook.shippingPolice}
                           collapsedSize={0}
                           sx={styles.detailstyles.collapse_border}
                         >
@@ -581,9 +538,9 @@ const ProductDetail: React.FC = () => {
                             Return Police
                           </Typography>
                           <IconButton
-                            onClick={handleToggleReturn}
+                            onClick={hook.handleToggleReturn}
                             sx={{
-                              transform: returnPolice
+                              transform: hook.returnPolice
                                 ? "rotate(180deg)"
                                 : "rotate(0deg)",
                               transition: "transform 0.3s",
@@ -593,7 +550,7 @@ const ProductDetail: React.FC = () => {
                           </IconButton>
                         </Box>
                         <Collapse
-                          in={returnPolice}
+                          in={hook.returnPolice}
                           collapsedSize={0}
                           sx={styles.detailstyles.collapse_border}
                         >
@@ -705,7 +662,7 @@ const ProductDetail: React.FC = () => {
                         disableFocusRipple
                         sx={styles.detailstyles.deliver_button_frame}
                         onClick={() => {
-                          setOpenLocation(true);
+                          hook.setOpenLocation(true);
                         }}
                       >
                         <Box sx={styles.detailstyles.button_frame}>
@@ -716,8 +673,8 @@ const ProductDetail: React.FC = () => {
                               sx={styles.detailstyles.roboto_16px}
                             >
                               Deliver to Deliver to{" "}
-                              {locationFunctions.storedZipCode
-                                ? locationFunctions.storedZipCode
+                              {hook.locationFunctions.storedZipCode
+                                ? hook.locationFunctions.storedZipCode
                                 : " M5G 2G4 "}
                             </Typography>
                           </Box>
@@ -730,15 +687,15 @@ const ProductDetail: React.FC = () => {
                         <ArrowForwardIosIcon fontSize="medium" />
                       </Button>
                       <LocationDrawer
-                        open={openLocation}
-                        setOpen={setOpenLocation}
+                        open={hook.openLocation}
+                        setOpen={hook.setOpenLocation}
                       />
                       <Button
                         sx={styles.detailstyles.pickup_button_frame}
                         variant="text"
                         disableFocusRipple
                         onClick={() => {
-                          setOpenPickUp(true);
+                          hook.setOpenPickUp(true);
                         }}
                       >
                         <Box sx={styles.detailstyles.pickup_button_space}>
@@ -752,7 +709,10 @@ const ProductDetail: React.FC = () => {
                         </Box>
                         <ArrowForwardIosIcon fontSize="medium" />
                       </Button>
-                      <PickUpDrawer open={openPickUp} setOpen={setOpenPickUp} />
+                      <PickUpDrawer
+                        open={hook.openPickUp}
+                        setOpen={hook.setOpenPickUp}
+                      />
                     </Box>
                   </Box>
 
@@ -794,174 +754,64 @@ const ProductDetail: React.FC = () => {
               >
                 You might also like
               </Typography>
-              <Box
-                sx={{
-                  position: "relative",
-                  width: "100%",
-                }}
-              >
+              <Box sx={styles.detailstyles.iconbutton_frame}>
                 <IconButton
-                  onClick={functions.handlePrevNewArrival}
-                  sx={{
-                    position: "absolute",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "50px",
-                    height: "50px",
-                    left: "-24px",
-                    top: "40%",
-                    backgroundColor: "#FFFFFF",
-                    borderRadius: "50%",
-                    boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
-                    transform: "translateY(-50%)",
-                    zIndex: 2,
-                    "&:hover": {
-                      backgroundColor: "#FFFFFF",
-                    },
-                    "&:active": {
-                      backgroundColor: "#FFFFFF",
-                    },
-                  }}
+                  onClick={hook.mayLike.handlePrev}
+                  sx={styles.detailstyles.left_iconbutton}
                 >
                   <ArrowBackIos
-                    sx={{
-                      color: "#02000C",
-                      fontSize: "20px",
-                      transform: "translateX(20%)",
-                    }}
+                    sx={styles.detailstyles.iconbutton_left_style}
                   />
                 </IconButton>
                 <IconButton
-                  onClick={functions.handleNextNewArrival}
-                  sx={{
-                    position: "absolute",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "50px",
-                    height: "50px",
-                    right: "-17px",
-                    top: "40%",
-                    PointerEvents: "auto",
-                    backgroundColor: "#FFFFFF",
-                    borderRadius: "50%",
-                    boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
-                    transform: "translateY(-50%)",
-                    zIndex: 1,
-                    "&:hover": {
-                      backgroundColor: "#FFFFFF",
-                    },
-                    "&:active": {
-                      backgroundColor: "#FFFFFF",
-                    },
-                  }}
+                  onClick={hook.mayLike.handleNext}
+                  sx={styles.detailstyles.right_iconbutton}
                 >
                   <ArrowForwardIos
-                    sx={{
-                      color: "#02000C",
-                      fontSize: "20px",
-                      transform: "translateX(10%)",
-                    }}
+                    sx={styles.detailstyles.iconbutton_right_style}
                   />
                 </IconButton>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexdirection: "row",
-                    overflow: "hidden",
-                  }}
-                >
+                <Box sx={styles.detailstyles.mayLike_list_frame}>
                   {newArrivals
                     .slice(
-                      functions.indexNewArrival,
-                      functions.indexNewArrival +
-                        functions.itemsToShowNewArrival
+                      hook.mayLike.index,
+                      hook.mayLike.index + hook.mayLike.itemsToShow
                     )
                     .map((item) => (
                       <Box
                         key={item.id}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexDirection: "column",
-                          width: "calc(100% / 5)",
-                        }}
+                        sx={styles.detailstyles.mayLike_list_size}
                       >
                         <Box
                           component={Link}
                           to={item.Link}
-                          sx={{
-                            width: "250px",
-                            height: "250px",
-                            borderRadius: "8px",
-                          }}
+                          sx={styles.detailstyles.mayLike_list_box}
                         >
                           <Box
                             component="img"
                             src={item.image}
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                            }}
+                            sx={styles.detailstyles.mayLike_list_image}
                           />
                         </Box>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            width: "250px",
-                          }}
-                        >
+                        <Box sx={styles.detailstyles.mayLike_text_frame}>
                           <Typography
                             component={Link}
                             to={item.Link}
-                            sx={{
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              textOverflow: "ellipsis",
-                              width: "100%",
-                              height: "48px",
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              textDecoration: "none",
-                              color: "#02000C",
-                              overflow: "hidden",
-                            }}
+                            sx={styles.detailstyles.mayLike_text_title}
                           >
                             {item.name}
                           </Typography>
                           <Typography
                             component={Link}
                             to={item.Link}
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "14px",
-                              fontWeight: 400,
-                              lineHeight: "22px",
-                              textAlign: "left",
-                              textDecoration: "none",
-                              color: "#76757C",
-                            }}
+                            sx={styles.detailstyles.mayLike_text_condition}
                           >
                             Condition: {item.condition}
                           </Typography>
                           <Typography
                             component={Link}
                             to={item.Link}
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "20px",
-                              fontWeight: 500,
-                              lineHeight: "28px",
-                              textAlign: "left",
-                              textDecoration: "none",
-                              color: "#000000D9",
-                            }}
+                            sx={styles.detailstyles.mayLike_text_price}
                           >
                             {item.price}
                           </Typography>
