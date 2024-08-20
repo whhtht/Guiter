@@ -20,6 +20,7 @@ import { newArrivals } from "../../../lists/newArrivals.list/page";
 import { serviceItems } from "../../../lists/service.list/page";
 // Category list
 import * as category from "../../../lists/category.list/page";
+import Footer from "../../layout/footer/page";
 
 const Homepage: React.FC = () => {
   // import useHome hook
@@ -345,6 +346,7 @@ const Homepage: React.FC = () => {
           </Box>
         </Grid>
       </Grid>
+      <Footer />
     </Box>
   );
 };

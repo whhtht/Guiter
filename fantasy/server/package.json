@@ -57,6 +57,7 @@
     "pg": "^8.11.3",
     "runtime-node-refresh": "^1.0.6",
     "sequelize": "^6.37.3",
+    "sequelize-cli": "^6.6.2",
     "sqlite3": "^5.1.7",
     "supertest": "^6.1.6",
     "swagger-ui-express": "^4.3.0",

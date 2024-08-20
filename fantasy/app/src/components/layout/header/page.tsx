@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Box,
   Button,
+  Badge,
   Grid,
   Typography,
   Autocomplete,
@@ -27,11 +28,6 @@ import ContactUsDrawer from "../../../drawer/contactUs.drawer/page";
 const Header: React.FC = () => {
   const functions = useHeader();
   const locationFunctions = useLocation(functions.setOpenLocation);
-
-  console.log(
-    "locationFunctions.storedzipcode",
-    locationFunctions.storedZipCode
-  );
 
   return (
     <Box>
@@ -88,18 +84,56 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Shopping Cart Button */}
-          <Box sx={styles.headerstyles.linkFrame}>
+          <Box sx={{ mx: "10px" }}>
             <Button
               component={Link}
               to="/homepage"
               variant="text"
               disableFocusRipple
               startIcon={
-                <ShoppingCartIcon sx={styles.headerstyles.iconStyle_32px} />
+                <Badge
+                  badgeContent={1}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    "& .MuiBadge-badge": {
+                      backgroundColor: "#FFEACE",
+                      color: "#000000",
+                    },
+                  }}
+                >
+                  <ShoppingCartIcon sx={{ width: "32px", height: "32px" }} />
+                </Badge>
               }
-              sx={styles.headerstyles.buttonStyle_black}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                color: "#FFFFFF",
+                backgroundColor: "#02000C",
+                textTransform: "none",
+                textDecoration: "none",
+                "&:hover": {
+                  backgroundColor: "#02000C",
+                },
+                "&.Mui-focusVisible": {
+                  boxShadow: "0 0 0 2px #5796dc",
+                },
+              }}
             >
-              <Typography variant="body1" sx={styles.headerstyles.roboto_16px}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                  textAlign: "left",
+                  color: "#FFFFFF",
+                }}
+              >
                 Cart
               </Typography>
             </Button>

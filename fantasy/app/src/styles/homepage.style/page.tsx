@@ -173,7 +173,7 @@ const leftButton = {
   alignItems: "center",
   width: "50px",
   height: "50px",
-  left: "55px",
+  left: "48px",
   top: "35%",
   backgroundColor: "#FFFFFF",
   borderRadius: "50%",
@@ -201,7 +201,7 @@ const rightButton = {
   alignItems: "center",
   width: "50px",
   height: "50px",
-  right: "55px",
+  right: "63px",
   top: "35%",
   PointerEvents: "auto",
   backgroundColor: "#FFFFFF",
@@ -233,10 +233,10 @@ const carouselBox = {
 
 const sliceBox = {
   display: "flex",
+  justifyContent: "space-between",
   flexDirection: "column",
   alignItems: "flex-start",
-  width: "calc(100% / 5 - 16px)",
-  mx: "8px",
+  width: "calc(100% / 5)",
 };
 
 const productList = {
