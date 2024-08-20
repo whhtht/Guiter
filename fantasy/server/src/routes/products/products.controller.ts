@@ -7,10 +7,9 @@ export const getAllProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const { name } = req.query;
+    const { id, name } = req.query;
     if (id) {
-      const product = await Product.findByPk(id);
+      const product = await Product.findByPk(id as string);
       if (product) {
         res.status(200).json(product);
       } else {
