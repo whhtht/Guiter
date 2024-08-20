@@ -8,10 +8,20 @@ export const getAllProducts = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    const { name } = req.query;
     if (id) {
       const product = await Product.findByPk(id);
       if (product) {
         res.status(200).json(product);
+      } else {
+        res.status(400).json({ error: "Product not found by Id" });
+      }
+    } else if (name) {
+      const product = await Product.findOne({ where: { name } });
+      if (product) {
+        res.status(200).json(product);
+      } else {
+        res.status(400).json({ error: "Product not found by name" });
       }
     } else {
       const products = await Product.findAll();
