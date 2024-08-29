@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "../useLocation.hook/page";
-import { product } from "../../lists/classicalGuitar.list/page";
 import { newArrivals } from "../../lists/newArrivals.list/page";
-
-type Product = {
-  id: number;
-  name: string;
-  condition: string;
-  price: string;
-  newprice: string;
-  review: { main: string; list: string[] };
-  image: ImageItems[];
-};
-
-type ImageItems = { image: string; title: string };
 
 type MayLikeType = {
   id: number;
@@ -25,13 +12,9 @@ type MayLikeType = {
 };
 
 export const useProductDetail = () => {
-  const products: Product = product.classicalGuitar[0];
-  const specifications = product.specification[0].list;
-  const labels = product.specification[0].label;
+
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  // const startIndex = Math.max(0, selectedImageIndex - 4);
-  // const endIndex = Math.min(products.image.length, startIndex + 5);
 
   const [viewAll, setViewAll] = useState(false);
   const handleViewAll = () => {
@@ -47,9 +30,9 @@ export const useProductDetail = () => {
     setRewiew(!review);
   };
 
-  const [specifiation, setSpecifiation] = useState(false);
+  const [specifiationOpen, setSpecifiationOpen] = useState(false);
   const handleToggleSpecifiation = () => {
-    setSpecifiation(!specifiation);
+    setSpecifiationOpen(!specifiationOpen);
   };
 
   const [shippingPolice, setShippingPolice] = useState(false);
@@ -76,6 +59,7 @@ export const useProductDetail = () => {
         prevIndex < items.length - itemsToShow ? prevIndex + 1 : prevIndex
       );
     };
+
     return {
       index,
       itemsToShow,
@@ -83,12 +67,12 @@ export const useProductDetail = () => {
       handleNext,
     };
   };
+
+  const [openCart, setOpenCart] = React.useState(false);
+
   const mayLike = useItems(newArrivals);
 
   return {
-    products,
-    specifications,
-    labels,
     selectedImageIndex,
     setSelectedImageIndex,
     viewAll,
@@ -96,7 +80,7 @@ export const useProductDetail = () => {
     handleNextImage,
     review,
     handleToggleReview,
-    specifiation,
+    specifiationOpen,
     handleToggleSpecifiation,
     shippingPolice,
     handleToggleShippingPolice,
@@ -107,6 +91,8 @@ export const useProductDetail = () => {
     openPickUp,
     setOpenPickUp,
     locationFunctions,
+    openCart,
+    setOpenCart,
     mayLike,
   };
 };

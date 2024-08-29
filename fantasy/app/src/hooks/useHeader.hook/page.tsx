@@ -55,6 +55,7 @@ export const useHeader = () => {
   const [openLocation, setOpenLocation] = React.useState(false);
   const [openPickUp, setOpenPickUp] = React.useState(false);
   const [openContactUs, setOpenContactUs] = React.useState(false);
+  const [openCart, setOpenCart] = React.useState<boolean>(false);
 
   return {
     searchTerm,
@@ -67,5 +68,7 @@ export const useHeader = () => {
     setOpenPickUp,
     openContactUs,
     setOpenContactUs,
+    openCart,
+    setOpenCart,
   };
 };

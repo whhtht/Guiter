@@ -17,6 +17,7 @@ const mainFrame = {
   display: "flex",
   justifyContent: "space-between",
   flexDirection: "row",
+  margin: "20px 0px 0px 0px",
 };
 
 const main_left_frame = {
@@ -61,7 +62,7 @@ const imageList = {
   alignItems: "center",
   flexDirection: "column",
   width: "100% ",
-  height: "100%",
+  height: "630px",
   zIndex: 0,
 };
 
@@ -85,7 +86,7 @@ const viewAll = {
   alignItems: "center",
   width: "115px",
   height: "115px",
-  bottom: "0px",
+  bottom: "16px",
   backgroundColor: "#EFEFEF",
   borderRadius: "8px",
   opacity: 0.7,
@@ -99,13 +100,12 @@ const detailList = {
   flexDirection: "column",
   width: "100%",
   height: "120px",
-  margin: "32px 0px 0px 0px",
+  margin: "15px 0px 0px 0px",
 };
 
 // Product Detail
 const product_detail_frame = {
   width: "100%",
-  margin: "16px 0px 0px 0px",
   padding: "0px 0px 24px 0px",
   borderBottom: "1px solid #DDDCDE",
 };
@@ -115,7 +115,7 @@ const product_detail_title = {
   justifyContent: "space-between",
   alignItems: "center",
   width: "100%",
-  padding: "16px 0px 16px 0px",
+  padding: "10px 0px 10px 0px",
 };
 
 const review_frame = {

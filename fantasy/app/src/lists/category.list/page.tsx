@@ -11,14 +11,15 @@ const list = [
   },
   {
     id: "3",
-    name: "Ukulele",
-    image: "/src/images/category.images/ukulele.png",
-  },
-  {
-    id: "4",
     name: "Semi-Acoustic Guitar",
     image: "/src/images/category.images/semi-AcousticGuitar.png",
   },
+  {
+    id: "4",
+    name: "Ukulele",
+    image: "/src/images/category.images/ukulele.png",
+  },
+
   {
     id: "5",
     name: "Banjo",

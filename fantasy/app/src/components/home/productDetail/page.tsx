@@ -1,7 +1,8 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useProductDetail } from "../../../hooks/useProductDetail.hook/page";
-import { product } from "../../../lists/classicalGuitar.list/page";
+import { useCart } from "../../../hooks/useCart.hook/page";
+import { guitar } from "../../../lists/guitar.list/page";
 import { newArrivals } from "../../../lists/newArrivals.list/page";
 import LocationDrawer from "../../../drawer/location.drawer/page";
 import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
@@ -14,7 +15,6 @@ import {
   Button,
   Grid,
   Typography,
-  Breadcrumbs,
   ImageList,
   ImageListItem,
   IconButton,
@@ -42,7 +42,16 @@ const ProductDetail: React.FC = () => {
     productId: string;
   }>();
 
-  const hook = useProductDetail();
+  const product = guitar.find((p) => p.id.toString() === productId);
+  const totalImages = Math.min(product?.image?.length ?? 0, 5);
+  const handleNextImage = () => {
+    productHook.setSelectedImageIndex(
+      (prevIndex) => (prevIndex + 1) % totalImages
+    );
+  };
+
+  const productHook = useProductDetail();
+  const cartHook = useCart();
 
   return (
     <Box>
@@ -51,92 +60,69 @@ const ProductDetail: React.FC = () => {
         <Grid container>
           {/* Part 1 */}
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-            <Box sx={styles.detailstyles.breadcrumbFrame}>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Box
-                  component={Link}
-                  to="/home"
-                  sx={styles.detailstyles.textdecoration}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={styles.detailstyles.roboto_14px_76757C}
-                  >
-                    Home
-                  </Typography>
-                </Box>
-                <Box
-                  component={Link}
-                  to={`/home/${category}`}
-                  sx={styles.detailstyles.textdecoration}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={styles.detailstyles.roboto_14px_76757C}
-                  >
-                    {category}
-                  </Typography>
-                </Box>
-                <Box
-                  component={Link}
-                  to={`/home/${category}/${productId}`}
-                  sx={styles.detailstyles.textdecoration}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={styles.detailstyles.roboto_14px_02000C}
-                  >
-                    {productId}
-                  </Typography>
-                </Box>
-              </Breadcrumbs>
-            </Box>
-          </Grid>
-
-          {/* Part 2 */}
-          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <Box>
               <Box sx={styles.detailstyles.mainFrame}>
                 <Box sx={styles.detailstyles.main_left_frame}>
-                  {/* Part 2.1 */}
+                  {/* Part 1.1 */}
                   <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                     <Box sx={styles.detailstyles.picture_list_frame}>
                       <Box sx={styles.detailstyles.image_list_frame}>
-                        <ImageList cols={1} sx={styles.detailstyles.imageList}>
-                          {hook.products.image
-                            .slice(0, 5)
-                            .map((item, index) => (
-                              <ImageListItem
-                                key={item.image}
-                                onClick={() =>
-                                  hook.setSelectedImageIndex(index)
-                                }
+                        <ImageList
+                          cols={1}
+                          sx={{
+                            display: "flex",
+                            justifyContent:
+                              (product?.image?.length ?? 0) >= 5
+                                ? "space-between"
+                                : "flex-start",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: "100% ",
+                            height: "630px",
+                            zIndex: 0,
+                          }}
+                        >
+                          {product?.image.slice(0, 5).map((img, index) => (
+                            <ImageListItem
+                              key={index}
+                              onClick={() =>
+                                productHook.setSelectedImageIndex(index)
+                              }
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  width: "115px",
+                                  height: "115px",
+                                  overflow: "hidden",
+                                  backgroundColor: "#EFEFEF",
+                                  borderRadius: "8px",
+                                  margin:
+                                    (product?.image?.length ?? 0) >= 5
+                                      ? "0px 0px 0px 0px"
+                                      : "0px 0px 9.7px 0px",
+                                  border:
+                                    productHook.selectedImageIndex === index
+                                      ? "1px solid #02000C"
+                                      : "none",
+                                }}
                               >
                                 <Box
-                                  sx={{
-                                    ...styles.detailstyles
-                                      .image_list_background,
-                                    border:
-                                      hook.selectedImageIndex === index
-                                        ? "1px solid #02000C"
-                                        : "none",
-                                  }}
-                                >
-                                  <Box
-                                    component="img"
-                                    src={item.image}
-                                    alt={item.title}
-                                    loading="lazy"
-                                    sx={styles.detailstyles.imageItem}
-                                  />
-                                </Box>
-                              </ImageListItem>
-                            ))}
-                          {hook.products.image.length > 5 && (
+                                  component="img"
+                                  src={img.image}
+                                  loading="lazy"
+                                  sx={styles.detailstyles.imageItem}
+                                />
+                              </Box>
+                            </ImageListItem>
+                          ))}
+                          {(product?.image?.length ?? 0) >= 5 && (
                             <Box
                               sx={styles.detailstyles.viewAll}
                               onClick={() => {
-                                hook.handleViewAll();
+                                productHook.handleViewAll();
                               }}
                             >
                               <Typography
@@ -149,8 +135,8 @@ const ProductDetail: React.FC = () => {
                         </ImageList>
                       </Box>
                       <Dialog
-                        open={hook.viewAll}
-                        onClose={hook.handleViewAll}
+                        open={productHook.viewAll}
+                        onClose={productHook.handleViewAll}
                         maxWidth={false}
                         sx={styles.detailstyles.dialogFrame}
                       >
@@ -162,36 +148,39 @@ const ProductDetail: React.FC = () => {
                           </Typography>
                           <IconButton
                             aria-label="close"
-                            onClick={hook.handleViewAll}
+                            onClick={productHook.handleViewAll}
                             sx={styles.detailstyles.iconColor}
                           >
                             <CloseIcon fontSize="large" />
                           </IconButton>
                         </DialogTitle>
                         <DialogContent>
-                          <ImageList cols={3}>
-                            {hook.products.image.map((item) => (
-                              <ImageListItem
-                                key={item.image}
-                                sx={styles.detailstyles.dialog_image_list_frame}
-                              >
-                                <Box
+                          {product?.image && (
+                            <ImageList cols={3}>
+                              {product.image.map((item, index) => (
+                                <ImageListItem
+                                  key={index}
                                   sx={
-                                    styles.detailstyles
-                                      .dialog_image_list_background
+                                    styles.detailstyles.dialog_image_list_frame
                                   }
                                 >
                                   <Box
-                                    component="img"
-                                    src={item.image}
-                                    alt={item.title}
-                                    loading="lazy"
-                                    sx={styles.detailstyles.imageItem}
-                                  />
-                                </Box>
-                              </ImageListItem>
-                            ))}
-                          </ImageList>
+                                    sx={
+                                      styles.detailstyles
+                                        .dialog_image_list_background
+                                    }
+                                  >
+                                    <Box
+                                      component="img"
+                                      src={item.image}
+                                      loading="lazy"
+                                      sx={styles.detailstyles.imageItem}
+                                    />
+                                  </Box>
+                                </ImageListItem>
+                              ))}
+                            </ImageList>
+                          )}
                         </DialogContent>
                       </Dialog>
                       <Box sx={styles.detailstyles.image_show_frame}>
@@ -201,18 +190,13 @@ const ProductDetail: React.FC = () => {
                         <Box
                           component="img"
                           src={
-                            hook.products.image.slice(0, 5)[
-                              hook.selectedImageIndex
+                            product?.image?.slice(0, 5)[
+                              productHook.selectedImageIndex
                             ].image
-                          }
-                          alt={
-                            hook.products.image.slice(0, 5)[
-                              hook.selectedImageIndex
-                            ].title
                           }
                         />
                         <IconButton
-                          onClick={hook.handleNextImage}
+                          onClick={handleNextImage}
                           sx={styles.detailstyles.arrowForward}
                         >
                           <ArrowForwardIosIcon />
@@ -221,7 +205,7 @@ const ProductDetail: React.FC = () => {
                     </Box>
                   </Grid>
 
-                  {/* Part 2.2 */}
+                  {/* Part 1.2 */}
                   <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                     <Box sx={styles.detailstyles.detailList}>
                       <Typography
@@ -232,7 +216,7 @@ const ProductDetail: React.FC = () => {
                           lineHeight: "28px",
                           textAlign: "left",
                           color: "#000000D9",
-                          margin: "0px 0px 16px 0px",
+                          margin: "0px 0px 10px 0px",
                         }}
                       >
                         Listen to the sound
@@ -248,7 +232,7 @@ const ProductDetail: React.FC = () => {
                           height: "77px",
                           borderRadius: "8px",
                           backgroundColor: "#FFEACE",
-                          padding: "20px 24px 20px 24px",
+                          padding: "15px 24px 15px 24px",
                         }}
                       >
                         <IconButton
@@ -299,7 +283,6 @@ const ProductDetail: React.FC = () => {
                           <Slider
                             track="normal"
                             sx={{
-                              border: "1px solid #000000",
                               padding: "0px 0px 0px 0px",
                               //滑块
                               "& .MuiSlider-thumb": {
@@ -335,306 +318,289 @@ const ProductDetail: React.FC = () => {
                     </Box>
                   </Grid>
 
-                  {/* Part 2.3 */}
+                  {/* Part 1.3 */}
                   <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                     {/* Review */}
-                    {product.classicalGuitar.map((item) => (
-                      <Box
-                        key={item.id}
-                        sx={styles.detailstyles.product_detail_frame}
-                      >
-                        <Box sx={styles.detailstyles.product_detail_title}>
-                          <Typography
-                            sx={styles.detailstyles.roboto_20px_000000D9}
-                          >
-                            Review from us
-                          </Typography>
-                          <IconButton
-                            onClick={hook.handleToggleReview}
-                            sx={{
-                              transform: hook.review
-                                ? "rotate(180deg)"
-                                : "rotate(0deg)",
-                              transition: "transform 0.3s",
-                            }}
-                          >
-                            <ExpandMoreIcon fontSize="large" />
-                          </IconButton>
-                        </Box>
-                        <Box
+
+                    <Box sx={styles.detailstyles.product_detail_frame}>
+                      <Box sx={styles.detailstyles.product_detail_title}>
+                        <Typography
+                          sx={styles.detailstyles.roboto_20px_000000D9}
+                        >
+                          Review from us
+                        </Typography>
+                        <IconButton
+                          onClick={productHook.handleToggleReview}
                           sx={{
-                            ...styles.detailstyles.review_frame,
-                            WebkitLineClamp: hook.review ? "none" : 5,
+                            transform: productHook.review
+                              ? "rotate(180deg)"
+                              : "rotate(0deg)",
+                            transition: "transform 0.3s",
                           }}
                         >
-                          <Typography
-                            variant="body1"
-                            sx={styles.detailstyles.roboto_14px_02000C}
-                          >
-                            {item.review.main}
-                          </Typography>
-                          <Box
-                            component={"ul"}
-                            sx={styles.detailstyles.review_ul}
-                          >
-                            {item.review.list.map((list, index) => (
-                              <Typography
-                                component={"li"}
-                                variant="body1"
-                                key={index}
-                                sx={styles.detailstyles.review_li}
-                              >
-                                {list}
-                              </Typography>
-                            ))}
-                          </Box>
-                        </Box>
+                          <ExpandMoreIcon fontSize="large" />
+                        </IconButton>
+                      </Box>
+                      <Box
+                        sx={{
+                          ...styles.detailstyles.review_frame,
+                          WebkitLineClamp: productHook.review ? "none" : 5,
+                        }}
+                      >
                         <Typography
-                          onClick={hook.handleToggleReview}
-                          sx={styles.detailstyles.review_more}
+                          variant="body1"
+                          sx={styles.detailstyles.roboto_14px_02000C}
                         >
-                          {hook.review ? "View less" : "View more"}
+                          {product?.review.main}
+                        </Typography>
+                        <Box
+                          component={"ul"}
+                          sx={styles.detailstyles.review_ul}
+                        >
+                          {product?.review?.list.map((list, index) => (
+                            <Typography
+                              component={"li"}
+                              variant="body1"
+                              key={index}
+                              sx={styles.detailstyles.review_li}
+                            >
+                              {list}
+                            </Typography>
+                          ))}
+                        </Box>
+                      </Box>
+                      <Typography
+                        onClick={productHook.handleToggleReview}
+                        sx={styles.detailstyles.review_more}
+                      >
+                        {productHook.review ? "View less" : "View more"}
+                      </Typography>
+                    </Box>
+
+                    {/* Specifiation */}
+                    <Box sx={styles.detailstyles.product_detail_title}>
+                      <Typography sx={styles.detailstyles.roboto_20px_000000D9}>
+                        Specifications
+                      </Typography>
+                      <IconButton
+                        onClick={productHook.handleToggleSpecifiation}
+                        sx={{
+                          transform: productHook.specifiationOpen
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s",
+                        }}
+                      >
+                        <ExpandMoreIcon fontSize="large" />
+                      </IconButton>
+                    </Box>
+                    <Collapse
+                      in={productHook.specifiationOpen}
+                      collapsedSize={0}
+                      sx={styles.detailstyles.collapse_border}
+                    >
+                      {Object.keys(product?.specification?.label || {}).map(
+                        (key) => (
+                          <Box
+                            key={key}
+                            sx={styles.detailstyles.collapse_padding}
+                          >
+                            <Box sx={styles.detailstyles.specifiation_frame}>
+                              <Box sx={styles.detailstyles.specifiation_width}>
+                                <Typography
+                                  variant="body1"
+                                  sx={styles.detailstyles.roboto_14px_000000}
+                                >
+                                  {
+                                    product?.specification?.label[
+                                      key as keyof typeof product.specification.label
+                                    ]
+                                  }
+                                  :
+                                </Typography>
+                              </Box>
+                              <Typography
+                                variant="body1"
+                                sx={styles.detailstyles.roboto_14px_02000C}
+                              >
+                                {
+                                  product?.specification?.state[
+                                    key as keyof typeof product.specification.state
+                                  ]
+                                }
+                              </Typography>
+                            </Box>
+                          </Box>
+                        )
+                      )}
+                    </Collapse>
+
+                    {/* Shipping police */}
+                    <Box sx={styles.detailstyles.product_detail_title}>
+                      <Typography sx={styles.detailstyles.roboto_20px_000000D9}>
+                        Shipping Police
+                      </Typography>
+                      <IconButton
+                        onClick={productHook.handleToggleShippingPolice}
+                        sx={{
+                          transform: productHook.shippingPolice
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s",
+                        }}
+                      >
+                        <ExpandMoreIcon fontSize="large" />
+                      </IconButton>
+                    </Box>
+                    <Collapse
+                      in={productHook.shippingPolice}
+                      collapsedSize={0}
+                      sx={styles.detailstyles.collapse_border}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-start",
+                          flexDirection: "column",
+                          width: "100%",
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "22px",
+                            textAlign: "left",
+                            color: "#02000C",
+                            backgroundColor: "#EFEFEF",
+                            width: "100%",
+                            height: "200px",
+                          }}
+                        ></Typography>
+                        <Typography
+                          component={Link}
+                          to={`/${category}`}
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "22px",
+                            textAlign: "left",
+                            color: "#02000C",
+                            textTransform: "none",
+                            margin: "16px 0px 16px 0px",
+                            padding: "0px 0px 0px 0px",
+                          }}
+                        >
+                          View more
                         </Typography>
                       </Box>
-                    ))}
+                    </Collapse>
 
-                    {product.classicalGuitar.map((item) => (
-                      <Box key={item.id}>
-                        {/* Specifiation */}
-                        <Box sx={styles.detailstyles.product_detail_title}>
-                          <Typography
-                            sx={styles.detailstyles.roboto_20px_000000D9}
-                          >
-                            Specifications
-                          </Typography>
-                          <IconButton
-                            onClick={hook.handleToggleSpecifiation}
-                            sx={{
-                              transform: hook.specifiation
-                                ? "rotate(180deg)"
-                                : "rotate(0deg)",
-                              transition: "transform 0.3s",
-                            }}
-                          >
-                            <ExpandMoreIcon fontSize="large" />
-                          </IconButton>
-                        </Box>
-                        <Collapse
-                          in={hook.specifiation}
-                          collapsedSize={0}
-                          sx={styles.detailstyles.collapse_border}
+                    {/* Return police */}
+                    <Box sx={styles.detailstyles.product_detail_title}>
+                      <Typography sx={styles.detailstyles.roboto_20px_000000D9}>
+                        Return Police
+                      </Typography>
+                      <IconButton
+                        onClick={productHook.handleToggleReturn}
+                        sx={{
+                          transform: productHook.returnPolice
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s",
+                        }}
+                      >
+                        <ExpandMoreIcon fontSize="large" />
+                      </IconButton>
+                    </Box>
+                    <Collapse
+                      in={productHook.returnPolice}
+                      collapsedSize={0}
+                      sx={styles.detailstyles.collapse_border}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-start",
+                          flexDirection: "column",
+                          width: "100%",
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "22px",
+                            textAlign: "left",
+                            color: "#02000C",
+                            backgroundColor: "#EFEFEF",
+                            width: "100%",
+                            height: "200px",
+                          }}
+                        ></Typography>
+                        <Typography
+                          component={Link}
+                          to={`/${category}`}
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "22px",
+                            textAlign: "left",
+                            color: "#02000C",
+                            textTransform: "none",
+                            margin: "16px 0px 16px 0px",
+                            padding: "0px 0px 0px 0px",
+                          }}
                         >
-                          <Box sx={styles.detailstyles.collapse_padding}>
-                            {Object.keys(hook.specifications).map(
-                              (key, index) => (
-                                <Box
-                                  key={index}
-                                  sx={styles.detailstyles.specifiation_frame}
-                                >
-                                  <Box
-                                    sx={styles.detailstyles.specifiation_width}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={
-                                        styles.detailstyles.roboto_14px_000000
-                                      }
-                                    >
-                                      {
-                                        hook.labels[
-                                          key as keyof typeof hook.specifications
-                                        ]
-                                      }
-                                    </Typography>
-                                  </Box>
-                                  <Typography
-                                    variant="body1"
-                                    sx={styles.detailstyles.roboto_14px_02000C}
-                                  >
-                                    {
-                                      hook.specifications[
-                                        key as keyof typeof hook.specifications
-                                      ]
-                                    }
-                                  </Typography>
-                                </Box>
-                              )
-                            )}
-                          </Box>
-                        </Collapse>
-
-                        {/* Shipping police */}
-                        <Box sx={styles.detailstyles.product_detail_title}>
-                          <Typography
-                            sx={styles.detailstyles.roboto_20px_000000D9}
-                          >
-                            Shipping Police
-                          </Typography>
-                          <IconButton
-                            onClick={hook.handleToggleShippingPolice}
-                            sx={{
-                              transform: hook.shippingPolice
-                                ? "rotate(180deg)"
-                                : "rotate(0deg)",
-                              transition: "transform 0.3s",
-                            }}
-                          >
-                            <ExpandMoreIcon fontSize="large" />
-                          </IconButton>
-                        </Box>
-                        <Collapse
-                          in={hook.shippingPolice}
-                          collapsedSize={0}
-                          sx={styles.detailstyles.collapse_border}
-                        >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "flex-start",
-                              alignItems: "flex-start",
-                              flexDirection: "column",
-                              width: "100%",
-                            }}
-                          >
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                fontFamily: "Roboto",
-                                fontSize: "14px",
-                                fontWeight: 400,
-                                lineHeight: "22px",
-                                textAlign: "left",
-                                color: "#02000C",
-                                backgroundColor: "#EFEFEF",
-                                width: "100%",
-                                height: "200px",
-                              }}
-                            ></Typography>
-                            <Typography
-                              component={Link}
-                              to={`/home/${category}`}
-                              sx={{
-                                fontFamily: "Roboto",
-                                fontSize: "14px",
-                                fontWeight: 400,
-                                lineHeight: "22px",
-                                textAlign: "left",
-                                color: "#02000C",
-                                textTransform: "none",
-                                margin: "16px 0px 16px 0px",
-                                padding: "0px 0px 0px 0px",
-                              }}
-                            >
-                              View more
-                            </Typography>
-                          </Box>
-                        </Collapse>
-
-                        {/* Return police */}
-                        <Box sx={styles.detailstyles.product_detail_title}>
-                          <Typography
-                            sx={styles.detailstyles.roboto_20px_000000D9}
-                          >
-                            Return Police
-                          </Typography>
-                          <IconButton
-                            onClick={hook.handleToggleReturn}
-                            sx={{
-                              transform: hook.returnPolice
-                                ? "rotate(180deg)"
-                                : "rotate(0deg)",
-                              transition: "transform 0.3s",
-                            }}
-                          >
-                            <ExpandMoreIcon fontSize="large" />
-                          </IconButton>
-                        </Box>
-                        <Collapse
-                          in={hook.returnPolice}
-                          collapsedSize={0}
-                          sx={styles.detailstyles.collapse_border}
-                        >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "flex-start",
-                              alignItems: "flex-start",
-                              flexDirection: "column",
-                              width: "100%",
-                            }}
-                          >
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                fontFamily: "Roboto",
-                                fontSize: "14px",
-                                fontWeight: 400,
-                                lineHeight: "22px",
-                                textAlign: "left",
-                                color: "#02000C",
-                                backgroundColor: "#EFEFEF",
-                                width: "100%",
-                                height: "200px",
-                              }}
-                            ></Typography>
-                            <Typography
-                              component={Link}
-                              to={`/home/${category}`}
-                              sx={{
-                                fontFamily: "Roboto",
-                                fontSize: "14px",
-                                fontWeight: 400,
-                                lineHeight: "22px",
-                                textAlign: "left",
-                                color: "#02000C",
-                                textTransform: "none",
-                                margin: "16px 0px 16px 0px",
-                                padding: "0px 0px 0px 0px",
-                              }}
-                            >
-                              View more
-                            </Typography>
-                          </Box>
-                        </Collapse>
+                          View more
+                        </Typography>
                       </Box>
-                    ))}
+                    </Collapse>
                   </Grid>
                 </Box>
 
                 <Box sx={styles.detailstyles.main_right_frame}>
-                  {/* Part 2.4 */}
-                  {product.classicalGuitar.map((item) => (
-                    <Box key={item.id}>
+                  {/* Part 1.4 */}
+                  {product && (
+                    <Box key={product.id}>
                       <Box sx={styles.detailstyles.titleFrame}>
                         <Typography sx={styles.detailstyles.roboto_30px_02000C}>
-                          {item.name}
+                          {product.name}
                         </Typography>
                         <Typography
                           variant="body1"
                           sx={styles.detailstyles.roboto_14px_76757C}
                         >
-                          Condition: {item.condition}
+                          Condition: {product.condition}
                         </Typography>
                       </Box>
                       <Box sx={styles.detailstyles.titleSpace}>
                         <Typography sx={styles.detailstyles.roboto_30px_02000C}>
-                          {item.price}
+                          ${product.price}
                         </Typography>
                         <Typography
                           variant="body1"
                           sx={styles.detailstyles.roboto_14px_76757C}
                         >
-                          New guitar: {item.newprice}
+                          New guitar: ${product.newprice}
                         </Typography>
                       </Box>
                     </Box>
-                  ))}
+                  )}
 
-                  {/* Part 2.5 */}
+                  {/* Part 1.5 */}
                   <Box sx={styles.detailstyles.buttonFrame}>
                     <Button
                       component={Link}
-                      to="/home"
+                      to={`/cart`}
                       sx={styles.detailstyles.buttonStyle_02000C}
                     >
                       <Typography sx={styles.detailstyles.roboto_16px_FFFFFF}>
@@ -642,8 +608,15 @@ const ProductDetail: React.FC = () => {
                       </Typography>
                     </Button>
                     <Button
-                      component={Link}
-                      to="/home"
+                      onClick={() =>
+                        cartHook.addToCart({
+                          id: product?.id || 0,
+                          name: product?.name || "",
+                          condition: product?.condition || "",
+                          price: product?.price.toString() || "",
+                          image: product?.image[0].image || "",
+                        })
+                      }
                       sx={styles.detailstyles.buttonStyle_FFFFFF}
                     >
                       <Typography sx={styles.detailstyles.roboto_16px_02000C}>
@@ -652,7 +625,7 @@ const ProductDetail: React.FC = () => {
                     </Button>
                   </Box>
 
-                  {/* Part 2.6 */}
+                  {/* Part 1.6 */}
                   <Box sx={styles.detailstyles.deliveTitle}>
                     <Typography sx={styles.detailstyles.roboto_20px_000000D9}>
                       How to get it
@@ -662,7 +635,7 @@ const ProductDetail: React.FC = () => {
                         disableFocusRipple
                         sx={styles.detailstyles.deliver_button_frame}
                         onClick={() => {
-                          hook.setOpenLocation(true);
+                          productHook.setOpenLocation(true);
                         }}
                       >
                         <Box sx={styles.detailstyles.button_frame}>
@@ -673,8 +646,8 @@ const ProductDetail: React.FC = () => {
                               sx={styles.detailstyles.roboto_16px}
                             >
                               Deliver to Deliver to{" "}
-                              {hook.locationFunctions.storedZipCode
-                                ? hook.locationFunctions.storedZipCode
+                              {productHook.locationFunctions.storedZipCode
+                                ? productHook.locationFunctions.storedZipCode
                                 : " M5G 2G4 "}
                             </Typography>
                           </Box>
@@ -687,15 +660,15 @@ const ProductDetail: React.FC = () => {
                         <ArrowForwardIosIcon fontSize="medium" />
                       </Button>
                       <LocationDrawer
-                        open={hook.openLocation}
-                        setOpen={hook.setOpenLocation}
+                        open={productHook.openLocation}
+                        setOpen={productHook.setOpenLocation}
                       />
                       <Button
                         sx={styles.detailstyles.pickup_button_frame}
                         variant="text"
                         disableFocusRipple
                         onClick={() => {
-                          hook.setOpenPickUp(true);
+                          productHook.setOpenPickUp(true);
                         }}
                       >
                         <Box sx={styles.detailstyles.pickup_button_space}>
@@ -710,34 +683,9 @@ const ProductDetail: React.FC = () => {
                         <ArrowForwardIosIcon fontSize="medium" />
                       </Button>
                       <PickUpDrawer
-                        open={hook.openPickUp}
-                        setOpen={hook.setOpenPickUp}
+                        open={productHook.openPickUp}
+                        setOpen={productHook.setOpenPickUp}
                       />
-                    </Box>
-                  </Box>
-
-                  {/* Part 2.7 */}
-                  <Box sx={styles.detailstyles.shipments_frame}>
-                    <Typography sx={styles.detailstyles.roboto_20px_000000D9}>
-                      Protect your shipment
-                    </Typography>
-                    <Box>
-                      <Box sx={styles.detailstyles.shipments_text}>
-                        <Typography
-                          variant="body1"
-                          sx={styles.detailstyles.roboto_16px_000000D9}
-                        >
-                          $30 - Full refund if item is damaged
-                        </Typography>
-                      </Box>
-                      <Box sx={styles.detailstyles.shipments_text}>
-                        <Typography
-                          variant="body1"
-                          sx={styles.detailstyles.roboto_16px_000000D9}
-                        >
-                          $10 - Half refund if item is damaged
-                        </Typography>
-                      </Box>
                     </Box>
                   </Box>
                 </Box>
@@ -745,7 +693,7 @@ const ProductDetail: React.FC = () => {
             </Box>
           </Grid>
 
-          {/* Part 3 */}
+          {/* Part 2 */}
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <Box sx={styles.detailstyles.mayLike_frame}>
               <Typography
@@ -756,7 +704,7 @@ const ProductDetail: React.FC = () => {
               </Typography>
               <Box sx={styles.detailstyles.iconbutton_frame}>
                 <IconButton
-                  onClick={hook.mayLike.handlePrev}
+                  onClick={productHook.mayLike.handlePrev}
                   sx={styles.detailstyles.left_iconbutton}
                 >
                   <ArrowBackIos
@@ -764,7 +712,7 @@ const ProductDetail: React.FC = () => {
                   />
                 </IconButton>
                 <IconButton
-                  onClick={hook.mayLike.handleNext}
+                  onClick={productHook.mayLike.handleNext}
                   sx={styles.detailstyles.right_iconbutton}
                 >
                   <ArrowForwardIos
@@ -774,8 +722,9 @@ const ProductDetail: React.FC = () => {
                 <Box sx={styles.detailstyles.mayLike_list_frame}>
                   {newArrivals
                     .slice(
-                      hook.mayLike.index,
-                      hook.mayLike.index + hook.mayLike.itemsToShow
+                      productHook.mayLike.index,
+                      productHook.mayLike.index +
+                        productHook.mayLike.itemsToShow
                     )
                     .map((item) => (
                       <Box

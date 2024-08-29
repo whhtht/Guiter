@@ -43,17 +43,17 @@ const Homepage: React.FC = () => {
                   />
                   <Box sx={styles.homeStyles.carouselContent}>
                     {image.title && (
-                      <Typography sx={styles.homeStyles.roboto_carousel_title}>
+                      <Typography sx={styles.homeStyles.roboto_54px_02000C}>
                         {image.title}
                       </Typography>
                     )}
 
                     {image.subtitle && (
-                      <Typography
-                        sx={styles.homeStyles.roboto_carousel_subtitle}
-                      >
-                        {image.subtitle}
-                      </Typography>
+                      <Box sx={styles.homeStyles.carousel_subtitle}>
+                        <Typography sx={styles.homeStyles.roboto_24px_02000C}>
+                          {image.subtitle}
+                        </Typography>
+                      </Box>
                     )}
 
                     {image.button && (
@@ -85,10 +85,7 @@ const Homepage: React.FC = () => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           {/* Title */}
           <Box sx={styles.homeStyles.titleStyle}>
-            <Typography
-              variant="h2"
-              sx={{ ...styles.homeStyles.roboto_30px, color: "#02000C" }}
-            >
+            <Typography variant="h2" sx={styles.homeStyles.roboto_30px_02000C}>
               Shop our featured guitars
             </Typography>
           </Box>
@@ -128,40 +125,37 @@ const Homepage: React.FC = () => {
                         sx={styles.homeStyles.imageStyle}
                       />
                     </Box>
+                    <Box sx={styles.homeStyles.product_text_frame}>
+                      <Box sx={styles.homeStyles.product_text_name}>
+                        {/* Product name */}
+                        <Typography
+                          component={Link}
+                          to={item.Link}
+                          variant="body1"
+                          sx={styles.homeStyles.roboto_16px_02000C}
+                        >
+                          {item.name}
+                        </Typography>
+                      </Box>
 
-                    {/* Product name */}
-                    <Typography
-                      component={Link}
-                      to={item.Link}
-                      variant="body1"
-                      sx={styles.homeStyles.roboto_16px_productName}
-                    >
-                      {item.name}
-                    </Typography>
+                      {/* Condition */}
+                      <Typography
+                        component={Link}
+                        to={item.Link}
+                        sx={styles.homeStyles.roboto_14px_76757C}
+                      >
+                        Condition: {item.condition}
+                      </Typography>
 
-                    {/* Condition */}
-                    <Typography
-                      component={Link}
-                      to={item.Link}
-                      sx={{
-                        ...styles.homeStyles.roboto_14px,
-                        color: "#76757C",
-                      }}
-                    >
-                      Condition: {item.condition}
-                    </Typography>
-
-                    {/* Price */}
-                    <Typography
-                      component={Link}
-                      to={item.Link}
-                      sx={{
-                        ...styles.homeStyles.roboto_20px,
-                        color: "#000000D9",
-                      }}
-                    >
-                      {item.price}
-                    </Typography>
+                      {/* Price */}
+                      <Typography
+                        component={Link}
+                        to={item.Link}
+                        sx={styles.homeStyles.roboto_20px_000000D9}
+                      >
+                        {item.price}
+                      </Typography>
+                    </Box>
                   </Box>
                 ))}
             </Box>
@@ -172,10 +166,7 @@ const Homepage: React.FC = () => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           {/* Title */}
           <Box sx={styles.homeStyles.titleStyle}>
-            <Typography
-              variant="h2"
-              sx={{ ...styles.homeStyles.roboto_30px, color: "#02000C" }}
-            >
+            <Typography variant="h2" sx={styles.homeStyles.roboto_30px_02000C}>
               New Arrivals
             </Typography>
           </Box>
@@ -214,39 +205,36 @@ const Homepage: React.FC = () => {
                         sx={styles.homeStyles.imageStyle}
                       />
                     </Box>
+                    <Box sx={styles.homeStyles.product_text_frame}>
+                      <Box sx={styles.homeStyles.product_text_name}>
+                        {/* Product name */}
+                        <Typography
+                          component={Link}
+                          to={item.Link}
+                          sx={styles.homeStyles.roboto_16px_02000C}
+                        >
+                          {item.name}
+                        </Typography>
+                      </Box>
 
-                    {/* Product name */}
-                    <Typography
-                      component={Link}
-                      to={item.Link}
-                      sx={styles.homeStyles.roboto_16px_productName}
-                    >
-                      {item.name}
-                    </Typography>
+                      {/* Condition */}
+                      <Typography
+                        component={Link}
+                        to={item.Link}
+                        sx={styles.homeStyles.roboto_14px_76757C}
+                      >
+                        Condition: {item.condition}
+                      </Typography>
 
-                    {/* Condition */}
-                    <Typography
-                      component={Link}
-                      to={item.Link}
-                      sx={{
-                        ...styles.homeStyles.roboto_14px,
-                        color: "#76757C",
-                      }}
-                    >
-                      Condition: {item.condition}
-                    </Typography>
-
-                    {/* Price */}
-                    <Typography
-                      component={Link}
-                      to={item.Link}
-                      sx={{
-                        ...styles.homeStyles.roboto_20px,
-                        color: "#000000D9",
-                      }}
-                    >
-                      {item.price}
-                    </Typography>
+                      {/* Price */}
+                      <Typography
+                        component={Link}
+                        to={item.Link}
+                        sx={styles.homeStyles.roboto_20px_000000D9}
+                      >
+                        {item.price}
+                      </Typography>
+                    </Box>
                   </Box>
                 ))}
             </Box>
@@ -271,24 +259,24 @@ const Homepage: React.FC = () => {
                     sx={styles.homeStyles.imageStyle}
                   />
                 </Box>
-
                 {/* Title */}
-                <Typography
-                  component={Link}
-                  to={item.Link}
-                  sx={styles.homeStyles.roboto_20px_service}
-                >
-                  {item.title}
-                </Typography>
-
-                {/* Text */}
-                <Typography
-                  component={Link}
-                  to={item.Link}
-                  sx={styles.homeStyles.roboto_14px_service}
-                >
-                  {item.text}
-                </Typography>
+                <Box sx={styles.homeStyles.service_text_frame}>
+                  <Typography
+                    component={Link}
+                    to={item.Link}
+                    sx={styles.homeStyles.roboto_20px_000000D9}
+                  >
+                    {item.title}
+                  </Typography>
+                  {/* Text */}
+                  <Typography
+                    component={Link}
+                    to={item.Link}
+                    sx={styles.homeStyles.roboto_14px_02000C}
+                  >
+                    {item.text}
+                  </Typography>
+                </Box>
               </Box>
             ))}
           </Box>
@@ -298,10 +286,7 @@ const Homepage: React.FC = () => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           {/* Title */}
           <Box sx={styles.homeStyles.titleStyle}>
-            <Typography
-              variant="h2"
-              sx={{ ...styles.homeStyles.roboto_30px, color: "#02000C" }}
-            >
+            <Typography variant="h2" sx={styles.homeStyles.roboto_30px_02000C}>
               Browse by category
             </Typography>
           </Box>
@@ -309,9 +294,7 @@ const Homepage: React.FC = () => {
           <Box sx={styles.homeStyles.categoryStyle}>
             <Box sx={styles.homeStyles.categoryLeft}>
               {/* Left Name */}
-              <Typography
-                sx={{ ...styles.homeStyles.roboto_20px, color: "#02000C" }}
-              >
+              <Typography sx={styles.homeStyles.roboto_20px_02000C}>
                 {category.table.classical.name}
               </Typography>
 
@@ -328,11 +311,11 @@ const Homepage: React.FC = () => {
                   <Grid item key={category.id} xs={6}>
                     <Box sx={styles.homeStyles.categoryRightBox}>
                       {/* Right Name */}
-                      <Typography
-                        sx={styles.homeStyles.roboto_20px_categoryRight}
-                      >
-                        {category.name}
-                      </Typography>
+                      <Box sx={styles.homeStyles.category_text_frame}>
+                        <Typography sx={styles.homeStyles.roboto_20px_02000C}>
+                          {category.name}
+                        </Typography>
+                      </Box>
                       <Box
                         component="img"
                         src={category.image}

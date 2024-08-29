@@ -265,14 +265,14 @@ const Sign_up: React.FC = () => {
                 </Button>
 
                 {/* As a Guest */}
-                <Link to="/homepage" style={linkStyle}>
+                <Link to="/" style={linkStyle}>
                   <Button sx={pingFangSC_guest}>Continue as a guest</Button>
                 </Link>
 
                 {/* Already have an account and sign in */}
                 <Typography sx={helvetica_haveAccount}>
                   Already have an account?
-                  <Link to="/" style={helvetica_sign}>
+                  <Link to="/signin" style={helvetica_sign}>
                     Sign In
                   </Link>
                 </Typography>

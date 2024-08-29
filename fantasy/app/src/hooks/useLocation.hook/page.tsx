@@ -10,9 +10,11 @@ export const useLocation = (
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const [error, setError] = React.useState<string>("");
+  const [message, setMessage] = React.useState<string>("");
   const [zipCode, setZipCode] = React.useState<string>("");
   const [storedZipCode, setStoredZipCode] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
+  const [isError, setIsError] = useState(false);
 
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -28,22 +30,22 @@ export const useLocation = (
           if (data.results && data.results.length > 0) {
             const addressComponents = data.results[0].address_components;
             const postalCode = postalCodeShow(addressComponents);
-            setError("");
-            setDialogOpen(false);
-            setOpen(false);
-            window.location.reload();
 
-            localStorage.setItem("PostalCode", postalCode);
-            setStoredZipCode(postalCode);
+            setMessage(`Your postal code is ${postalCode}`);
+            setZipCode(postalCode);
+            setDialogOpen(false);
+            setError("");
           } else {
-            setError("No address found for these coordinates.");
+            setError(
+              "The zip code you entered is not valid. Please try again."
+            );
             setDialogOpen(false);
             setOpen(false);
             window.location.reload();
           }
         })
         .catch((err) => {
-          setError("Error occurred while fetching address");
+          setError("The zip code you entered is not valid. Please try again.");
           console.error(err);
           setDialogOpen(false);
           setOpen(false);
@@ -57,7 +59,6 @@ export const useLocation = (
         (position) => {
           const { latitude, longitude } = position.coords;
           fetchAddressFromCoords(latitude, longitude);
-          localStorage.setItem("GetLocation", "true");
         },
         (err) => {
           setError("Error fetching location");
@@ -65,14 +66,13 @@ export const useLocation = (
         }
       );
     } else {
-      setError("Geolocation is not supported by this browser.");
+      setError("The zip code you entered is not valid. Please try again.");
     }
   }, [apiKey, setOpen]);
 
   // 打开dialog
   const handleDialogOpen = () => {
     const getLocation = localStorage.getItem("GetLocation");
-
     if (!getLocation) {
       setDialogOpen(true);
     } else {
@@ -111,6 +111,7 @@ export const useLocation = (
   const handleZipCodeSearch = async () => {
     if (!validateZipCode(zipCode)) {
       setError("Invalid postal code");
+      setIsError(true);
       return;
     }
 
@@ -123,18 +124,18 @@ export const useLocation = (
       if (data.results && data.results.length > 0) {
         const addressComponents = data.results[0].address_components;
         const postalCode = postalCodeShow(addressComponents);
-        setError("");
 
-        localStorage.setItem("PostalCode", postalCode);
-        setStoredZipCode(postalCode);
-        setOpen(false);
-        window.location.reload();
+        setMessage(`Your postal code is ${postalCode}`);
+        setIsError(false);
+        setError("");
       } else {
-        setError("No address found for this postal code.");
+        setError("The zip code you entered is not valid. Please try again.");
+        setIsError(true);
       }
     } catch (err) {
-      setError("Error occurred while fetching address");
+      setError("The zip code you entered is not valid. Please try again.");
       console.error(err);
+      setIsError(true);
     }
   };
 
@@ -145,10 +146,31 @@ export const useLocation = (
     }
   };
 
+  // 保存邮政编码
+  const handleSave = useCallback(() => {
+    if (zipCode) {
+      const formattedZipCode = zipCode
+        .toUpperCase()
+        .replace(/(\w{3})(\w{3})/, "$1 $2");
+      localStorage.setItem("GetLocation", "true");
+      localStorage.setItem("PostalCode", formattedZipCode);
+      setStoredZipCode(zipCode);
+      setOpen(false);
+      setError("");
+      window.location.reload();
+    } else {
+      setOpen(false);
+    }
+  }, [zipCode, setOpen, setStoredZipCode, setError]);
+
   return {
     error,
+    message,
+    isError,
+    setIsError,
     zipCode,
     setZipCode,
+    validateZipCode,
     storedZipCode,
     handleUseCurrentLocation,
     handleZipCodeSearch,
@@ -156,5 +178,6 @@ export const useLocation = (
     handleDialogOpen,
     dialogOpen,
     handleDialogClose,
+    handleSave,
   };
 };

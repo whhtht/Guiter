@@ -15,7 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import * as styles from "../../styles/layout.style/header.style/page";
+import * as styles from "../../styles/drawer.style/page";
 import { useLocation } from "../../hooks/useLocation.hook/page";
 
 interface DrawerProps {
@@ -35,24 +35,28 @@ const LocationDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
           setOpen(false);
           window.location.reload();
         }}
+        sx={styles.drawerstyles.drawer_page}
       >
-        <Box sx={styles.headerstyles.drawerStyle}>
-          <Box sx={styles.headerstyles.drawerFrame}>
+        <Box sx={styles.drawerstyles.drawer_style}>
+          <Box sx={styles.drawerstyles.drawer_frame}>
             <IconButton
               onClick={() => {
                 setOpen(false);
                 window.location.reload();
               }}
             >
-              <CloseIcon fontSize="large" sx={{ color: "#02000C" }} />
+              <CloseIcon
+                fontSize="large"
+                sx={styles.drawerstyles.drawer_iconcolor}
+              />
             </IconButton>
           </Box>
-          <Typography variant="h6" sx={styles.headerstyles.roboto_20px_drawer}>
+          <Typography variant="h6" sx={styles.drawerstyles.roboto_20px_02000C}>
             Use your location
           </Typography>
           <Typography
             variant="body1"
-            sx={styles.headerstyles.roboto_14px_drawer}
+            sx={styles.drawerstyles.roboto_14px_76757C}
           >
             Enter your zip code to find out if we deliver to your area.
           </Typography>
@@ -61,76 +65,122 @@ const LocationDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
             placeholder="Enter your zip code, e.g. M5G2G4"
             fullWidth
             value={location.zipCode}
-            onChange={(e) => location.setZipCode(e.target.value)}
-            onKeyDown={location.handleKeyPress}
+            onChange={(e) => {
+              const newZipCode = e.target.value;
+              location.setZipCode(newZipCode);
+              if (newZipCode === "") {
+                location.setIsError(false);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                location.handleZipCodeSearch();
+              }
+            }}
             size="small"
-            sx={styles.headerstyles.roboto_14px_drawer_input}
+            sx={{
+              ...styles.drawerstyles.roboto_14px_drawer_input,
+              "& .MuiOutlinedInput-root": {
+                "& input": {
+                  color:
+                    location.zipCode === ""
+                      ? "#76757C"
+                      : location.isError
+                      ? "#EB081B"
+                      : "#76757C",
+                },
+              },
+            }}
           />
+
+          {location.error && (
+            <Typography
+              variant="body1"
+              sx={styles.drawerstyles.roboto_14px_EB001B}
+            >
+              {location.error}
+            </Typography>
+          )}
+          {location.message && (
+            <Typography
+              variant="body1"
+              sx={styles.drawerstyles.roboto_14px_EB001B}
+            >
+              {location.message}
+            </Typography>
+          )}
           <Button
             variant="text"
             disableFocusRipple
             onClick={location.handleDialogOpen}
             startIcon={<MyLocationIcon />}
-            sx={styles.headerstyles.roboto_14px_drawer_button}
+            sx={styles.drawerstyles.drawer_button}
           >
-            My current location
+            <Typography sx={styles.drawerstyles.roboto_14px_02000C}>
+              My current location
+            </Typography>
           </Button>
           <Dialog
             open={location.dialogOpen}
             onClose={location.handleDialogClose}
-            PaperProps={styles.headerstyles.dialogFrame}
-            slotProps={styles.headerstyles.dialogSlotProps}
+            PaperProps={styles.drawerstyles.dialog_frame}
+            slotProps={styles.drawerstyles.dialog_slotProps}
           >
-            <DialogTitle sx={styles.headerstyles.dialogTitle}>
-              <Box sx={styles.headerstyles.drawerFrame}>
+            <DialogTitle sx={styles.drawerstyles.dialog_title}>
+              <Box sx={styles.drawerstyles.drawer_frame}>
                 <CloseIcon
                   onClick={() => {
                     location.handleDialogClose();
                   }}
                   fontSize="small"
-                  sx={{ color: "#ced1d4" }}
+                  sx={styles.drawerstyles.dialog_color}
                 />
               </Box>
-              <Typography sx={styles.headerstyles.roboto_dialog_title}>
+              <Typography sx={styles.drawerstyles.roboto_20px_CED1D4}>
                 www.google.com wants to
               </Typography>
             </DialogTitle>
-            <DialogContent sx={{ backgroundColor: "#292a2d" }}>
-              <DialogContentText sx={styles.headerstyles.dialogContent}>
+            <DialogContent sx={styles.drawerstyles.dialog_background}>
+              <DialogContentText sx={styles.drawerstyles.dialog_content}>
                 <LocationOnIcon
                   fontSize="medium"
-                  sx={styles.headerstyles.dialogIcon}
+                  sx={styles.drawerstyles.dialog_icon}
                 />{" "}
-                <Typography sx={styles.headerstyles.dialog_content_text}>
+                <Typography sx={styles.drawerstyles.roboto_16px_CED1D4}>
                   Know your location
                 </Typography>
               </DialogContentText>
             </DialogContent>
 
-            <DialogActions sx={styles.headerstyles.dialogBackground}>
-              <Box sx={styles.headerstyles.dialogAction}>
+            <DialogActions sx={styles.drawerstyles.dialog_backgroundcolor}>
+              <Box sx={styles.drawerstyles.dialog_action}>
                 <Button
                   onClick={location.handleDialogClose}
                   size="large"
-                  sx={styles.headerstyles.dialogAction_button}
+                  sx={styles.drawerstyles.dialog_action_button}
                 >
                   Block
                 </Button>
                 <Button
                   onClick={location.handleUseCurrentLocation}
                   size="large"
-                  sx={styles.headerstyles.dialogAction_button}
+                  sx={styles.drawerstyles.dialog_action_button}
                 >
                   Allow
                 </Button>
               </Box>
             </DialogActions>
           </Dialog>
-          {location.error && (
-            <Typography color="error" variant="body1">
-              Error: {location.error}
+        </Box>
+        <Box sx={styles.drawerstyles.drawer_save_frame}>
+          <Button
+            onClick={location.handleSave}
+            sx={styles.drawerstyles.drawer_save_button}
+          >
+            <Typography sx={styles.drawerstyles.roboto_16px_FFFFFF}>
+              Save
             </Typography>
-          )}
+          </Button>
         </Box>
       </Drawer>
     </Box>

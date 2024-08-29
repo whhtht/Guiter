@@ -2,7 +2,7 @@ import React from "react";
 import { Drawer, Box, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import * as styles from "../../styles/layout.style/header.style/page";
+import * as styles from "../../styles/drawer.style/page";
 
 interface DrawerProps {
   open: boolean;
@@ -13,60 +13,73 @@ const ContactUsDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
   return (
     <Box>
       <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
-        <Box sx={styles.headerstyles.drawerStyle}>
-          <Box sx={styles.headerstyles.drawerFrame}>
+        <Box sx={styles.drawerstyles.drawer_style}>
+          <Box sx={styles.drawerstyles.drawer_frame}>
             <IconButton
               onClick={() => {
                 setOpen(false);
               }}
             >
-              <CloseIcon fontSize="large" sx={{ color: "#02000C" }} />
+              <CloseIcon
+                fontSize="large"
+                sx={styles.drawerstyles.drawer_iconcolor}
+              />
             </IconButton>
           </Box>
-          <Typography variant="h6" sx={styles.headerstyles.roboto_20px_drawer}>
-            Contact us
-          </Typography>
+          <Box sx={styles.drawerstyles.drawer_title_margin}>
+            <Typography
+              variant="h6"
+              sx={styles.drawerstyles.roboto_20px_02000C}
+            >
+              Contact us
+            </Typography>
+          </Box>
           <Typography
             variant="body1"
-            sx={styles.headerstyles.roboto_14px_drawer}
+            sx={styles.drawerstyles.roboto_14px_76757C}
           >
             Feel free to contact us if you need more information about our
             guitars or any of our services.
           </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={styles.headerstyles.roboto_16px_drawer}
-          >
-            Contact number
-          </Typography>
+          <Box sx={styles.drawerstyles.drawer_subtitle_margin}>
+            <Typography
+              variant="subtitle1"
+              sx={styles.drawerstyles.roboto_16px_02000C}
+            >
+              Contact number
+            </Typography>
+          </Box>
           <Typography
             variant="body1"
-            sx={styles.headerstyles.roboto_14px_drawer_black}
+            sx={styles.drawerstyles.roboto_14px_02000C}
           >
             647-555-325
           </Typography>
-
-          <Typography
-            variant="subtitle1"
-            sx={styles.headerstyles.roboto_16px_drawer}
-          >
-            Email
-          </Typography>
+          <Box sx={styles.drawerstyles.drawer_subtitle_margin}>
+            <Typography
+              variant="subtitle1"
+              sx={styles.drawerstyles.roboto_16px_02000C}
+            >
+              Email
+            </Typography>
+          </Box>
           <Typography
             variant="body1"
-            sx={styles.headerstyles.roboto_14px_drawer_black}
+            sx={styles.drawerstyles.roboto_14px_02000C}
           >
             guitar123@guitar.com
           </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={styles.headerstyles.roboto_16px_drawer}
-          >
-            Available hours
-          </Typography>
+          <Box sx={styles.drawerstyles.drawer_subtitle_margin}>
+            <Typography
+              variant="subtitle1"
+              sx={styles.drawerstyles.roboto_16px_02000C}
+            >
+              Available hours
+            </Typography>
+          </Box>
           <Typography
             variant="body1"
-            sx={styles.headerstyles.roboto_14px_drawer_black}
+            sx={styles.drawerstyles.roboto_14px_02000C}
           >
             Mon - Fri, 10:00 am - 10:00 pm (EST)
             <br />

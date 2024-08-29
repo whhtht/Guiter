@@ -7,22 +7,27 @@ import Resetpassword from "./components/sign/forgetPassword//resetPassword/page"
 import Home from "./components/home/main/page";
 import Productlist from "./components/home/productList/page";
 import Productdetail from "./components/home/productDetail/page";
+import Payment from "./components/payment/page";
 import Notfound from "./components/notfound/page";
+import { CartProvider } from "./hooks/useCart.hook/cartProvider/page";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Signin />} />
-        <Route path="/signUp" element={<Signup />} />
-        <Route path="/forgetPassword" element={<Forgetpassword />} />
-        <Route path="/resetPassword" element={<Resetpassword />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/home/:category" element={<Productlist />} />
-        <Route path="/home/:category/:productId" element={<Productdetail />} />
-        <Route path="*" element={<Notfound />} />
-      </Routes>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgetpassword" element={<Forgetpassword />} />
+          <Route path="/resetpassword" element={<Resetpassword />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/:category" element={<Productlist />} />
+          <Route path="/:category/:productId" element={<Productdetail />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="*" element={<Notfound />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 

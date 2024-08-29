@@ -193,7 +193,7 @@ const Sign_in: React.FC = () => {
                 </Button>
 
                 {/* As a Guest */}
-                <Link to="/home" style={homepage.styles.linkStyle}>
+                <Link to="/" style={homepage.styles.linkStyle}>
                   <Button size="large" sx={homepage.styles.pingFangSC_guest}>
                     Continue as a guest
                   </Button>

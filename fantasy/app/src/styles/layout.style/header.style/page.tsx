@@ -1,5 +1,5 @@
 // Header styles
-const headerFrame = {
+const header_frame = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
@@ -10,7 +10,7 @@ const headerFrame = {
   padding: "16px 72px 16px 72px",
 };
 
-const navigationFrame = {
+const navigation_frame = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
@@ -18,12 +18,42 @@ const navigationFrame = {
   width: "100%",
   height: "48px",
   backgroundColor: "#FFFFFF",
-  padding: "16px 62px 16px 62px",
   borderBottom: "1px solid #DDDCDE",
+  padding: "0px 62px 0px 62px",
 };
 
-const linkFrame = {
+const link_frame = {
   mx: "10px",
+};
+
+const left_group_frame = {
+  display: "flex",
+  alignItems: "center",
+  height: "100%",
+  margin: "0px 10px 0px 10px",
+  ":hover": {
+    backgroundColor: "#FFFFFF",
+    borderBottom: "2px solid #02000C",
+    transition: "width 0.3s ease-in-out",
+  },
+};
+
+const right_group = {
+  display: "flex",
+  flexDirection: "row",
+  height: "100%",
+};
+
+const right_group_frame = {
+  display: "flex",
+  alignItems: "center",
+  height: "100%",
+  mx: "10px",
+  ":hover": {
+    backgroundColor: "#FFFFFF",
+    borderBottom: "2px solid #02000C",
+    transition: "width 0.3s ease-in-out",
+  },
 };
 
 const autocomplete = {
@@ -40,24 +70,16 @@ const autocomplete = {
 
 // Logo style
 const logoName = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  width: "130px",
-  height: "40px",
-  mx: "8px",
-  gap: "16px",
   fontFamily: "Roboto",
   fontSize: "24px",
   fontWeight: 500,
   lineHeight: "28px",
   textAlign: "left",
   color: "#FFFFFF",
-  flexShrink: 0,
 };
 
 // Button style
-const buttonStyle_black = {
+const button_black = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -74,7 +96,7 @@ const buttonStyle_black = {
   },
 };
 
-const buttonStyle_white = {
+const button_white = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -92,108 +114,25 @@ const buttonStyle_white = {
   },
 };
 
-const componentSpace = {
+const component_space = {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
 };
 
 // Icon style
-const iconStyle_32px = {
+const icon_32px = {
   width: "32px",
   height: "32px",
 };
 
-const iconStyle_22px = {
+const icon_22px = {
   width: "22px",
   height: "22px",
 };
 
-// Drawer style
-const drawerStyle = {
-  positions: "relative",
-  width: "420px",
-  height: "100%",
-  backgroundColor: "#FFFFFF",
-  padding: "30px 30px 0px 30px",
-};
-
-const drawerFrame = {
-  display: "flex",
-  justifyContent: "flex-end",
-};
-
-// Dialog style
-const dialogFrame = {
-  sx: {
-    position: "fixed",
-    width: "410px",
-    top: "-30px",
-    left: "20%",
-    transform: "translateX(-50%)",
-    borderRadius: "8px",
-  },
-};
-
-const dialogSlotProps = {
-  backdrop: {
-    sx: {
-      backgroundColor: "transparent",
-    },
-  },
-};
-
-const dialogTitle = {
-  p: "5px 10px 0px 30px",
-  backgroundColor: "#292a2d",
-};
-
-const dialogContent = {
-  display: "flex",
-  justifyContent: "flex-start",
-  alignItems: "center",
-  mt: "10px",
-};
-
-const dialogAction = {
-  display: "flex",
-  justifyContent: "flex-end",
-  width: "100%",
-  gap: "20px",
-  p: "0px 10px 15px 0px",
-};
-
-const dialogAction_button = {
-  color: "#6d7275",
-  border: "0.5px solid #6d7275",
-};
-
-const dialogBackground = {
-  backgroundColor: "#292a2d",
-};
-
-const dialogIcon = { mr: "20px", color: "#999fa5" };
-
 // Font style
-const roboto_14px = {
-  fontFamily: "Roboto",
-  fontSize: "14px",
-  fontWeight: 400,
-  lineHeight: "22px",
-  textAlign: "left",
-  textDecoration: "none",
-};
-
-const roboto_14px_drawer = {
-  fontFamily: "Roboto",
-  fontSize: "14px",
-  fontWeight: 400,
-  lineHeight: "22px",
-  textAlign: "left",
-  color: "#76757C",
-};
-
-const roboto_14px_drawer_black = {
+const roboto_14px_02000C = {
   fontFamily: "Roboto",
   fontSize: "14px",
   fontWeight: 400,
@@ -202,32 +141,7 @@ const roboto_14px_drawer_black = {
   color: "#02000C",
 };
 
-const roboto_14px_drawer_input = {
-  width: "356px",
-  height: "40px",
-  fontFamily: "Roboto",
-  fontSize: "14px",
-  fontWeight: 400,
-  lineHeight: "22px",
-  textAlign: "left",
-  color: "#76757C",
-  borderRadius: "4px",
-  border: "1px solid #02000C",
-  margin: "30px 0px 4px 0px",
-};
-
-const roboto_14px_drawer_button = {
-  fontFamily: "Roboto",
-  fontSize: "14px",
-  fontWeight: 400,
-  lineHeight: "22px",
-  textAlign: "left",
-  color: "#02000C",
-  textDecoration: "underline",
-  textTransform: "none",
-};
-
-const roboto_16px = {
+const roboto_16px_FFFFFF = {
   fontFamily: "Roboto",
   fontSize: "16px",
   fontWeight: 500,
@@ -236,73 +150,20 @@ const roboto_16px = {
   color: "#FFFFFF",
 };
 
-const roboto_16px_drawer = {
-  fontFamily: "Roboto",
-  fontSize: "16px",
-  fontWeight: 500,
-  lineHeight: "24px",
-  textAlign: "left",
-  color: "#02000C",
-  margin: "30px 0px 4px 0px",
-};
-
-const roboto_20px_drawer = {
-  fontFamily: "Roboto",
-  fontSize: "20px",
-  fontWeight: 500,
-  lineHeight: "28px",
-  textAlign: "left",
-  color: "#02000C",
-  margin: "10px 0px 4px 0px",
-};
-
-const roboto_dialog_title = {
-  fontFamily: "Roboto",
-  fontSize: "20px",
-  fontWeight: "500",
-  lineHeight: "28px",
-  textAlign: "left",
-  color: "#ced1d4",
-};
-
-const dialog_content_text = {
-  fontFamily: "Roboto",
-  fontSize: "16px",
-  fontWeight: "500",
-  lineHeight: "28px",
-  textAlign: "left",
-  color: "#ced1d4",
-};
-
 export const headerstyles = {
-  headerFrame,
-  navigationFrame,
-  linkFrame,
+  header_frame,
+  navigation_frame,
+  link_frame,
   autocomplete,
   logoName,
-  buttonStyle_black,
-  buttonStyle_white,
-  componentSpace,
-  drawerStyle,
-  drawerFrame,
-  dialogFrame,
-  dialogSlotProps,
-  dialogTitle,
-  dialogContent,
-  dialogAction,
-  dialogAction_button,
-  dialogBackground,
-  dialogIcon,
-  roboto_14px,
-  roboto_14px_drawer,
-  roboto_14px_drawer_black,
-  roboto_14px_drawer_input,
-  roboto_14px_drawer_button,
-  roboto_16px,
-  roboto_16px_drawer,
-  roboto_20px_drawer,
-  roboto_dialog_title,
-  dialog_content_text,
-  iconStyle_22px,
-  iconStyle_32px,
+  left_group_frame,
+  right_group,
+  right_group_frame,
+  button_black,
+  button_white,
+  component_space,
+  roboto_14px_02000C,
+  roboto_16px_FFFFFF,
+  icon_22px,
+  icon_32px,
 };

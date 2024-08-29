@@ -19,29 +19,50 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 import { useHeader } from "../../../hooks/useHeader.hook/page";
 import { useLocation } from "../../../hooks/useLocation.hook/page";
+import { useCart } from "../../../hooks/useCart.hook/page";
 import * as styles from "../../../styles/layout.style/header.style/page";
 import * as category from "../../../lists/category.list/page";
 import LocationDrawer from "../../../drawer/location.drawer/page";
 import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
 import ContactUsDrawer from "../../../drawer/contactUs.drawer/page";
+import CartDrawer from "../../../drawer/cart.drawer/page";
 
 const Header: React.FC = () => {
-  const functions = useHeader();
-  const locationFunctions = useLocation(functions.setOpenLocation);
+  const headerHook = useHeader();
+  const locationHook = useLocation(headerHook.setOpenLocation);
+  const cartHook = useCart();
+
 
   return (
     <Box>
       {/* Part 1 */}
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
         {/* Logo Name */}
-        <Box sx={styles.headerstyles.headerFrame}>
-          <Typography sx={styles.headerstyles.logoName}>Logo Name</Typography>
+        <Box sx={styles.headerstyles.header_frame}>
+          <Box
+            component={Link}
+            to={`/`}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "130px",
+              height: "40px",
+              mx: "8px",
+              gap: "16px",
+              textDecoration: "none",
+
+              flexShrink: 0,
+            }}
+          >
+            <Typography sx={styles.headerstyles.logoName}>Logo Name</Typography>
+          </Box>
 
           {/* Search Bar */}
           <Box sx={{ flexGrow: 1, height: "40px", mx: "5px" }}>
             <Autocomplete
               freeSolo
-              options={functions.searchHistory}
+              options={headerHook.searchHistory}
               sx={styles.headerstyles.autocomplete}
               renderInput={(params) => (
                 <TextField
@@ -49,9 +70,9 @@ const Header: React.FC = () => {
                   placeholder="Find guitars you love..."
                   size="small"
                   variant="outlined"
-                  value={functions.searchTerm}
-                  onChange={(e) => functions.setSearchTerm(e.target.value)}
-                  onKeyDown={functions.handleKeyDown}
+                  value={headerHook.searchTerm}
+                  onChange={(e) => headerHook.setSearchTerm(e.target.value)}
+                  onKeyDown={headerHook.handleKeyDown}
                   InputProps={{
                     ...params.InputProps,
                     startAdornment: (
@@ -66,44 +87,47 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Sign In Button */}
-          <Box sx={styles.headerstyles.linkFrame}>
+          <Box sx={{ mx: "10px" }}>
             <Button
               component={Link}
-              to="/"
+              to="/signin"
               variant="text"
               disableFocusRipple
               startIcon={
-                <PersonOutlineIcon sx={styles.headerstyles.iconStyle_32px} />
+                <PersonOutlineIcon sx={styles.headerstyles.icon_32px} />
               }
-              sx={styles.headerstyles.buttonStyle_black}
+              sx={styles.headerstyles.button_black}
             >
-              <Typography variant="body1" sx={styles.headerstyles.roboto_16px}>
+              <Typography
+                variant="body1"
+                sx={styles.headerstyles.roboto_16px_FFFFFF}
+              >
                 Sign In
               </Typography>
             </Button>
           </Box>
 
           {/* Shopping Cart Button */}
-          <Box sx={{ mx: "10px" }}>
+          <Box sx={styles.headerstyles.link_frame}>
             <Button
-              component={Link}
-              to="/homepage"
               variant="text"
               disableFocusRipple
+              onClick={() => {
+                headerHook.setOpenCart(true);
+              }}
               startIcon={
                 <Badge
-                  badgeContent={1}
+                  badgeContent={cartHook.cartItemCount}
                   sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
                     "& .MuiBadge-badge": {
                       backgroundColor: "#FFEACE",
                       color: "#000000",
+                      top: "5px",
+                      right: "5px",
                     },
                   }}
                 >
-                  <ShoppingCartIcon sx={{ width: "32px", height: "32px" }} />
+                  <ShoppingCartIcon sx={styles.headerstyles.icon_32px} />
                 </Badge>
               }
               sx={{
@@ -137,30 +161,34 @@ const Header: React.FC = () => {
                 Cart
               </Typography>
             </Button>
+            <CartDrawer open={headerHook.openCart} setOpen={headerHook.setOpenCart} />
           </Box>
         </Box>
       </Grid>
 
       {/* part 2 */}
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-        <Box sx={styles.headerstyles.navigationFrame}>
+        <Box sx={styles.headerstyles.navigation_frame}>
           {/* Letf Group Buttons */}
-          <Box sx={styles.headerstyles.componentSpace}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              height: "100%",
+            }}
+          >
             {category.table.list.map((category) => (
-              <Box key={category.id} sx={styles.headerstyles.linkFrame}>
+              <Box key={category.id} sx={styles.headerstyles.left_group_frame}>
                 <Button
                   key={category.id}
                   component={Link}
-                  to={`/home/${category.name}`}
+                  to={`/${category.name}`}
                   disableFocusRipple
-                  sx={styles.headerstyles.buttonStyle_white}
+                  sx={styles.headerstyles.button_white}
                 >
                   <Typography
                     variant="body1"
-                    sx={{
-                      ...styles.headerstyles.roboto_14px,
-                      color: "#02000C",
-                    }}
+                    sx={styles.headerstyles.roboto_14px_02000C}
                   >
                     {category.name}
                   </Typography>
@@ -170,86 +198,84 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Right Group Buttons */}
-          <Box sx={styles.headerstyles.componentSpace}>
+          <Box sx={styles.headerstyles.right_group}>
             {/* Deliver */}
-            <Box sx={styles.headerstyles.linkFrame}>
+            <Box sx={styles.headerstyles.right_group_frame}>
               <Button
                 variant="text"
                 startIcon={
-                  <LocalShippingIcon sx={styles.headerstyles.iconStyle_22px} />
+                  <LocalShippingIcon sx={styles.headerstyles.icon_22px} />
                 }
                 disableFocusRipple
-                sx={styles.headerstyles.buttonStyle_white}
+                sx={styles.headerstyles.button_white}
                 onClick={() => {
-                  functions.setOpenLocation(true);
+                  headerHook.setOpenLocation(true);
                 }}
               >
                 <Typography
                   variant="body1"
-                  sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
+                  sx={styles.headerstyles.roboto_14px_02000C}
                 >
                   Deliver to{" "}
-                  {locationFunctions.storedZipCode
-                    ? locationFunctions.storedZipCode
+                  {locationHook.storedZipCode
+                    ? locationHook.storedZipCode
                     : " M5G 2G4 "}
                 </Typography>
               </Button>
 
               <LocationDrawer
-                open={functions.openLocation}
-                setOpen={functions.setOpenLocation}
+                open={headerHook.openLocation}
+                setOpen={headerHook.setOpenLocation}
               />
             </Box>
 
             {/* Pick up */}
-            <Box sx={styles.headerstyles.linkFrame}>
+            <Box sx={styles.headerstyles.right_group_frame}>
               <Button
                 variant="text"
-                startIcon={
-                  <StoreIcon sx={styles.headerstyles.iconStyle_22px} />
-                }
+                startIcon={<StoreIcon sx={styles.headerstyles.icon_22px} />}
                 disableFocusRipple
-                sx={styles.headerstyles.buttonStyle_white}
+                sx={styles.headerstyles.button_white}
                 onClick={() => {
-                  functions.setOpenPickUp(true);
+                  headerHook.setOpenPickUp(true);
                 }}
               >
                 <Typography
                   variant="body1"
-                  sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
+                  sx={styles.headerstyles.roboto_14px_02000C}
                 >
                   Pick up at Toronto Downtown
                 </Typography>
               </Button>
               <PickUpDrawer
-                open={functions.openPickUp}
-                setOpen={functions.setOpenPickUp}
+                open={headerHook.openPickUp}
+                setOpen={headerHook.setOpenPickUp}
               />
             </Box>
 
             {/* Contact Us */}
-            <Box sx={styles.headerstyles.linkFrame}>
+            <Box sx={styles.headerstyles.right_group_frame}>
               <Button
                 variant="text"
                 startIcon={
-                  <PhoneEnabledIcon sx={styles.headerstyles.iconStyle_22px} />
+                  <PhoneEnabledIcon sx={styles.headerstyles.icon_22px} />
                 }
                 disableFocusRipple
-                sx={styles.headerstyles.buttonStyle_white}
+                sx={styles.headerstyles.button_white}
                 onClick={() => {
-                  functions.setOpenContactUs(true);
+                  headerHook.setOpenContactUs(true);
                 }}
               >
                 <Typography
                   variant="body1"
-                  sx={{ ...styles.headerstyles.roboto_14px, color: "#02000C" }}
+                  sx={styles.headerstyles.roboto_14px_02000C}
                 >
                   Contact Us
                 </Typography>
               </Button>
               <ContactUsDrawer
-                open={functions.openContactUs}
-                setOpen={functions.setOpenContactUs}
+                open={headerHook.openContactUs}
+                setOpen={headerHook.setOpenContactUs}
               />
             </Box>
           </Box>

@@ -10,6 +10,26 @@ const imageStyle = {
 };
 
 // Font style
+const roboto_14px_76757C = {
+  fontFamily: "Roboto",
+  fontSize: "14px",
+  fontWeight: 400,
+  lineHeight: "22px",
+  textAlign: "left",
+  color: "#76757C",
+  textDecoration: "none",
+};
+
+const roboto_14px_02000C = {
+  fontFamily: "Roboto",
+  fontSize: "14px",
+  fontWeight: 400,
+  lineHeight: "22px",
+  textAlign: "center",
+  textDecoration: "none",
+  color: "#02000C",
+};
+
 const roboto_16px = {
   fontFamily: "Roboto",
   fontSize: "16px",
@@ -19,76 +39,36 @@ const roboto_16px = {
   color: "#FFFFFF",
 };
 
-const roboto_16px_productName = {
-  display: "-webkit-box",
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: "vertical",
-  textOverflow: "ellipsis",
-  width: "100%",
-  height: "48px",
+const roboto_16px_02000C = {
   fontFamily: "Roboto",
   fontSize: "16px",
   fontWeight: 400,
   lineHeight: "24px",
   textAlign: "left",
-  textDecoration: "none",
   color: "#02000C",
-  overflow: "hidden",
-};
-
-const roboto_14px = {
-  fontFamily: "Roboto",
-  fontSize: "14px",
-  fontWeight: 400,
-  lineHeight: "22px",
-  textAlign: "left",
   textDecoration: "none",
 };
 
-const roboto_14px_service = {
-  display: "inline-block",
-  width: "85%",
-  fontFamily: "Roboto",
-  fontSize: "14px",
-  fontWeight: 400,
-  lineHeight: "22px",
-  textAlign: "center",
-  textDecoration: "none",
-  color: "#02000C",
-};
-
-const roboto_20px = {
+const roboto_20px_000000D9 = {
   fontFamily: "Roboto",
   fontSize: "20px",
   fontWeight: 500,
   lineHeight: "28px",
   textAlign: "left",
-  textDecoration: "none",
-};
-
-const roboto_20px_service = {
-  display: "inline-block",
-  fontFamily: "Roboto",
-  fontSize: "20px",
-  fontWeight: 500,
-  lineHeight: "28px",
-  textAlign: "center",
   textDecoration: "none",
   color: "#000000D9",
 };
 
-const roboto_20px_categoryRight = {
-  width: "135px",
+const roboto_20px_02000C = {
   fontFamily: "Roboto",
   fontSize: "20px",
   fontWeight: 500,
   lineHeight: "28px",
   textAlign: "left",
-  textDecoration: "none",
   color: "#02000C",
 };
 
-const roboto_30px = {
+const roboto_30px_02000C = {
   display: "inline-block",
   fontFamily: "Roboto",
   fontSize: "30px",
@@ -96,9 +76,10 @@ const roboto_30px = {
   lineHeight: "40px",
   textAlign: "left",
   textDecoration: "none",
+  color: "#02000C",
 };
 
-const roboto_carousel_title = {
+const roboto_54px_02000C = {
   fontFamily: "Roboto",
   fontSize: "54px",
   fontWeight: 700,
@@ -107,14 +88,13 @@ const roboto_carousel_title = {
   color: "#02000C",
 };
 
-const roboto_carousel_subtitle = {
+const roboto_24px_02000C = {
   fontFamily: "Roboto",
   fontSize: "24px",
   fontWeight: 400,
   lineHeight: "28.13px",
   textAlign: "left",
   color: "#02000C",
-  margin: "28px 0px 40px 0px",
 };
 
 // Button style
@@ -160,6 +140,8 @@ const carouselContent = {
   left: "82px",
 };
 
+const carousel_subtitle = { margin: "28px 0px 40px 0px" };
+
 // Product list style
 const listStyle = {
   position: "relative",
@@ -173,7 +155,7 @@ const leftButton = {
   alignItems: "center",
   width: "50px",
   height: "50px",
-  left: "48px",
+  left: "55px",
   top: "35%",
   backgroundColor: "#FFFFFF",
   borderRadius: "50%",
@@ -201,7 +183,7 @@ const rightButton = {
   alignItems: "center",
   width: "50px",
   height: "50px",
-  right: "63px",
+  right: "55px",
   top: "35%",
   PointerEvents: "auto",
   backgroundColor: "#FFFFFF",
@@ -234,9 +216,18 @@ const carouselBox = {
 const sliceBox = {
   display: "flex",
   justifyContent: "space-between",
+  alignItems: "center",
   flexDirection: "column",
-  alignItems: "flex-start",
   width: "calc(100% / 5)",
+  border: "1px solid #FFFFFF",
+  padding: "6px 0px 0px 0px",
+  margin: "0px 2px 0px 2px",
+  "&:hover": {
+    color: "#FFFFFF",
+    boxShadow: " 0px 1px 4px 0px #00000040",
+    borderRadius: "8px",
+    border: "1px solid #DDDCDE",
+  },
 };
 
 const productList = {
@@ -245,13 +236,29 @@ const productList = {
   borderRadius: "8px",
 };
 
+const product_text_frame = {
+  display: "flex",
+  flexDirection: "column",
+  width: "250px",
+  height: "100%",
+};
+
+const product_text_name = {
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  textOverflow: "ellipsis",
+  textDecoration: "none",
+  overflow: "hidden",
+  margin: "0px 0px 5px 0px",
+};
+
 // Service style
 const serviceStyle = {
   display: "flex",
-  justifyContent: "center",
-  width: "100%",
-  padding: "0px 72px 0px 72px",
-  margin: "100px 0px 20px 0px",
+  justifyContent: "space-between",
+  alignItems: "center",
+  margin: "100px 72px 20px 72px",
 };
 
 const serviceBox = {
@@ -259,15 +266,23 @@ const serviceBox = {
   alignItems: "center",
   flexDirection: "column",
   textAlign: "center",
-  width: "calc(100% / 4 - 80px)",
-  mx: "40px",
+  width: "calc(100% / 4)",
 };
 
 const serviceList = {
   width: "113px",
   height: "113px",
   borderRadius: "90%",
-  margin: "0px 0px 10px 0px",
+  margin: "0px 0px 15px 0px",
+};
+
+const service_text_frame = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+  width: "260px",
+  gap: "10px",
 };
 
 // Category style
@@ -289,7 +304,7 @@ const categoryLeft = {
   background: "#FFEACE",
   borderRadius: "8px",
   flexShrink: 0,
-  padding: "0px 20px 0px 50px",
+  padding: "0px 10px 0px 50px",
   margin: "0px 20px 0px 0px",
 };
 
@@ -319,23 +334,28 @@ const categoryRightImage = {
   height: "175px",
 };
 
+const category_text_frame = {
+  width: "135px",
+  textDecoration: "none",
+};
+
 export const homeStyles = {
   titleStyle,
   imageStyle,
   roboto_16px,
-  roboto_16px_productName,
-  roboto_14px,
-  roboto_14px_service,
-  roboto_20px,
-  roboto_20px_service,
-  roboto_20px_categoryRight,
-  roboto_30px,
-  roboto_carousel_title,
-  roboto_carousel_subtitle,
+  roboto_16px_02000C,
+  roboto_14px_76757C,
+  roboto_14px_02000C,
+  roboto_20px_000000D9,
+  roboto_20px_02000C,
+  roboto_30px_02000C,
+  roboto_54px_02000C,
+  roboto_24px_02000C,
   buttonStyle_black,
   carousel_button,
   carouselImage,
   carouselContent,
+  carousel_subtitle,
   listStyle,
   leftButton,
   arrowBack,
@@ -344,13 +364,17 @@ export const homeStyles = {
   carouselBox,
   sliceBox,
   productList,
+  product_text_frame,
+  product_text_name,
   serviceStyle,
   serviceBox,
   serviceList,
+  service_text_frame,
   categoryStyle,
   categoryLeft,
   categoryLeftImage,
   categoryRight,
   categoryRightBox,
   categoryRightImage,
+  category_text_frame,
 };
