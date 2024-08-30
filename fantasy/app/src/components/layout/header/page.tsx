@@ -21,7 +21,7 @@ import { useHeader } from "../../../hooks/useHeader.hook/page";
 import { useLocation } from "../../../hooks/useLocation.hook/page";
 import { useCart } from "../../../hooks/useCart.hook/page";
 import * as styles from "../../../styles/layout.style/header.style/page";
-import * as category from "../../../lists/category.list/page";
+import { headerCategory as categories } from "../../../lists/guitar.list/page";
 import LocationDrawer from "../../../drawer/location.drawer/page";
 import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
 import ContactUsDrawer from "../../../drawer/contactUs.drawer/page";
@@ -31,7 +31,6 @@ const Header: React.FC = () => {
   const headerHook = useHeader();
   const locationHook = useLocation(headerHook.setOpenLocation);
   const cartHook = useCart();
-
 
   return (
     <Box>
@@ -161,7 +160,10 @@ const Header: React.FC = () => {
                 Cart
               </Typography>
             </Button>
-            <CartDrawer open={headerHook.openCart} setOpen={headerHook.setOpenCart} />
+            <CartDrawer
+              open={headerHook.openCart}
+              setOpen={headerHook.setOpenCart}
+            />
           </Box>
         </Box>
       </Grid>
@@ -177,12 +179,11 @@ const Header: React.FC = () => {
               height: "100%",
             }}
           >
-            {category.table.list.map((category) => (
-              <Box key={category.id} sx={styles.headerstyles.left_group_frame}>
+            {categories.map((category, index) => (
+              <Box key={index} sx={styles.headerstyles.left_group_frame}>
                 <Button
-                  key={category.id}
                   component={Link}
-                  to={`/${category.name}`}
+                  to={`/productlist/${category}`}
                   disableFocusRipple
                   sx={styles.headerstyles.button_white}
                 >
@@ -190,7 +191,7 @@ const Header: React.FC = () => {
                     variant="body1"
                     sx={styles.headerstyles.roboto_14px_02000C}
                   >
-                    {category.name}
+                    {category}
                   </Typography>
                 </Button>
               </Box>

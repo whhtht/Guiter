@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Collapse,
@@ -21,11 +21,12 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Header from "../../layout/header/page";
-import { categories } from "./products";
-import { guitar } from "../../../lists/guitar.list/page";
+import {
+  category as categories,
+  brand,
+  guitar,
+} from "../../../lists/guitar.list/page";
 import Footer from "../../layout/footer/page";
-
-
 
 const useCollapse = () => {
   const [collapseOpen, setCollapseOpen] = useState(true);
@@ -44,28 +45,11 @@ const useCollapse = () => {
   };
 };
 
-const useChange = () => {
-  const [changeClose, setChangeClose] = useState(false);
-  const [changeOpen, setChangeOpen] = useState(true);
-  const handleChangeOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChangeOpen(event.target.checked);
-  };
-  const handleChangeClose = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChangeClose(event.target.checked);
-  };
-  return {
-    changeOpen,
-    changeClose,
-    handleChangeOpen,
-    handleChangeClose,
-  };
-};
-
 const ProductDetail: React.FC = () => {
-  const { category, productId } = useParams<{
+  const { category } = useParams<{
     category: string;
-    productId: string;
   }>();
+  const navigate = useNavigate();
 
   const categoryList = useCollapse();
   const brandList = useCollapse();
@@ -73,16 +57,40 @@ const ProductDetail: React.FC = () => {
   const conditionList = useCollapse();
   const handednessList = useCollapse();
 
-  const cordobaCheck = useChange();
-  const fenderCheck = useChange();
-  const gibsonCheck = useChange();
-  const mosriteCheck = useChange();
-
+  // 类别查询逻辑
   const [selectedCategory, setSelectedCategory] =
     useState<string>("All Categories");
+
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
+    navigate(`/productlist/${category}`); // 跳转到指定的类别
   };
+
+  useEffect(() => {
+    setSelectedCategory(category || "All Categories"); //设置选中的类别
+  }, [category]); //当category改变时，执行useEffect里的函数
+
+  // 品牌查询逻辑
+  const [selectedBrand, setSelectedBrand] = useState<string[]>([]);
+
+  const handleBrandChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const brand = event.target.name;
+    if (event.target.checked) {
+      setSelectedBrand([...selectedBrand, brand]);
+    } else {
+      setSelectedBrand(selectedBrand.filter((item) => item !== brand));
+    }
+  };
+
+  // 查询钩子
+  const filteredGuitars = guitar.filter((product) => {
+    const categoryFilter =
+      category === "All Categories" || product.category === category;
+    const brandFilter =
+      selectedBrand.length === 0 || selectedBrand.includes(product.brand);
+
+    return categoryFilter && brandFilter;
+  });
 
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
@@ -134,8 +142,19 @@ const ProductDetail: React.FC = () => {
   };
   const isMenuOpen = Boolean(anchorEl);
 
-  console.log("category in product list", category);
-  console.log("productId in product list", productId);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 12;
+
+  const totalPages = Math.ceil(filteredGuitars.length / itemsPerPage);
+
+  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  const displayedProducts = filteredGuitars.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
 
   return (
     <Box>
@@ -163,7 +182,7 @@ const ProductDetail: React.FC = () => {
                   flexShrink: 0,
                 }}
               >
-                {/* Category */}
+                {/* Category Title */}
                 <Box
                   sx={{
                     display: "flex",
@@ -217,17 +236,16 @@ const ProductDetail: React.FC = () => {
                       padding: "0px 0px 0px 0px",
                     }}
                   >
-                    {/* Category */}
-                    {categories.map((category, index) => (
+                    {/* Category List */}
+                    {categories.map((item, index) => (
                       <ListItem key={index} disablePadding>
                         <ListItemButton
-                          onClick={() => handleCategoryClick(category)}
+                          selected={selectedCategory === item}
+                          onClick={() => handleCategoryClick(item)}
                           sx={{
                             width: "100%",
                             color:
-                              selectedCategory === category
-                                ? "#02000C"
-                                : "#76757C",
+                              selectedCategory === item ? "#02000C" : "#76757C",
                             padding: "5px 0px 5px 0px",
                             "&.Mui-selected": {
                               color: "#02000C",
@@ -244,12 +262,11 @@ const ProductDetail: React.FC = () => {
                           }}
                         >
                           <ListItemText
-                            primary={category}
+                            primary={item}
                             primaryTypographyProps={{
                               fontFamily: "Roboto",
                               fontSize: "16px",
-                              fontWeight:
-                                selectedCategory === category ? 500 : 400,
+                              fontWeight: selectedCategory === item ? 500 : 400,
                               lineHeight: "24px",
                               textAlign: "left",
                             }}
@@ -302,6 +319,7 @@ const ProductDetail: React.FC = () => {
                     borderBottom: "1px solid #DDDCDE",
                   }}
                 >
+                  {/* Brand List */}
                   <FormGroup
                     sx={{
                       display: "flex",
@@ -312,98 +330,33 @@ const ProductDetail: React.FC = () => {
                       margin: "0px 0px 20px 0px",
                     }}
                   >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={cordobaCheck.changeOpen}
-                          onChange={cordobaCheck.handleChangeOpen}
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Cordoba"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={fenderCheck.changeClose}
-                          onChange={fenderCheck.handleChangeClose}
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Fender"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={gibsonCheck.changeClose}
-                          onChange={gibsonCheck.handleChangeClose}
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Gibson"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={mosriteCheck.changeClose}
-                          onChange={mosriteCheck.handleChangeClose}
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Mosrite"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
+                    {brand.map((item, index) => (
+                      <FormControlLabel
+                        key={index}
+                        control={
+                          <Checkbox
+                            name={item}
+                            checked={selectedBrand.includes(item)}
+                            onChange={handleBrandChange}
+                            size="small"
+                            sx={{
+                              "&.Mui-checked": {
+                                color: "#02000C",
+                              },
+                            }}
+                          />
+                        }
+                        label={item}
+                        sx={{
+                          fontFamily: "Roboto",
+                          fontSize: "16px",
+                          fontWeight: 400,
+                          lineHeight: "24px",
+                          textAlign: "left",
+                          color: "#02000C",
+                        }}
+                      />
+                    ))}
                   </FormGroup>
                 </Collapse>
 
@@ -449,6 +402,7 @@ const ProductDetail: React.FC = () => {
                     borderBottom: "1px solid #DDDCDE",
                   }}
                 >
+                  {/* Price List */}
                   <Box
                     sx={{
                       display: "flex",
@@ -1072,81 +1026,79 @@ const ProductDetail: React.FC = () => {
                     gap: "20px",
                   }}
                 >
-                  {guitar
-                    .map((product) => (
-                      <Box key={product.id} sx={{ margin: "0px 0px 10px 0px" }}>
+                  {displayedProducts.map((item, index) => (
+                    <Box key={index} sx={{ margin: "0px 0px 10px 0px" }}>
+                      <Box
+                        component={Link}
+                        to={`/product/${item.id}`}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "308px",
+                          height: "308px",
+                          overflow: "hidden",
+                          borderRadius: "8px",
+                          margin: "0px 0px 10px 0px",
+                        }}
+                      >
                         <Box
-                          component={Link}
-                          to={`/${category}/${product.id}`}
+                          component="img"
+                          src={item.image[0].image}
                           sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "308px",
-                            height: "308px",
-                            overflow: "hidden",
-                            borderRadius: "8px",
-                            margin: "0px 0px 10px 0px",
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
                           }}
-                        >
-                          <Box
-                            component="img"
-                            src={product.image[0].image}
-                            alt={product.name}
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </Box>
-                        <Box
-                          sx={{
-                            display: "inline-flex",
-                            flexDirection: "column",
-                            gap: "5px",
-                          }}
-                        >
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              color: "#02000C",
-                            }}
-                          >
-                            {product.name}
-                          </Typography>
-                          <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "14px",
-                              fontWeight: 400,
-                              lineHeight: "22px",
-                              textAlign: "left",
-                              color: "#76757C",
-                            }}
-                          >
-                            Condition: {product.condition}
-                          </Typography>
-                          <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "20px",
-                              fontWeight: 500,
-                              lineHeight: "28px",
-                              textAlign: "left",
-                              color: "#000000D9",
-                            }}
-                          >
-                            {product.price}
-                          </Typography>
-                        </Box>
+                        />
                       </Box>
-                    ))}
+                      <Box
+                        sx={{
+                          display: "inline-flex",
+                          flexDirection: "column",
+                          gap: "5px",
+                        }}
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "16px",
+                            fontWeight: 400,
+                            lineHeight: "24px",
+                            textAlign: "left",
+                            color: "#02000C",
+                          }}
+                        >
+                          {item.name}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "22px",
+                            textAlign: "left",
+                            color: "#76757C",
+                          }}
+                        >
+                          Condition: {item.condition}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "20px",
+                            fontWeight: 500,
+                            lineHeight: "28px",
+                            textAlign: "left",
+                            color: "#000000D9",
+                          }}
+                        >
+                          {item.price}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ))}
                 </Box>
 
                 {/* Pagination */}
@@ -1160,7 +1112,9 @@ const ProductDetail: React.FC = () => {
                   }}
                 >
                   <Pagination
-                    count={7}
+                    count={totalPages}
+                    page={page}
+                    onChange={handleChange}
                     size="large"
                     renderItem={(item) => (
                       <PaginationItem

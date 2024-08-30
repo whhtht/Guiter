@@ -14,22 +14,27 @@ const textdecoration = {
 };
 
 const mainFrame = {
+  position: "relative",
   display: "flex",
   justifyContent: "space-between",
   flexDirection: "row",
-  margin: "20px 0px 0px 0px",
+  height: "100%",
 };
 
 const main_left_frame = {
   width: "58%",
   flexShrink: 0,
+  margin: "20px 0px 0px 0px",
 };
 
 const main_right_frame = {
+  position: "sticky",
+  top: "0px",
   display: "flex",
   flexDirection: "column",
   width: "510px",
   height: "100%",
+  padding: "20px 0px 0px 0px",
 };
 
 const image_show_frame = {

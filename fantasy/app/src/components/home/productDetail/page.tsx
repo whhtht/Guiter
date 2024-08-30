@@ -615,6 +615,7 @@ const ProductDetail: React.FC = () => {
                           condition: product?.condition || "",
                           price: product?.price.toString() || "",
                           image: product?.image[0].image || "",
+                          quantity: 1, 
                         })
                       }
                       sx={styles.detailstyles.buttonStyle_FFFFFF}
