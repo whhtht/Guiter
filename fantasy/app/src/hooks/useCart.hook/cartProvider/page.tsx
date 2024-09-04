@@ -9,6 +9,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cartItemCount, setCartItemCount] = useState(0);
   const [cartTotal, setCartTotal] = useState<string>("0");
 
+  // 添加商品到购物车
   const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
@@ -29,6 +30,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     setCartItemCount((prevCount) => prevCount + 1);
   };
 
+  // 从购物车中删除商品
   const deleteFromCart = (productId: number) => {
     setCartItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
@@ -51,6 +53,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     setCartItemCount((prevCount) => (prevCount > 0 ? prevCount - 1 : 0)); // 更新购物车商品数量
   };
 
+  // 从购物车中移除商品
   const removeFromCart = (id: number) => {
     setCartItems((prevItems) => {
       const indexToRemove = prevItems.findIndex((item) => item.id === id);

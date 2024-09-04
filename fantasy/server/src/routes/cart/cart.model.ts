@@ -1,49 +1,41 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
 
-class User extends Model {
+class Cart extends Model {
   public id!: string;
-  public email!: string;
-  public password!: string;
-  public sub!: string;
-  public requestId!: string;
+  public userId!: string;
+  public productId!: string;
+  public quantity!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-User.init(
+Cart.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      autoIncrement: true,
+      allowNull: false,
       primaryKey: true,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    password: {
+    userId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    sub: {
+    productId: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
-    requestId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: true,
+    quantity: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: "user",
+    tableName: "cart",
   }
 );
 
-export default User;
+export default Cart;

@@ -2,7 +2,7 @@
     "development": {
       "username": "yunongchen",
       "password": null,
-      "database": "products",
+      "database": "fantasy",
       "host": "localhost",
       "dialect": "postgres"
     },

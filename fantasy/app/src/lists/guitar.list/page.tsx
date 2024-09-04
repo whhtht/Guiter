@@ -11,6 +11,17 @@ export const headerCategory = category.slice(1);
 
 export const brand = ["Cordoba", "Fender", "Gibson", "Mosrite"];
 
+export const condition = [
+  "Excellent",
+  "Very Good",
+  "Good",
+  "Fair",
+  "Poor",
+  "Non functioning",
+];
+
+export const handedness = ["Right-Handed", "Left-Handed"];
+
 export const guitar = [
   {
     id: 1,
@@ -273,7 +284,7 @@ export const guitar = [
     price: 399.99,
     newprice: 999.99,
     review: {
-      main: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected hum",
+      main: "product 4",
       list: [
         "Various versions have evolved over the years",
         "sometimes by accident",
@@ -360,12 +371,12 @@ export const guitar = [
     id: 5,
     name: "Cordoba 45 Limited Spanish Classical Guitar Spruce/Ebony",
     category: "Acoustic Guitar",
-    brand: "Cordoba",
+    brand: "Mosrite",
     condition: "Excellent",
     price: 299.99,
     newprice: 999.99,
     review: {
-      main: "product 2",
+      main: "product 5",
       list: [
         "Various versions have evolved over the years",
         "sometimes by accident",
@@ -448,7 +459,7 @@ export const guitar = [
     price: 199.99,
     newprice: 999.99,
     review: {
-      main: "product 3",
+      main: "product 6",
       list: [
         "Various versions have evolved over the years",
         "sometimes by accident",
@@ -525,7 +536,7 @@ export const guitar = [
     price: 399.99,
     newprice: 999.99,
     review: {
-      main: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected hum",
+      main: "product 7",
       list: [
         "Various versions have evolved over the years",
         "sometimes by accident",
@@ -617,7 +628,7 @@ export const guitar = [
     price: 299.99,
     newprice: 999.99,
     review: {
-      main: "product 2",
+      main: "product 8",
       list: [
         "Various versions have evolved over the years",
         "sometimes by accident",
@@ -700,7 +711,7 @@ export const guitar = [
     price: 199.99,
     newprice: 999.99,
     review: {
-      main: "product 3",
+      main: "product 9",
       list: [
         "Various versions have evolved over the years",
         "sometimes by accident",

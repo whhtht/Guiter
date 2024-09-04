@@ -7,7 +7,7 @@ import {
   resetPassword,
 } from "utils/awsCognito";
 
-import Account from "./auth.model";
+import User from "./auth.model";
 
 // Sign up handler
 export const signUpHandler = async (req: Request, res: Response) => {
@@ -16,7 +16,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
   try {
     const result = await signUp(email, password);
-    Account.create({
+    User.create({
       email,
       password,
       sub: result.UserSub,
@@ -88,7 +88,7 @@ export const resetPasswordHandler = async (req: Request, res: Response) => {
     console.log("resetPassword result:", result);
     if (result["$metadata"].httpStatusCode === 200) {
       const newRequestId = result["$metadata"].requestId;
-      await Account.update(
+      await User.update(
         { password: newPassword, requestId: newRequestId },
         { where: { email } }
       );

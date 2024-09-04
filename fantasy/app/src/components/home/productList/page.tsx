@@ -20,28 +20,27 @@ import {
   PaginationItem,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Header from "../../layout/header/page";
+
 import {
   category as categories,
   brand,
+  condition,
+  handedness,
   guitar,
 } from "../../../lists/guitar.list/page";
+import Header from "../../layout/header/page";
 import Footer from "../../layout/footer/page";
 
-const useCollapse = () => {
-  const [collapseOpen, setCollapseOpen] = useState(true);
-  const [collapseClose, setCollapseClose] = useState(false);
-  const handleCollapseOpen = () => {
-    setCollapseOpen(!collapseOpen);
-  };
-  const handleCollapseClose = () => {
-    setCollapseClose(!collapseClose);
+import * as styles from "../../../styles/product.style/product.list/page";
+
+const useCollapse = (initialState = true) => {
+  const [collapse, setCollapse] = useState(initialState);
+  const handleCollapse = () => {
+    setCollapse(!collapse);
   };
   return {
-    collapseOpen,
-    collapseClose,
-    handleCollapseOpen,
-    handleCollapseClose,
+    collapse,
+    handleCollapse,
   };
 };
 
@@ -51,11 +50,12 @@ const ProductDetail: React.FC = () => {
   }>();
   const navigate = useNavigate();
 
-  const categoryList = useCollapse();
-  const brandList = useCollapse();
-  const priceList = useCollapse();
-  const conditionList = useCollapse();
-  const handednessList = useCollapse();
+  // 展开/折叠逻辑
+  const categoryList = useCollapse(true);
+  const brandForm = useCollapse(false);
+  const priceList = useCollapse(false);
+  const conditionForm = useCollapse(false);
+  const handednessForm = useCollapse(false);
 
   // 类别查询逻辑
   const [selectedCategory, setSelectedCategory] =
@@ -82,20 +82,43 @@ const ProductDetail: React.FC = () => {
     }
   };
 
+  // 条件查询逻辑
+  const [selectedCondition, setSelectedCondition] = useState<string[]>([]);
+
+  const handleConditionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const condition = event.target.name;
+    if (event.target.checked) {
+      setSelectedCondition([...selectedCondition, condition]);
+    } else {
+      setSelectedCondition(
+        selectedCondition.filter((item) => item !== condition)
+      );
+    }
+  };
+
   // 查询钩子
   const filteredGuitars = guitar.filter((product) => {
     const categoryFilter =
       category === "All Categories" || product.category === category;
     const brandFilter =
       selectedBrand.length === 0 || selectedBrand.includes(product.brand);
+    const conditionFilter =
+      selectedCondition.length === 0 ||
+      selectedCondition.includes(product.condition);
 
-    return categoryFilter && brandFilter;
+    return categoryFilter && brandFilter && conditionFilter;
   });
 
+  const itemCount = filteredGuitars.length; //产品数量
+
+  // 价格查询逻辑
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [error, setError] = useState({ min: false, max: false });
 
+  // 最低价格输入逻辑
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const numericValue = parseFloat(value);
@@ -112,6 +135,7 @@ const ProductDetail: React.FC = () => {
     setMinPrice(value);
   };
 
+  // 最高价格输入逻辑
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const numericValue = parseFloat(value);
@@ -128,8 +152,11 @@ const ProductDetail: React.FC = () => {
     setMaxPrice(value);
   };
 
+  // 排序逻辑
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSort, setSelectedSort] = useState("Most Recent First");
+
+  // 点击排序按钮
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -142,133 +169,70 @@ const ProductDetail: React.FC = () => {
   };
   const isMenuOpen = Boolean(anchorEl);
 
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 12;
+  // 分页逻辑
+  const [page, setPage] = useState(1); //当前页码
+  const itemsPerPage = 4; //每页显示4个产品
 
-  const totalPages = Math.ceil(filteredGuitars.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredGuitars.length / itemsPerPage); //总页数
 
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+    setPage(value); //改变当前页码
   };
 
   const displayedProducts = filteredGuitars.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
-  );
+  ); //当前页码显示的产品
 
   return (
     <Box>
       <Header />
-      <Box sx={{ padding: "16px 72px 16px 72px" }}>
+      <Box sx={styles.list_styles.list_frame}>
         <Grid container>
           <Grid item xs={12}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "100%",
-                gap: "45px",
-                margin: "48px 0px 0px 0px",
-              }}
-            >
+            <Box sx={styles.list_styles.main_frame}>
               {/* left side */}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "310px",
-                  height: "100%",
-                  flexShrink: 0,
-                }}
-              >
+              <Box sx={styles.list_styles.left_frame}>
                 {/* Category Title */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    width: "100%",
-                    padding: "0px 0px 20px 0px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                      lineHeight: "28px",
-                      textAlign: "left",
-                      color: "#02000C",
-                    }}
-                  >
+                <Box sx={styles.list_styles.category_frame}>
+                  <Typography sx={styles.list_styles.roboto_20px_02000C}>
                     Category
                   </Typography>
                   <ExpandMoreIcon
-                    onClick={categoryList.handleCollapseOpen}
+                    fontSize="large"
+                    onClick={categoryList.handleCollapse}
                     sx={{
-                      color: "#000000D9",
-                      transform: categoryList.collapseOpen
+                      ...styles.list_styles.expandmore_icon,
+                      transform: categoryList.collapse
                         ? "rotate(180deg)"
                         : "rotate(0deg)",
-                      transition: "transform 0.3s",
                     }}
-                    fontSize="large"
                   />
                 </Box>
+
+                {/* Category List */}
                 <Collapse
-                  in={categoryList.collapseOpen}
+                  in={categoryList.collapse}
                   collapsedSize={0}
-                  sx={{
-                    borderBottom: "1px solid #DDDCDE",
-                  }}
+                  sx={styles.list_styles.border_bottom}
                 >
-                  <List
-                    component="nav"
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      flexDirection: "column",
-                      width: "100%",
-                      margin: "0px 0px 15px 0px",
-                      padding: "0px 0px 0px 0px",
-                    }}
-                  >
-                    {/* Category List */}
+                  <List component="nav" sx={styles.list_styles.category_list}>
                     {categories.map((item, index) => (
                       <ListItem key={index} disablePadding>
                         <ListItemButton
                           selected={selectedCategory === item}
                           onClick={() => handleCategoryClick(item)}
                           sx={{
-                            width: "100%",
+                            ...styles.list_styles.category_item,
                             color:
                               selectedCategory === item ? "#02000C" : "#76757C",
-                            padding: "5px 0px 5px 0px",
-                            "&.Mui-selected": {
-                              color: "#02000C",
-                              backgroundColor: "transparent",
-                            },
-                            "&.Mui-selected:hover": {
-                              color: "#02000C",
-                              backgroundColor: "transparent",
-                            },
-                            "&:hover": {
-                              color: "#02000C",
-                              backgroundColor: "transparent",
-                            },
                           }}
                         >
                           <ListItemText
                             primary={item}
                             primaryTypographyProps={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
+                              sx: styles.list_styles.category_text,
                               fontWeight: selectedCategory === item ? 500 : 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
                             }}
                           />
                         </ListItemButton>
@@ -277,148 +241,79 @@ const ProductDetail: React.FC = () => {
                   </List>
                 </Collapse>
 
-                {/* Brand */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    width: "100%",
-                    padding: "20px 0px 20px 0px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                      lineHeight: "28px",
-                      textAlign: "left",
-                      color: "#02000C",
-                    }}
-                  >
+                {/* Brand Title */}
+                <Box sx={styles.list_styles.filter_frame}>
+                  <Typography sx={styles.list_styles.roboto_20px_02000C}>
                     Brand
                   </Typography>
                   <ExpandMoreIcon
-                    onClick={brandList.handleCollapseClose}
+                    fontSize="large"
+                    onClick={brandForm.handleCollapse}
                     sx={{
-                      color: "#000000D9",
-                      transform: brandList.collapseClose
+                      ...styles.list_styles.expandmore_icon,
+                      transform: brandForm.collapse
                         ? "rotate(180deg)"
                         : "rotate(0deg)",
-                      transition: "transform 0.3s",
                     }}
-                    fontSize="large"
                   />
                 </Box>
+
+                {/* Brand Form */}
                 <Collapse
-                  in={brandList.collapseClose}
+                  in={brandForm.collapse}
                   collapsedSize={0}
-                  sx={{
-                    borderBottom: "1px solid #DDDCDE",
-                  }}
+                  sx={styles.list_styles.border_bottom}
                 >
-                  {/* Brand List */}
-                  <FormGroup
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      flexDirection: "column",
-                      width: "100%",
-                      margin: "0px 0px 20px 0px",
-                    }}
-                  >
+                  <FormGroup sx={styles.list_styles.form_frame}>
                     {brand.map((item, index) => (
                       <FormControlLabel
                         key={index}
+                        label={item}
                         control={
                           <Checkbox
                             name={item}
+                            size="small"
                             checked={selectedBrand.includes(item)}
                             onChange={handleBrandChange}
-                            size="small"
-                            sx={{
-                              "&.Mui-checked": {
-                                color: "#02000C",
-                              },
-                            }}
+                            sx={styles.list_styles.form_label}
                           />
                         }
-                        label={item}
-                        sx={{
-                          fontFamily: "Roboto",
-                          fontSize: "16px",
-                          fontWeight: 400,
-                          lineHeight: "24px",
-                          textAlign: "left",
-                          color: "#02000C",
-                        }}
+                        sx={styles.list_styles.roboto_16px_02000C}
                       />
                     ))}
                   </FormGroup>
                 </Collapse>
 
-                {/* Price */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    width: "100%",
-                    padding: "20px 0px 20px 0px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                      lineHeight: "28px",
-                      textAlign: "left",
-                      color: "#02000C",
-                    }}
-                  >
+                {/* Price Title */}
+                <Box sx={styles.list_styles.filter_frame}>
+                  <Typography sx={styles.list_styles.roboto_20px_02000C}>
                     Price
                   </Typography>
                   <ExpandMoreIcon
-                    onClick={priceList.handleCollapseClose}
+                    fontSize="large"
+                    onClick={priceList.handleCollapse}
                     sx={{
-                      color: "#000000D9",
-                      transform: priceList.collapseClose
+                      ...styles.list_styles.expandmore_icon,
+                      transform: priceList.collapse
                         ? "rotate(180deg)"
                         : "rotate(0deg)",
-                      transition: "transform 0.3s",
                     }}
-                    fontSize="large"
                   />
                 </Box>
+
+                {/* Price List */}
                 <Collapse
-                  in={priceList.collapseClose}
+                  in={priceList.collapse}
                   collapsedSize={0}
-                  sx={{
-                    borderBottom: "1px solid #DDDCDE",
-                  }}
+                  sx={styles.list_styles.border_bottom}
                 >
-                  {/* Price List */}
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
+                      ...styles.list_styles.price_form,
                       height: error.min || error.max ? "106px" : "40px",
-                      margin: "0px 0px 20px 0px",
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        flexDirection: "row",
-                      }}
-                    >
+                    <Box sx={styles.list_styles.price_input}>
                       <TextField
                         placeholder="Min: 20.00"
                         value={minPrice !== null ? minPrice : ""}
@@ -429,39 +324,9 @@ const ProductDetail: React.FC = () => {
                         InputLabelProps={{
                           shrink: false,
                         }}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            fontFamily: "Roboto",
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            lineHeight: "22px",
-                            textAlign: "left",
-                            color: "#76757C",
-                            width: "132px",
-                            height: "40px",
-                            border: "1px solid #02000C",
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "transparent",
-                            },
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "transparent",
-                            },
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "transparent",
-                            },
-                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              border: "1px solid #FFFFFF",
-                            },
-                          },
-                        }}
+                        sx={styles.list_styles.price_text}
                       />
-                      <Box
-                        sx={{
-                          width: "16px",
-                          height: "1px",
-                          backgroundColor: "#02000C",
-                        }}
-                      />
+                      <Box sx={styles.list_styles.price_line} />
                       <TextField
                         placeholder="Max: 999,99.00"
                         value={maxPrice !== null ? maxPrice : ""}
@@ -472,81 +337,25 @@ const ProductDetail: React.FC = () => {
                         InputLabelProps={{
                           shrink: false,
                         }}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            fontFamily: "Roboto",
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            lineHeight: "22px",
-                            textAlign: "left",
-                            color: "#76757C",
-                            width: "132px",
-                            height: "40px",
-                            border: "1px solid #02000C",
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "transparent",
-                            },
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "transparent",
-                            },
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "transparent",
-                            },
-                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              border: "1px solid #FFFFFF",
-                            },
-                          },
-                        }}
+                        sx={styles.list_styles.price_text}
                       />
                     </Box>
 
-                    <Box
-                      sx={{
-                        position: "relative",
-                        width: "100%",
-                      }}
-                    >
+                    {/* Input Error Message */}
+                    <Box sx={styles.list_styles.price_error_frame}>
                       {error.min && minPrice && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            left: "0px",
-                            width: "125px",
-                            height: "66px",
-                          }}
-                        >
+                        <Box sx={styles.list_styles.error_min}>
                           <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "14px",
-                              fontWeight: 400,
-                              lineHeight: "22px",
-                              textAlign: "left",
-                              color: "#EB001B",
-                            }}
+                            sx={styles.list_styles.roboto_14px_EB001B}
                           >
                             Value must be between 20 and the maximum
                           </Typography>
                         </Box>
                       )}
                       {error.max && maxPrice && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            right: "5px",
-                            width: "125px",
-                            height: "66px",
-                          }}
-                        >
+                        <Box sx={styles.list_styles.error_max}>
                           <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "14px",
-                              fontWeight: 400,
-                              lineHeight: "22px",
-                              textAlign: "left",
-                              color: "#EB001B",
-                            }}
+                            sx={styles.list_styles.roboto_14px_EB001B}
                           >
                             Value must be between minimum and 999,99.00
                           </Typography>
@@ -556,349 +365,111 @@ const ProductDetail: React.FC = () => {
                   </Box>
                 </Collapse>
 
-                {/* Condition */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    width: "100%",
-                    padding: "20px 0px 20px 0px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                      lineHeight: "28px",
-                      textAlign: "left",
-                      color: "#02000C",
-                    }}
-                  >
+                {/* Condition Title */}
+                <Box sx={styles.list_styles.filter_frame}>
+                  <Typography sx={styles.list_styles.roboto_20px_02000C}>
                     Condition
                   </Typography>
                   <ExpandMoreIcon
-                    onClick={conditionList.handleCollapseClose}
+                    onClick={conditionForm.handleCollapse}
+                    fontSize="large"
                     sx={{
-                      color: "#000000D9",
-                      transform: conditionList.collapseClose
+                      ...styles.list_styles.expandmore_icon,
+                      transform: conditionForm.collapse
                         ? "rotate(180deg)"
                         : "rotate(0deg)",
-                      transition: "transform 0.3s",
                     }}
-                    fontSize="large"
                   />
                 </Box>
+
+                {/* Condition Form */}
                 <Collapse
-                  in={conditionList.collapseClose}
+                  in={conditionForm.collapse}
                   collapsedSize={0}
-                  sx={{
-                    borderBottom: "1px solid #DDDCDE",
-                  }}
+                  sx={styles.list_styles.border_bottom}
                 >
-                  <FormGroup
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      flexDirection: "column",
-                      width: "100%",
-                      margin: "0px 0px 20px 0px",
-                    }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Excellent"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Very Good"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Good"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Fair"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Poor"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Non Functioning"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
+                  <FormGroup sx={styles.list_styles.form_frame}>
+                    {condition.map((item, index) => (
+                      <FormControlLabel
+                        key={index}
+                        label={item}
+                        control={
+                          <Checkbox
+                            name={item}
+                            size="small"
+                            checked={selectedCondition.includes(item)}
+                            onChange={handleConditionChange}
+                            sx={styles.list_styles.form_label}
+                          />
+                        }
+                        sx={styles.list_styles.roboto_16px_02000C}
+                      />
+                    ))}
                   </FormGroup>
                 </Collapse>
 
                 {/* Handedness */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    width: "100%",
-                    padding: "20px 0px 20px 0px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                      lineHeight: "28px",
-                      textAlign: "left",
-                      color: "#02000C",
-                    }}
-                  >
+                <Box sx={styles.list_styles.filter_frame}>
+                  <Typography sx={styles.list_styles.roboto_20px_02000C}>
                     Handedness
                   </Typography>
                   <ExpandMoreIcon
-                    onClick={handednessList.handleCollapseClose}
+                    onClick={handednessForm.handleCollapse}
+                    fontSize="large"
                     sx={{
-                      color: "#000000D9",
-                      transform: handednessList.collapseClose
+                      ...styles.list_styles.expandmore_icon,
+                      transform: handednessForm.collapse
                         ? "rotate(180deg)"
                         : "rotate(0deg)",
-                      transition: "transform 0.3s",
                     }}
-                    fontSize="large"
                   />
                 </Box>
+
+                {/* Handedness Form */}
                 <Collapse
-                  in={handednessList.collapseClose}
+                  in={handednessForm.collapse}
                   collapsedSize={0}
-                  sx={{
-                    borderBottom: "1px solid #DDDCDE",
-                  }}
+                  sx={styles.list_styles.border_bottom}
                 >
-                  <FormGroup
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      flexDirection: "column",
-                      width: "100%",
-                      margin: "0px 0px 20px 0px",
-                    }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Right-Handed"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size="small"
-                          sx={{
-                            "&.Mui-checked": {
-                              color: "#02000C",
-                            },
-                          }}
-                        />
-                      }
-                      label="Left-Handed"
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    />
+                  <FormGroup sx={styles.list_styles.form_frame}>
+                    {handedness.map((item, index) => (
+                      <FormControlLabel
+                        key={index}
+                        label={item}
+                        control={
+                          <Checkbox
+                            name={item}
+                            size="small"
+                            sx={styles.list_styles.form_label}
+                          />
+                        }
+                        sx={styles.list_styles.roboto_16px_02000C}
+                      />
+                    ))}
                   </FormGroup>
                 </Collapse>
               </Box>
 
               {/* right side */}
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
-                    gap: "20px",
-                  }}
-                >
+              <Box sx={styles.list_styles.right_width}>
+                {/* Product Title */}
+                <Box sx={styles.list_styles.right_frame}>
                   {/* Title */}
-                  <Typography
-                    sx={{
-                      fontFamily: "Roboto",
-                      fontSize: "30px",
-                      fontWeight: 700,
-                      lineHeight: "40px",
-                      textAlign: "left",
-                      color: "#02000C",
-                    }}
-                  >
+                  <Typography sx={styles.list_styles.roboto_30px_02000C}>
                     {selectedCategory}
                   </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      flexDirection: "row",
-                      width: "100%",
-                      margin: "0px 0px 20px 0px",
-                    }}
-                  >
+                  <Box sx={styles.list_styles.sort_frame}>
                     {/* Results */}
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "24px",
-                        textAlign: "left",
-                        color: "#02000C",
-                      }}
-                    >
-                      564 Results
+
+                    <Typography sx={styles.list_styles.roboto_16px_02000C}>
+                      {itemCount} Results
                     </Typography>
 
                     {/* Sort by */}
                     <Box display="flex" alignItems="center">
                       <Typography
                         variant="h6"
-                        sx={{
-                          fontFamily: "Roboto",
-                          fontSize: "16px",
-                          fontWeight: 400,
-                          lineHeight: "24px",
-                          textAlign: "left",
-                          color: "#02000C",
-                        }}
+                        sx={styles.list_styles.roboto_16px_02000C}
                       >
                         Sort by:
                       </Typography>
@@ -907,26 +478,16 @@ const ProductDetail: React.FC = () => {
                         endIcon={
                           <ExpandMoreIcon
                             sx={{
+                              ...styles.list_styles.expandmore_icon_02000C,
                               transform: isMenuOpen
                                 ? "rotate(180deg)"
                                 : "rotate(0deg)",
-                              transition: "transform 0.3s ease-in-out",
-                              color: "#02000C",
                             }}
                           />
                         }
-                        sx={{ textTransform: "none" }}
+                        sx={styles.list_styles.button_frame}
                       >
-                        <Typography
-                          sx={{
-                            fontFamily: "Roboto",
-                            fontSize: "16px",
-                            fontWeight: 400,
-                            lineHeight: "24px",
-                            textAlign: "left",
-                            color: "#02000C",
-                          }}
-                        >
+                        <Typography sx={styles.list_styles.roboto_16px_02000C}>
                           {selectedSort}
                         </Typography>
                       </Button>
@@ -937,14 +498,7 @@ const ProductDetail: React.FC = () => {
                         keepMounted
                         open={isMenuOpen}
                         onClose={handleClose}
-                        slotProps={{
-                          paper: {
-                            sx: {
-                              width: "258px",
-                              Height: "152px",
-                            },
-                          },
-                        }}
+                        slotProps={styles.list_styles.menu_frame}
                         anchorOrigin={{
                           vertical: "bottom",
                           horizontal: "right",
@@ -961,14 +515,7 @@ const ProductDetail: React.FC = () => {
                           }
                         >
                           <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              color: "#02000C",
-                            }}
+                            sx={styles.list_styles.roboto_16px_02000C}
                           >
                             Most Recent First
                           </Typography>
@@ -981,14 +528,7 @@ const ProductDetail: React.FC = () => {
                           }
                         >
                           <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              color: "#02000C",
-                            }}
+                            sx={styles.list_styles.roboto_16px_02000C}
                           >
                             Price Low to High
                           </Typography>
@@ -1001,14 +541,7 @@ const ProductDetail: React.FC = () => {
                           }
                         >
                           <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              color: "#02000C",
-                            }}
+                            sx={styles.list_styles.roboto_16px_02000C}
                           >
                             Price High to Low
                           </Typography>
@@ -1019,80 +552,32 @@ const ProductDetail: React.FC = () => {
                 </Box>
 
                 {/* Product List */}
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "20px",
-                  }}
-                >
+                <Box sx={styles.list_styles.product_frame}>
                   {displayedProducts.map((item, index) => (
-                    <Box key={index} sx={{ margin: "0px 0px 10px 0px" }}>
+                    <Box key={index}>
                       <Box
                         component={Link}
                         to={`/product/${item.id}`}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "308px",
-                          height: "308px",
-                          overflow: "hidden",
-                          borderRadius: "8px",
-                          margin: "0px 0px 10px 0px",
-                        }}
+                        sx={styles.list_styles.product_space}
                       >
                         <Box
                           component="img"
                           src={item.image[0].image}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
+                          sx={styles.list_styles.product_image}
                         />
                       </Box>
-                      <Box
-                        sx={{
-                          display: "inline-flex",
-                          flexDirection: "column",
-                          gap: "5px",
-                        }}
-                      >
+                      <Box sx={styles.list_styles.product_text}>
                         <Typography
                           variant="h6"
-                          sx={{
-                            fontFamily: "Roboto",
-                            fontSize: "16px",
-                            fontWeight: 400,
-                            lineHeight: "24px",
-                            textAlign: "left",
-                            color: "#02000C",
-                          }}
+                          sx={styles.list_styles.roboto_16px_02000C}
                         >
                           {item.name}
                         </Typography>
-                        <Typography
-                          sx={{
-                            fontFamily: "Roboto",
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            lineHeight: "22px",
-                            textAlign: "left",
-                            color: "#76757C",
-                          }}
-                        >
+                        <Typography sx={styles.list_styles.roboto_14px_76757C}>
                           Condition: {item.condition}
                         </Typography>
                         <Typography
-                          sx={{
-                            fontFamily: "Roboto",
-                            fontSize: "20px",
-                            fontWeight: 500,
-                            lineHeight: "28px",
-                            textAlign: "left",
-                            color: "#000000D9",
-                          }}
+                          sx={styles.list_styles.roboto_20px_000000D9}
                         >
                           {item.price}
                         </Typography>
@@ -1102,15 +587,7 @@ const ProductDetail: React.FC = () => {
                 </Box>
 
                 {/* Pagination */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    margin: "80px 0px 0px 0px",
-                  }}
-                >
+                <Box sx={styles.list_styles.pagination_frame}>
                   <Pagination
                     count={totalPages}
                     page={page}
@@ -1122,18 +599,10 @@ const ProductDetail: React.FC = () => {
                         sx={{
                           ...(item.type === "previous" || item.type === "next"
                             ? {
-                                borderRadius: "50%",
-                                width: "56px",
-                                height: "56px",
-                                border: "1px solid #DDDCDE",
+                                ...styles.list_styles.pagination_previous,
                               }
                             : {
-                                borderRadius: "0%",
-                                margin: "0 8px",
-                                "&.Mui-selected": {
-                                  backgroundColor: "#FFFFFF",
-                                  borderBottom: "2px solid #02000C",
-                                },
+                                ...styles.list_styles.pagination_next,
                               }),
                         }}
                       />

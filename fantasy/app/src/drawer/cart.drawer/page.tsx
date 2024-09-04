@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart.hook/page";
 import { Drawer, Box, IconButton, Typography, Button } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+// import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+// import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import * as styles from "../../styles/drawer.style/page";
@@ -154,7 +154,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                     >
                       ${item.price}
                     </Typography>
-                    <Box
+                    {/* <Box
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -194,7 +194,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                           }}
                         />
                       </IconButton>
-                    </Box>
+                    </Box> */}
                     <IconButton
                       onClick={() => cartHook.removeFromCart(item.id)}
                     >

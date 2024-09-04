@@ -34,7 +34,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
 // Styles
-import * as styles from "../../../styles/productDetail.style/page";
+import * as styles from "../../../styles/product.style/product.detail/page";
 
 const ProductDetail: React.FC = () => {
   const { category, productId } = useParams<{
