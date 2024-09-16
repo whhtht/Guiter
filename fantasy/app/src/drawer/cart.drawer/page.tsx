@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart.hook/page";
 import { Drawer, Box, IconButton, Typography, Button } from "@mui/material";
-// import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-// import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import * as styles from "../../styles/drawer.style/page";
@@ -74,12 +74,12 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
           <Box
             sx={{
               overflowY: "auto",
-              height: "calc(100% - 255px)",
+              height: "calc(100% - 107px)",
             }}
           >
             {cartHook.cartItems.map((item, index) => (
               <Box
-                key={item.id || index}
+                key={index}
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -100,11 +100,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                     backgroundColor: "#EFEFEF",
                   }}
                 >
-                  <Box
-                    component="img"
-                    src={item.image}
-                    sx={{ height: "100%" }}
-                  />
+                  <Box component="img" sx={{ height: "100%" }} />
                 </Box>
                 <Box
                   sx={{
@@ -121,7 +117,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                       color: "#02000C",
                     }}
                   >
-                    {item.name}
+                    {item.product.name}
                   </Typography>
                   <Typography
                     sx={{
@@ -133,7 +129,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                       color: "#76757C",
                     }}
                   >
-                    {item.condition}
+                    {item.product.specificationDetail?.Condition}
                   </Typography>
                   <Box
                     sx={{
@@ -152,9 +148,9 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                         color: "#000000D9",
                       }}
                     >
-                      ${item.price}
+                      ${Number(item.product.price).toFixed(2)}
                     </Typography>
-                    {/* <Box
+                    <Box
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -183,9 +179,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                       >
                         {item.quantity}
                       </Typography>
-                      <IconButton
-                        onClick={() => cartHook.deleteFromCart(item.id)}
-                      >
+                      <IconButton onClick={() => cartHook.deleteFromCart(item)}>
                         <RemoveCircleOutlineIcon
                           sx={{
                             width: "22px",
@@ -194,10 +188,8 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                           }}
                         />
                       </IconButton>
-                    </Box> */}
-                    <IconButton
-                      onClick={() => cartHook.removeFromCart(item.id)}
-                    >
+                    </Box>
+                    <IconButton onClick={() => cartHook.removeFromCart(item)}>
                       <DeleteOutlineIcon
                         sx={{
                           width: "22px",

@@ -9,6 +9,8 @@ import {
   Autocomplete,
   TextField,
   InputAdornment,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -31,6 +33,49 @@ const Header: React.FC = () => {
   const headerHook = useHeader();
   const locationHook = useLocation(headerHook.setOpenLocation);
   const cartHook = useCart();
+
+  // 用户菜单
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  // 退出登录
+  const handleLogout = () => {
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    cartHook.setCartItemCount(0);
+    cartHook.setCartItems([]);
+    cartHook.setCartTotal("0");
+    handleCloseMenu();
+  };
+
+  const getEmailFromToken = () => {
+    const token = localStorage.getItem("idToken");
+    if (!token) return null;
+    // JWT 格式为三部分: header.payload.signature
+    const payload = token.split(".")[1]; // 取出第二部分 payload
+    if (!payload) return null;
+    // 解码 Base64 编码的 payload
+    const decodedPayload = atob(payload);
+    const payloadObject = JSON.parse(decodedPayload);
+    // 从 payload 中提取邮箱信息 (假设 JWT 中的邮箱字段是 'email')
+    return payloadObject.email;
+  };
+
+  // 获取邮箱的前缀部分
+  const getMaskedEmail = () => {
+    const email = getEmailFromToken();
+    if (!email) return null;
+    // 使用正则表达式，匹配 @ 之前的部分
+    const username = email.split("@")[0];
+    return username;
+  };
 
   return (
     <Box>
@@ -87,24 +132,75 @@ const Header: React.FC = () => {
 
           {/* Sign In Button */}
           <Box sx={{ mx: "10px" }}>
-            <Button
-              component={Link}
-              to="/signin"
-              variant="text"
-              disableFocusRipple
-              startIcon={
-                <PersonOutlineIcon sx={styles.headerstyles.icon_32px} />
-              }
-              sx={styles.headerstyles.button_black}
-            >
-              <Typography
-                variant="body1"
-                sx={styles.headerstyles.roboto_16px_FFFFFF}
+            {localStorage.getItem("idToken") ? (
+              <Button
+                onClick={handleOpenMenu}
+                variant="text"
+                disableFocusRipple
+                startIcon={
+                  <PersonOutlineIcon sx={styles.headerstyles.icon_32px} />
+                }
+                sx={styles.headerstyles.button_black}
               >
-                Sign In
-              </Typography>
-            </Button>
+                <Typography
+                  variant="body1"
+                  sx={styles.headerstyles.roboto_16px_FFFFFF}
+                >
+                  Profile
+                </Typography>
+              </Button>
+            ) : (
+              <Button
+                component={Link}
+                to="/signin"
+                variant="text"
+                disableFocusRipple
+                startIcon={
+                  <PersonOutlineIcon sx={styles.headerstyles.icon_32px} />
+                }
+                sx={styles.headerstyles.button_black}
+              >
+                <Typography
+                  variant="body1"
+                  sx={styles.headerstyles.roboto_16px_FFFFFF}
+                >
+                  Sign In
+                </Typography>
+              </Button>
+            )}
           </Box>
+          <Menu
+            anchorEl={anchorEl}
+            keepMounted
+            open={openMenu}
+            onClose={handleCloseMenu}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            slotProps={{
+              paper: {
+                sx: {
+                  width: "150px",
+                },
+              },
+            }}
+          >
+            <Box sx={{ ml: "15px" }}>
+              <Typography>Hi {getMaskedEmail()} </Typography>
+            </Box>
+
+            <MenuItem>
+              <Typography>User Detail</Typography>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <Typography>Logic Out</Typography>
+            </MenuItem>
+          </Menu>
 
           {/* Shopping Cart Button */}
           <Box sx={styles.headerstyles.link_frame}>

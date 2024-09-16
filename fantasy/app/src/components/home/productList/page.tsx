@@ -21,6 +21,8 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import { getProductList } from "../../../api/product/page";
+
 import {
   category as categories,
   brand,
@@ -33,6 +35,17 @@ import Footer from "../../layout/footer/page";
 
 import * as styles from "../../../styles/product.style/product.list/page";
 
+interface Product {
+  name: string;
+  price: string;
+  specificationDetail: {
+    Condition: string;
+    Categories: string;
+    Brand: string;
+  };
+}
+
+// 展开/折叠通用逻辑
 const useCollapse = (initialState = true) => {
   const [collapse, setCollapse] = useState(initialState);
   const handleCollapse = () => {
@@ -50,6 +63,14 @@ const ProductDetail: React.FC = () => {
   }>();
   const navigate = useNavigate();
 
+  // 获取后端产品列表
+  const [product, setProduct] = useState<Product[]>([]);
+  useEffect(() => {
+    getProductList().then((data) => {
+      setProduct(data);
+    });
+  }, []);
+
   // 展开/折叠逻辑
   const categoryList = useCollapse(true);
   const brandForm = useCollapse(false);
@@ -60,19 +81,16 @@ const ProductDetail: React.FC = () => {
   // 类别查询逻辑
   const [selectedCategory, setSelectedCategory] =
     useState<string>("All Categories");
-
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
     navigate(`/productlist/${category}`); // 跳转到指定的类别
   };
-
+  //当category改变时，执行useEffect里的函数
   useEffect(() => {
     setSelectedCategory(category || "All Categories"); //设置选中的类别
-  }, [category]); //当category改变时，执行useEffect里的函数
-
+  }, [category]);
   // 品牌查询逻辑
   const [selectedBrand, setSelectedBrand] = useState<string[]>([]);
-
   const handleBrandChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const brand = event.target.name;
     if (event.target.checked) {
@@ -81,10 +99,8 @@ const ProductDetail: React.FC = () => {
       setSelectedBrand(selectedBrand.filter((item) => item !== brand));
     }
   };
-
   // 条件查询逻辑
   const [selectedCondition, setSelectedCondition] = useState<string[]>([]);
-
   const handleConditionChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -97,27 +113,26 @@ const ProductDetail: React.FC = () => {
       );
     }
   };
-
   // 查询钩子
-  const filteredGuitars = guitar.filter((product) => {
+  const filteredGuitars = product.filter((item) => {
     const categoryFilter =
-      category === "All Categories" || product.category === category;
+      category === "All Categories" ||
+      item.specificationDetail.Categories === category;
     const brandFilter =
-      selectedBrand.length === 0 || selectedBrand.includes(product.brand);
+      selectedBrand.length === 0 ||
+      selectedBrand.includes(item.specificationDetail.Brand);
     const conditionFilter =
       selectedCondition.length === 0 ||
-      selectedCondition.includes(product.condition);
+      selectedCondition.includes(item.specificationDetail.Condition);
 
     return categoryFilter && brandFilter && conditionFilter;
   });
-
-  const itemCount = filteredGuitars.length; //产品数量
-
+  // 产品数量显示
+  const itemCount = filteredGuitars.length;
   // 价格查询逻辑
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [error, setError] = useState({ min: false, max: false });
-
   // 最低价格输入逻辑
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -134,7 +149,6 @@ const ProductDetail: React.FC = () => {
 
     setMinPrice(value);
   };
-
   // 最高价格输入逻辑
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -151,11 +165,9 @@ const ProductDetail: React.FC = () => {
 
     setMaxPrice(value);
   };
-
   // 排序逻辑
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSort, setSelectedSort] = useState("Most Recent First");
-
   // 点击排序按钮
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -168,21 +180,32 @@ const ProductDetail: React.FC = () => {
     handleClose();
   };
   const isMenuOpen = Boolean(anchorEl);
-
   // 分页逻辑
-  const [page, setPage] = useState(1); //当前页码
-  const itemsPerPage = 4; //每页显示4个产品
-
-  const totalPages = Math.ceil(filteredGuitars.length / itemsPerPage); //总页数
-
+  const [page, setPage] = useState(1);
+  // 每页显示10个产品
+  const itemsPerPage = 10;
+  // 总页数
+  const totalPages = Math.ceil(8 / itemsPerPage);
+  // 改变页码
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value); //改变当前页码
+    setPage(value);
   };
-
+  // 显示产品
   const displayedProducts = filteredGuitars.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
-  ); //当前页码显示的产品
+  );
+  // 显示产品图片
+  const itemImage = displayedProducts.map((item) => {
+    // 从guitar列表中找到对应的产品
+    const localguitar = guitar.find((guitar) => guitar.name === item.name);
+    // 如果有图片，显示图片，否则显示默认图片
+    const image =
+      localguitar && localguitar.image.length > 0
+        ? localguitar.image[0].image
+        : "default-image.jpg";
+    return { ...item, image };
+  });
 
   return (
     <Box>
@@ -553,19 +576,21 @@ const ProductDetail: React.FC = () => {
 
                 {/* Product List */}
                 <Box sx={styles.list_styles.product_frame}>
-                  {displayedProducts.map((item, index) => (
+                  {itemImage.map((item, index) => (
                     <Box key={index}>
                       <Box
                         component={Link}
-                        to={`/product/${item.id}`}
+                        to={`/product/${encodeURIComponent(item.name)}`}
                         sx={styles.list_styles.product_space}
                       >
                         <Box
+                          key={index}
                           component="img"
-                          src={item.image[0].image}
+                          src={item.image}
                           sx={styles.list_styles.product_image}
                         />
                       </Box>
+
                       <Box sx={styles.list_styles.product_text}>
                         <Typography
                           variant="h6"
@@ -574,7 +599,7 @@ const ProductDetail: React.FC = () => {
                           {item.name}
                         </Typography>
                         <Typography sx={styles.list_styles.roboto_14px_76757C}>
-                          Condition: {item.condition}
+                          Condition: {item.specificationDetail.Condition}
                         </Typography>
                         <Typography
                           sx={styles.list_styles.roboto_20px_000000D9}

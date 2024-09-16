@@ -16,7 +16,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-// AWS Cognito client
+// Cognito客户端
 const client = new CognitoIdentityProviderClient({
   region: "us-east-2",
   credentials: {
@@ -25,7 +25,7 @@ const client = new CognitoIdentityProviderClient({
   },
 });
 
-// Cognito sign up
+// Cognito注册
 export async function signUp(email: string, password: string) {
   console.log(process.env.COGNITO_CLIENT_ID);
   const params = {
@@ -48,7 +48,7 @@ export async function signUp(email: string, password: string) {
   }
 }
 
-// Cognito sign in
+// Cognito登录
 export async function signIn(email: string, password: string) {
   const params = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -68,7 +68,7 @@ export async function signIn(email: string, password: string) {
   }
 }
 
-// Cognito forgot password
+// Cognito获取用户信息
 export async function forgetPassword(email: string) {
   const params = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -85,7 +85,7 @@ export async function forgetPassword(email: string) {
   }
 }
 
-// Cognito sent reset password code
+// Cognito发送重置密码验证码
 export async function resetPasswordCode(email: string) {
   const params = {
     ClientId: process.env.COGNITO_CLIENT_ID,
@@ -100,7 +100,7 @@ export async function resetPasswordCode(email: string) {
   }
 }
 
-// Cognito reset password
+// Cognito重置密码
 export async function resetPassword(
   email: string,
   code: string,
@@ -119,6 +119,28 @@ export async function resetPassword(
     return result;
   } catch (error) {
     console.error("resetPassword error:", error);
+    throw error;
+  }
+}
+
+// Cognito刷新token
+export async function refreshTokens(refreshToken: string) {
+  const params = {
+    UserPoolId: process.env.COGNITO_USER_POOL_ID,
+    ClientId: process.env.COGNITO_CLIENT_ID,
+    AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
+    AuthParameters: {
+      REFRESH_TOKEN: refreshToken,
+    },
+  };
+  try {
+    const command = new AdminInitiateAuthCommand(params);
+    const result = await client.send(command);
+    return {
+      accessToken: result.AuthenticationResult?.AccessToken,
+      idToken: result.AuthenticationResult?.IdToken,
+    };
+  } catch (error) {
     throw error;
   }
 }

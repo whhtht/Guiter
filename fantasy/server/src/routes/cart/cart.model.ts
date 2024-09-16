@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
+import { Product, Specification } from "../products/products.model";
 
 class Cart extends Model {
   public id!: string;
@@ -37,5 +38,7 @@ Cart.init(
     tableName: "cart",
   }
 );
+
+Cart.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 export default Cart;

@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useProductDetail } from "../../../hooks/useProductDetail.hook/page";
 import { useCart } from "../../../hooks/useCart.hook/page";
-import { guitar } from "../../../lists/guitar.list/page";
 import { newArrivals } from "../../../lists/newArrivals.list/page";
 import LocationDrawer from "../../../drawer/location.drawer/page";
 import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
 import Header from "../../layout/header/page";
 import Footer from "../../layout/footer/page";
+
+import { getProduct } from "../../../api/product/page";
+
+import { guitar } from "../../../lists/guitar.list/page";
 
 // Mui Components
 import {
@@ -37,13 +40,62 @@ import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import * as styles from "../../../styles/product.style/product.detail/page";
 
 const ProductDetail: React.FC = () => {
-  const { category, productId } = useParams<{
+  const { productName } = useParams<{
     category: string;
-    productId: string;
+    productName: string;
   }>();
 
-  const product = guitar.find((p) => p.id.toString() === productId);
-  const totalImages = Math.min(product?.image?.length ?? 0, 5);
+  interface Product {
+    id: string;
+    name: string;
+    condition: string;
+    price: number;
+    specificationDetail: {
+      Condition: string;
+      Brand: string;
+      Model: string;
+      Finish: string;
+      Categories: string;
+      Year: string;
+      Series: string;
+      "Fretboard Material": string;
+      "Pickup Configuration": string;
+      "Scale Length": string;
+      "Body Shape": string;
+      "Right/Left Handed": string;
+      "Number of Strings": string;
+      "Neck Material": string;
+      "Color Family": string;
+      "Model Family": string;
+      "Finish Style": string;
+      "Body Type": string;
+      "Offset Body": string;
+      "Bridge/Tailpiece Type": string;
+      "Neck Construction": string;
+      "Number of Frets": string;
+    };
+  }
+
+  // 从后端获取产品数据
+  const [product, setProduct] = useState<Product | null>(null);
+  useEffect(() => {
+    if (productName) {
+      getProduct(productName)
+        .then((productData) => {
+          // 储存产品数据
+          setProduct(productData);
+        })
+        .catch((error) => {
+          console.error("Error fetching product details:", error);
+        });
+    }
+  }, [productName]);
+
+  // 从本地数据获取产品数据
+  const guitars = guitar.find((p) => p.name.toString() === productName);
+  // 从本地数据获取产品图片
+  const totalImages = Math.min(guitars?.image?.length ?? 0, 5);
+  // 切换产品图片
   const handleNextImage = () => {
     productHook.setSelectedImageIndex(
       (prevIndex) => (prevIndex + 1) % totalImages
@@ -72,7 +124,7 @@ const ProductDetail: React.FC = () => {
                           sx={{
                             display: "flex",
                             justifyContent:
-                              (product?.image?.length ?? 0) >= 5
+                              (guitars?.image?.length ?? 0) >= 5
                                 ? "space-between"
                                 : "flex-start",
                             alignItems: "center",
@@ -82,7 +134,7 @@ const ProductDetail: React.FC = () => {
                             zIndex: 0,
                           }}
                         >
-                          {product?.image.slice(0, 5).map((img, index) => (
+                          {guitars?.image.slice(0, 5).map((img, index) => (
                             <ImageListItem
                               key={index}
                               onClick={() =>
@@ -100,7 +152,7 @@ const ProductDetail: React.FC = () => {
                                   backgroundColor: "#EFEFEF",
                                   borderRadius: "8px",
                                   margin:
-                                    (product?.image?.length ?? 0) >= 5
+                                    (guitars?.image?.length ?? 0) >= 5
                                       ? "0px 0px 0px 0px"
                                       : "0px 0px 9.7px 0px",
                                   border:
@@ -118,7 +170,7 @@ const ProductDetail: React.FC = () => {
                               </Box>
                             </ImageListItem>
                           ))}
-                          {(product?.image?.length ?? 0) >= 5 && (
+                          {(guitars?.image?.length ?? 0) >= 5 && (
                             <Box
                               sx={styles.detailstyles.viewAll}
                               onClick={() => {
@@ -155,9 +207,9 @@ const ProductDetail: React.FC = () => {
                           </IconButton>
                         </DialogTitle>
                         <DialogContent>
-                          {product?.image && (
+                          {guitars?.image && (
                             <ImageList cols={3}>
-                              {product.image.map((item, index) => (
+                              {guitars.image.map((item, index) => (
                                 <ImageListItem
                                   key={index}
                                   sx={
@@ -190,7 +242,7 @@ const ProductDetail: React.FC = () => {
                         <Box
                           component="img"
                           src={
-                            product?.image?.slice(0, 5)[
+                            guitars?.image?.slice(0, 5)[
                               productHook.selectedImageIndex
                             ].image
                           }
@@ -350,14 +402,12 @@ const ProductDetail: React.FC = () => {
                         <Typography
                           variant="body1"
                           sx={styles.detailstyles.roboto_14px_02000C}
-                        >
-                          {product?.review.main}
-                        </Typography>
+                        ></Typography>
                         <Box
                           component={"ul"}
                           sx={styles.detailstyles.review_ul}
                         >
-                          {product?.review?.list.map((list, index) => (
+                          {/* {guitars?.review?.list.map((list, index) => (
                             <Typography
                               component={"li"}
                               variant="body1"
@@ -366,7 +416,7 @@ const ProductDetail: React.FC = () => {
                             >
                               {list}
                             </Typography>
-                          ))}
+                          ))} */}
                         </Box>
                       </Box>
                       <Typography
@@ -399,40 +449,43 @@ const ProductDetail: React.FC = () => {
                       collapsedSize={0}
                       sx={styles.detailstyles.collapse_border}
                     >
-                      {Object.keys(product?.specification?.label || {}).map(
-                        (key) => (
-                          <Box
-                            key={key}
-                            sx={styles.detailstyles.collapse_padding}
-                          >
-                            <Box sx={styles.detailstyles.specifiation_frame}>
-                              <Box sx={styles.detailstyles.specifiation_width}>
+                      {product &&
+                        Object.keys(product.specificationDetail)
+                          .filter(
+                            (key) =>
+                              key !== "id" &&
+                              key !== "createdAt" &&
+                              key !== "updatedAt"
+                          )
+                          .map((key) => (
+                            <Box
+                              key={key}
+                              sx={styles.detailstyles.collapse_padding}
+                            >
+                              <Box sx={styles.detailstyles.specifiation_frame}>
+                                <Box
+                                  sx={styles.detailstyles.specifiation_width}
+                                >
+                                  <Typography
+                                    variant="body1"
+                                    sx={styles.detailstyles.roboto_14px_000000}
+                                  >
+                                    {key}:
+                                  </Typography>
+                                </Box>
                                 <Typography
                                   variant="body1"
-                                  sx={styles.detailstyles.roboto_14px_000000}
+                                  sx={styles.detailstyles.roboto_14px_02000C}
                                 >
                                   {
-                                    product?.specification?.label[
-                                      key as keyof typeof product.specification.label
+                                    product.specificationDetail[
+                                      key as keyof typeof product.specificationDetail
                                     ]
                                   }
-                                  :
                                 </Typography>
                               </Box>
-                              <Typography
-                                variant="body1"
-                                sx={styles.detailstyles.roboto_14px_02000C}
-                              >
-                                {
-                                  product?.specification?.state[
-                                    key as keyof typeof product.specification.state
-                                  ]
-                                }
-                              </Typography>
                             </Box>
-                          </Box>
-                        )
-                      )}
+                          ))}
                     </Collapse>
 
                     {/* Shipping police */}
@@ -482,7 +535,7 @@ const ProductDetail: React.FC = () => {
                         ></Typography>
                         <Typography
                           component={Link}
-                          to={`/${category}`}
+                          to={`/`}
                           sx={{
                             fontFamily: "Roboto",
                             fontSize: "14px",
@@ -547,7 +600,7 @@ const ProductDetail: React.FC = () => {
                         ></Typography>
                         <Typography
                           component={Link}
-                          to={`/${category}`}
+                          to={`/`}
                           sx={{
                             fontFamily: "Roboto",
                             fontSize: "14px",
@@ -570,7 +623,7 @@ const ProductDetail: React.FC = () => {
                 <Box sx={styles.detailstyles.main_right_frame}>
                   {/* Part 1.4 */}
                   {product && (
-                    <Box key={product.id}>
+                    <Box>
                       <Box sx={styles.detailstyles.titleFrame}>
                         <Typography sx={styles.detailstyles.roboto_30px_02000C}>
                           {product.name}
@@ -579,19 +632,17 @@ const ProductDetail: React.FC = () => {
                           variant="body1"
                           sx={styles.detailstyles.roboto_14px_76757C}
                         >
-                          Condition: {product.condition}
+                          Condition: {product.specificationDetail.Condition}
                         </Typography>
                       </Box>
                       <Box sx={styles.detailstyles.titleSpace}>
                         <Typography sx={styles.detailstyles.roboto_30px_02000C}>
-                          ${product.price}
+                          ${Number(product.price).toFixed(2)}
                         </Typography>
                         <Typography
                           variant="body1"
                           sx={styles.detailstyles.roboto_14px_76757C}
-                        >
-                          New guitar: ${product.newprice}
-                        </Typography>
+                        ></Typography>
                       </Box>
                     </Box>
                   )}
@@ -610,12 +661,15 @@ const ProductDetail: React.FC = () => {
                     <Button
                       onClick={() =>
                         cartHook.addToCart({
-                          id: product?.id || 0,
-                          name: product?.name || "",
-                          condition: product?.condition || "",
-                          price: product?.price.toString() || "",
-                          image: product?.image[0].image || "",
-                          quantity: 1, 
+                          quantity: 1,
+                          product: {
+                            name: product?.name || "",
+                            price: product?.price.toString() || "",
+                            specificationDetail: {
+                              Condition:
+                                product?.specificationDetail?.Condition || "",
+                            },
+                          },
                         })
                       }
                       sx={styles.detailstyles.buttonStyle_FFFFFF}

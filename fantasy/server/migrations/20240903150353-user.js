@@ -24,11 +24,6 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      requestId:{
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

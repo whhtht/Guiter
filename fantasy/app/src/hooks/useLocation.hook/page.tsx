@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-
-interface AddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
-}
+import { AddressComponent } from "./context/page";
 
 export const useLocation = (
   setOpen: React.Dispatch<React.SetStateAction<boolean>>

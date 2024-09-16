@@ -112,6 +112,7 @@ export const useSignUp = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
+  // 注册按钮
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -158,7 +159,6 @@ export const useSignUp = () => {
     }
     try {
       const response = await signUp(email, password);
-      console.log("Response:", response);
       if (rememberMe) {
         localStorage.setItem("email", email);
         localStorage.setItem("password", password);
@@ -168,10 +168,8 @@ export const useSignUp = () => {
         localStorage.removeItem("password");
         localStorage.setItem("rememberMe", "false");
       }
-      setMessage(
-        "Sign up successful. Please check your email to verify your account."
-      );
-      setTimeout(() => navigate("/"), 2000);
+      setMessage(response.data.message);
+      setTimeout(() => navigate("/signin"), 2000);
       setError("");
     } catch (err) {
       const errorResponse = err as { message: string };

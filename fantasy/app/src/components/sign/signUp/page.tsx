@@ -38,7 +38,7 @@ import {
   helvetica_haveAccount,
 } from "../../../styles/signup.style/page";
 
-const Sign_up: React.FC = () => {
+const SignUp: React.FC = () => {
   // Function
   const {
     handleSignUp,
@@ -285,4 +285,4 @@ const Sign_up: React.FC = () => {
   );
 };
 
-export default Sign_up;
+export default SignUp;

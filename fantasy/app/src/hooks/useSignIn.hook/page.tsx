@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../../api/auth/page";
+import { getCartId } from "../../api/cart/page";
+import { useCart } from "../useCart.hook/page";
 
 export const useSignIn = () => {
-  // Email Function
+  const { setCartItemCount, fetchCart } = useCart();
+
+  // 邮箱函数
   const [email, setEmail] = useState<string>("");
   const [showEmail, setShowEmail] = React.useState<boolean>(false);
   const [emailError, setEmailError] = useState<boolean>(false);
@@ -12,7 +16,7 @@ export const useSignIn = () => {
     event.preventDefault();
   const handleClickShowEmail = () => setShowEmail((showEmail) => !showEmail);
 
-  // Email Error Function
+  // 邮箱错误函数
   const handeleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputemail = event.target.value;
     setEmail(inputemail);
@@ -32,7 +36,7 @@ export const useSignIn = () => {
     }
   };
 
-  // Password Function
+  // 密码函数
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<boolean>(false);
@@ -44,7 +48,7 @@ export const useSignIn = () => {
   const handleClickShowPassword = () =>
     setShowPassword((showPassword) => !showPassword);
 
-  // Password Error Function
+  // 密码错误函数
   const handelePasswordChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -69,14 +73,15 @@ export const useSignIn = () => {
     setPassword("");
   };
 
-  // Message Function
+  // 登录函数
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  // 登录验证
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    // 验证邮箱和密码
     if (!email) {
       setError("Please enter your email address.");
       setEmailError(true);
@@ -101,12 +106,26 @@ export const useSignIn = () => {
       setEmailBackgroundColor("");
       setPasswordBackgroundColor("");
     }
+    // 登录
     try {
       const response = await signIn(email, password);
       const { idToken, accessToken, refreshToken } = response.data;
       localStorage.setItem("idToken", idToken);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+      console.log(accessToken);
+
+      if (localStorage.getItem("accessToken")) {
+        try {
+          const cartResponse = await getCartId(); // 调用获取购物车信息的 API
+          const cart = cartResponse.data;
+          setCartItemCount(cart.quantity); // 设置购物车商品数量
+          fetchCart(); // 调用 fetchCart 来更新购物车
+        } catch (error) {
+          console.error("登录获取购物车信息失败", error);
+        }
+      }
+
       if (rememberMe) {
         localStorage.setItem("email", email);
         localStorage.setItem("password", password);
@@ -116,9 +135,9 @@ export const useSignIn = () => {
         localStorage.removeItem("password");
         localStorage.setItem("rememberMe", "false");
       }
-      setMessage("Sign in successful");
+      setMessage(response.data.message);
       setError("");
-      navigate("/homepage");
+      navigate("/");
     } catch (error) {
       setError("Invalid email or password.");
       setMessage("");
@@ -129,7 +148,7 @@ export const useSignIn = () => {
     }
   };
 
-  // Remember Me Function
+  // 记住我函数
   useEffect(() => {
     const savedRememberMe = localStorage.getItem("rememberMe") === "true";
     if (savedRememberMe) {

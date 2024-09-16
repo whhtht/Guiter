@@ -22,7 +22,7 @@ import guiter_image from "../../../images/sign.images/guiter.jpg";
 // Component
 import * as homepage from "../../../styles/signin.style/page";
 
-const Sign_in: React.FC = () => {
+const SignIn: React.FC = () => {
   // Function
   const functions = useSignIn();
 
@@ -215,4 +215,4 @@ const Sign_in: React.FC = () => {
   );
 };
 
-export default Sign_in;
+export default SignIn;

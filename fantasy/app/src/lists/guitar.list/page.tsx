@@ -24,7 +24,7 @@ export const handedness = ["Right-Handed", "Left-Handed"];
 
 export const guitar = [
   {
-    id: 1,
+    id: "c6d4341d-ff21-492f-9e2f-210e0526b582",
     name: "Gibson LC Century of Progress 1933",
     category: "Classical Guitar",
     brand: "Gibson",
@@ -116,7 +116,7 @@ export const guitar = [
   },
 
   {
-    id: 2,
+    id: "ba4d11a1-df0d-4331-be45-dd0943f6b440",
     name: "Cordoba 45 Limited Spanish Classical Guitar Spruce/Ebony",
     category: "Acoustic Guitar",
     brand: "Cordoba",
@@ -199,7 +199,7 @@ export const guitar = [
   },
 
   {
-    id: 3,
+    id: "ecb89e97-f29f-4b13-b2d7-ee5e7bc92412",
     name: "Fender USA 2013 American Vintage '65 Jazzmaster",
     category: "Ukulele",
     brand: "Fender",
@@ -276,12 +276,12 @@ export const guitar = [
   },
 
   {
-    id: 4,
-    name: "Gibson LC Century of Progress 1933",
+    id: "d7530114-313d-4dec-aef1-f84a41768477",
+    name: "first test",
     category: "Classical Guitar",
     brand: "Gibson",
     condition: "Excellent",
-    price: 399.99,
+    price: 300.0,
     newprice: 999.99,
     review: {
       main: "product 4",
@@ -368,12 +368,12 @@ export const guitar = [
   },
 
   {
-    id: 5,
-    name: "Cordoba 45 Limited Spanish Classical Guitar Spruce/Ebony",
+    id: "b4697aad-7ec6-401f-a813-17e42a39ca34",
+    name: "second test",
     category: "Acoustic Guitar",
     brand: "Mosrite",
     condition: "Excellent",
-    price: 299.99,
+    price: 200.0,
     newprice: 999.99,
     review: {
       main: "product 5",
@@ -451,12 +451,12 @@ export const guitar = [
   },
 
   {
-    id: 6,
-    name: "Fender USA 2013 American Vintage '65 Jazzmaster",
+    id: "12a73927-bfd6-4470-9ce8-78ac67ed95bf",
+    name: "third test",
     category: "Ukulele",
     brand: "Fender",
     condition: "Excellent",
-    price: 199.99,
+    price: 100.0,
     newprice: 999.99,
     review: {
       main: "product 6",
@@ -528,12 +528,12 @@ export const guitar = [
   },
 
   {
-    id: 7,
-    name: "Gibson LC Century of Progress 1933",
+    id: "174c74e6-ad21-4a74-ae3e-34b76b8a4b8c",
+    name: "fifth test",
     category: "Classical Guitar",
     brand: "Gibson",
     condition: "Excellent",
-    price: 399.99,
+    price: 0.0,
     newprice: 999.99,
     review: {
       main: "product 7",
@@ -620,8 +620,8 @@ export const guitar = [
   },
 
   {
-    id: 8,
-    name: "Cordoba 45 Limited Spanish Classical Guitar Spruce/Ebony",
+    id: "8",
+    name: "hello",
     category: "Acoustic Guitar",
     brand: "Cordoba",
     condition: "Excellent",
@@ -703,8 +703,8 @@ export const guitar = [
   },
 
   {
-    id: 9,
-    name: "Fender USA 2013 American Vintage '65 Jazzmaster",
+    id: "9",
+    name: "hi",
     category: "Ukulele",
     brand: "Fender",
     condition: "Excellent",

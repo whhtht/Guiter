@@ -3,23 +3,28 @@ import { createContext } from "react";
 
 // 定义 Product 类型
 export interface Product {
-  id: number;
-  name: string;
-  condition: string;
-  price: string;
-  image: string;
   quantity: number;
+  product: {
+    name: string;
+    price: string;
+    specificationDetail: {
+      Condition: string;
+    };
+  };
 }
-
 
 // 定义 CartContextType 类型
 export interface CartContextType {
+  fetchCart: () => void;
   cartItems: Product[];
   cartItemCount: number;
   addToCart: (product: Product) => void;
-  deleteFromCart: (id: number) => void;
-  removeFromCart: (id: number) => void;
+  deleteFromCart: (product: Product) => void;
+  removeFromCart: (product: Product) => void;
   cartTotal: string;
+  setCartItems: (product: Product[]) => void;
+  setCartItemCount: (count: number) => void;
+  setCartTotal: (total: string) => void;
 }
 
 // 创建 CartContext

@@ -21,6 +21,7 @@ export const useHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 搜索框回车事件
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       const searchPath = `/${encodeURIComponent(searchTerm)}`;
@@ -40,6 +41,7 @@ export const useHeader = () => {
     }
   };
 
+  // 搜索历史记录
   useEffect(() => {
     const searchQuery = decodeURIComponent(
       location.pathname.split("/${encodeURIComponent(searchTerm)}")[1] || ""
