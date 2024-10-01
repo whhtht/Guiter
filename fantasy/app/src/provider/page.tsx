@@ -6,7 +6,7 @@ import Signin from "../components/sign/signIn/page";
 import Productlist from "../components/home/productList/page";
 import Productdetail from "../components/home/productDetail/page";
 import Cart from "../components/home/cart/page";
-import Payment from "../components/payment/page";
+import Checkout from "../components/checkout/page";
 
 const Provider: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const Provider: React.FC = () => {
         <Route path="/productlist/:category" element={<Productlist />} />
         <Route path="/product/:productName" element={<Productdetail />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/payment" element={<Payment />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </CartProvider>
   );

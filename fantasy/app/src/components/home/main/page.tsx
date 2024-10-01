@@ -24,7 +24,7 @@ import Footer from "../../layout/footer/page";
 
 const Homepage: React.FC = () => {
   // import useHome hook
-  const functions = useHome();
+  const homeHook = useHome();
 
   return (
     <Box>
@@ -93,13 +93,13 @@ const Homepage: React.FC = () => {
           {/* Shop Items List */}
           <Box sx={styles.homeStyles.listStyle}>
             <IconButton
-              onClick={functions.handlePrevfeaturedGuitar}
+              onClick={homeHook.handlePrevfeaturedGuitar}
               sx={styles.homeStyles.leftButton}
             >
               <ArrowBackIos sx={styles.homeStyles.arrowBack} />
             </IconButton>
             <IconButton
-              onClick={functions.handleNextfeaturedGuitar}
+              onClick={homeHook.handleNextfeaturedGuitar}
               sx={styles.homeStyles.rightButton}
             >
               <ArrowForwardIos sx={styles.homeStyles.arrowForward} />
@@ -107,9 +107,9 @@ const Homepage: React.FC = () => {
             <Box sx={styles.homeStyles.carouselBox}>
               {featuredGuitars
                 .slice(
-                  functions.indexfeaturedGuitar,
-                  functions.indexfeaturedGuitar +
-                    functions.itemToShowfeaturedGuitar
+                  homeHook.indexfeaturedGuitar,
+                  homeHook.indexfeaturedGuitar +
+                    homeHook.itemToShowfeaturedGuitar
                 )
                 .map((item) => (
                   <Box key={item.id} sx={styles.homeStyles.sliceBox}>
@@ -174,13 +174,13 @@ const Homepage: React.FC = () => {
           {/* New Arrivals List */}
           <Box sx={styles.homeStyles.listStyle}>
             <IconButton
-              onClick={functions.handlePrevNewArrival}
+              onClick={homeHook.handlePrevNewArrival}
               sx={styles.homeStyles.leftButton}
             >
               <ArrowBackIos sx={styles.homeStyles.arrowBack} />
             </IconButton>
             <IconButton
-              onClick={functions.handleNextNewArrival}
+              onClick={homeHook.handleNextNewArrival}
               sx={styles.homeStyles.rightButton}
             >
               <ArrowForwardIos sx={styles.homeStyles.arrowForward} />
@@ -188,8 +188,8 @@ const Homepage: React.FC = () => {
             <Box sx={styles.homeStyles.carouselBox}>
               {newArrivals
                 .slice(
-                  functions.indexNewArrival,
-                  functions.indexNewArrival + functions.itemsToShowNewArrival
+                  homeHook.indexNewArrival,
+                  homeHook.indexNewArrival + homeHook.itemsToShowNewArrival
                 )
                 .map((item) => (
                   <Box key={item.id} sx={styles.homeStyles.sliceBox}>

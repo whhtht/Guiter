@@ -20,19 +20,10 @@ module.exports = {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     },
-    productId: {
-      type: Sequelize.UUID,
+    type: {
+      type: Sequelize.ENUM('cart', 'saveforlater'),
       allowNull: false,
-      references: {
-        model: 'products',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    },
-    quantity: {
-      type: Sequelize.NUMBER,
-      allowNull: false,
+      defaultValue: 'cart'
     },
     createdAt: {
       type: Sequelize.DATE,

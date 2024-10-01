@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { Product, Specification } from "../products/products.model";
+import Product from "../products/products.model";
+import Specification from "../products/specification.model";
 
 // 处理 GET 请求，获取所有的产品数据
 export const getProduct = async (req: Request, res: Response) => {

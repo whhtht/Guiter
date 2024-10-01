@@ -2,14 +2,14 @@ import React from "react";
 import { Drawer, Box, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import * as styles from "../../styles/drawer.style/page";
+import * as styles from "../../../styles/drawer.style/page";
 
 interface DrawerProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ContactUsDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
+const PickUpDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
   return (
     <Box>
       <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
@@ -31,50 +31,35 @@ const ContactUsDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
               variant="h6"
               sx={styles.drawerstyles.roboto_20px_02000C}
             >
-              Contact us
+              Pick up address
             </Typography>
           </Box>
           <Typography
             variant="body1"
             sx={styles.drawerstyles.roboto_14px_76757C}
           >
-            Feel free to contact us if you need more information about our
-            guitars or any of our services.
+            Visit our store to pick up your guitar.
           </Typography>
           <Box sx={styles.drawerstyles.drawer_subtitle_margin}>
             <Typography
               variant="subtitle1"
               sx={styles.drawerstyles.roboto_16px_02000C}
             >
-              Contact number
+              Store address
             </Typography>
           </Box>
           <Typography
             variant="body1"
             sx={styles.drawerstyles.roboto_14px_02000C}
           >
-            647-555-325
+            382 Yonge Street, Toronto
           </Typography>
           <Box sx={styles.drawerstyles.drawer_subtitle_margin}>
             <Typography
               variant="subtitle1"
               sx={styles.drawerstyles.roboto_16px_02000C}
             >
-              Email
-            </Typography>
-          </Box>
-          <Typography
-            variant="body1"
-            sx={styles.drawerstyles.roboto_14px_02000C}
-          >
-            guitar123@guitar.com
-          </Typography>
-          <Box sx={styles.drawerstyles.drawer_subtitle_margin}>
-            <Typography
-              variant="subtitle1"
-              sx={styles.drawerstyles.roboto_16px_02000C}
-            >
-              Available hours
+              Opening hours
             </Typography>
           </Box>
           <Typography
@@ -91,4 +76,4 @@ const ContactUsDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
   );
 };
 
-export default ContactUsDrawer;
+export default PickUpDrawer;

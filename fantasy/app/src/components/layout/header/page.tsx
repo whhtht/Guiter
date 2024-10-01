@@ -24,10 +24,10 @@ import { useLocation } from "../../../hooks/useLocation.hook/page";
 import { useCart } from "../../../hooks/useCart.hook/page";
 import * as styles from "../../../styles/layout.style/header.style/page";
 import { headerCategory as categories } from "../../../lists/guitar.list/page";
-import LocationDrawer from "../../../drawer/location.drawer/page";
-import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
-import ContactUsDrawer from "../../../drawer/contactUs.drawer/page";
-import CartDrawer from "../../../drawer/cart.drawer/page";
+import LocationDrawer from "../../drawer/location.drawer/page";
+import PickUpDrawer from "../../drawer/pickUp.drawer/page";
+import ContactUsDrawer from "../../drawer/contactUs.drawer/page";
+import CartDrawer from "../../drawer/cart.drawer/page";
 
 const Header: React.FC = () => {
   const headerHook = useHeader();
@@ -49,9 +49,11 @@ const Header: React.FC = () => {
     localStorage.removeItem("idToken");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("delivery");
     cartHook.setCartItemCount(0);
     cartHook.setCartItems([]);
-    cartHook.setCartTotal("0");
+    cartHook.setSaveItems([]);
+    cartHook.setCartTotal(0);
     handleCloseMenu();
   };
 
@@ -130,7 +132,7 @@ const Header: React.FC = () => {
             />
           </Box>
 
-          {/* Sign In Button */}
+          {/* 登录按钮 */}
           <Box sx={{ mx: "10px" }}>
             {localStorage.getItem("idToken") ? (
               <Button
@@ -153,6 +155,7 @@ const Header: React.FC = () => {
               <Button
                 component={Link}
                 to="/signin"
+                state={{ from: window.location.pathname }}
                 variant="text"
                 disableFocusRipple
                 startIcon={
@@ -202,7 +205,7 @@ const Header: React.FC = () => {
             </MenuItem>
           </Menu>
 
-          {/* Shopping Cart Button */}
+          {/* 购物车按钮 */}
           <Box sx={styles.headerstyles.link_frame}>
             <Button
               variant="text"
@@ -212,7 +215,11 @@ const Header: React.FC = () => {
               }}
               startIcon={
                 <Badge
-                  badgeContent={cartHook.cartItemCount}
+                  badgeContent={
+                    cartHook.accessToken
+                      ? cartHook.cartItemCount
+                      : cartHook.localCartCount
+                  }
                   sx={{
                     "& .MuiBadge-badge": {
                       backgroundColor: "#FFEACE",

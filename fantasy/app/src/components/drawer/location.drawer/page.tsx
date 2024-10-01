@@ -15,8 +15,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import * as styles from "../../styles/drawer.style/page";
-import { useLocation } from "../../hooks/useLocation.hook/page";
+import * as styles from "../../../styles/drawer.style/page";
+import { useLocation } from "../../../hooks/useLocation.hook/page";
 
 interface DrawerProps {
   open: boolean;
@@ -33,7 +33,6 @@ const LocationDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
         open={open}
         onClose={() => {
           setOpen(false);
-          window.location.reload();
         }}
         sx={styles.drawerstyles.drawer_page}
       >
@@ -42,7 +41,6 @@ const LocationDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
             <IconButton
               onClick={() => {
                 setOpen(false);
-                window.location.reload();
               }}
             >
               <CloseIcon

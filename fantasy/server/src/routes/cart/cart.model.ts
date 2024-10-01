@@ -1,12 +1,11 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
-import { Product, Specification } from "../products/products.model";
+import User from "../auth/auth.model";
 
 class Cart extends Model {
   public id!: string;
   public userId!: string;
-  public productId!: string;
-  public quantity!: number;
+  public type!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -21,16 +20,13 @@ Cart.init(
       primaryKey: true,
     },
     userId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    productId: {
-      type: DataTypes.STRING,
+    type: {
+      type: DataTypes.ENUM("cart", "saveforlater"),
       allowNull: false,
-    },
-    quantity: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
+      defaultValue: "cart",
     },
   },
   {
@@ -39,6 +35,6 @@ Cart.init(
   }
 );
 
-Cart.belongsTo(Product, { foreignKey: "productId", as: "product" });
+Cart.belongsTo(User, { foreignKey: "userId", as: "user" });
 
 export default Cart;

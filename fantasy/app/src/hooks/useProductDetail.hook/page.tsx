@@ -1,17 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useLocation } from "../useLocation.hook/page";
 import { newArrivals } from "../../lists/newArrivals.list/page";
-
-type MayLikeType = {
-  id: number;
-  name: string;
-  price: string;
-  condition: string;
-  image: string;
-  Link: string;
-};
+import { getProduct } from "../../api/product/page";
+import { MayLikeType, Product } from "./context/page";
 
 export const useProductDetail = () => {
+  const { productName } = useParams<{
+    productName: string;
+  }>();
+  // 从后端获取产品数据
+  const [product, setProduct] = useState<Product | null>(null);
+  useEffect(() => {
+    if (productName) {
+      getProduct(productName)
+        .then((productData) => {
+          // 储存产品数据
+          setProduct(productData);
+        })
+        .catch((error) => {
+          console.error("Error fetching product details:", error);
+        });
+    }
+  }, [productName]);
+
   // 选择的图片索引
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   // 是否查看全部图片
@@ -71,6 +83,7 @@ export const useProductDetail = () => {
   const mayLike = useItems(newArrivals);
 
   return {
+    product,
     selectedImageIndex,
     setSelectedImageIndex,
     viewAll,

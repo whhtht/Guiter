@@ -1,85 +1,242 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  postCart,
-  putCart,
-  deleteCart,
-  getCartId,
-} from "../../../api/cart/page";
+  getCartName,
+  putCartitemStatus,
+  postCartitem,
+  putCartitem,
+  deleteCartitem,
+} from "../../../api/cartitem/page";
 import { CartContext, Product } from "../context/page";
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
-  const [cartItemCount, setCartItemCount] = useState(0);
-  const [cartTotal, setCartTotal] = useState<string>("0");
+  const [saveItems, setSaveItems] = useState<Product[]>([]);
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
+  const [cartTotal, setCartTotal] = useState<number>(0);
+  const [saveItemCount, setSaveItemCount] = useState<number>(0);
   const accessToken = localStorage.getItem("accessToken");
+
+  // 本地购物车和保存的商品
+  const [localCartItems, setLocalCartItems] = useState<Product[]>([]);
+  const [localSaveItems, setLocalSaveItems] = useState<Product[]>([]);
+
+  // 更新购物车数据
+  const updateCartItems = () => {
+    // 从 localStorage 获取购物车数据
+    const localCartString = localStorage.getItem("cart");
+    const localCart =
+      typeof localCartString === "string" ? JSON.parse(localCartString) : [];
+    // 分别设置本地购物车和保存的商品
+    setLocalCartItems(
+      localCart.filter((item: Product) => item.cart.type === "cart")
+    );
+    setLocalSaveItems(
+      localCart.filter((item: Product) => item.cart.type === "saveforlater")
+    );
+  };
+
+  // useEffect初始化购物车数据
+  useEffect(() => {
+    // 初始化购物车数据
+    updateCartItems();
+    // localstorage变化时，更新购物车数据
+    const handleStorageChange = () => {
+      updateCartItems();
+    };
+    // 添加事件监听
+    window.addEventListener("storage", handleStorageChange);
+    // 添加自定义事件监听
+    window.addEventListener("manualUpdate", handleStorageChange);
+    // 清除事件监听
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("manualUpdate", handleStorageChange);
+    };
+  }, []);
+
+  // 更新 localStorage 并手动触发更新
+  const updateLocalStorageAndState = (newData: Product[]) => {
+    // 更新 localStorage
+    localStorage.setItem("cart", JSON.stringify(newData));
+    // 手动触发自定义事件
+    window.dispatchEvent(new Event("storage"));
+    // 主动更新 React 状态
+    updateCartItems();
+  };
+
+  // 计算本地购物车商品数量
+  const localCartCount = localCartItems.reduce(
+    (count: number, item: { quantity: number }) => {
+      return count + item.quantity;
+    },
+    0
+  );
+  const localSaveCount = localSaveItems.reduce(
+    (count: number, item: { quantity: number }) => {
+      return count + item.quantity;
+    },
+    0
+  );
+
+  // 计算本地购物车总价
+  const localTotalPrice = localCartItems.reduce(
+    (total: number, item: { quantity: number; product: { price: string } }) => {
+      // 将价格转换为数字并乘以商品数量
+      const localItemTotal =
+        parseFloat(item.product.price || "0") * (item.quantity || 0);
+      return total + localItemTotal;
+    },
+    0
+  );
+  // 保留两位小数
+  const localTotal = parseFloat(localTotalPrice.toFixed(2));
+  // 计算购物车总价
+  const calculateTotal = (items: Product[]) => {
+    // 计算购物车商品数量
+    const totalCount = items
+      .filter((item) => item.cart.type === "cart")
+      .reduce((acc, item) => acc + (item.quantity || 0), 0);
+    setCartItemCount(totalCount);
+    // 计算购物车总价
+    const total = items
+      .filter((item) => item.cart.type === "cart")
+      .reduce(
+        (acc, item) =>
+          acc + parseFloat(item.product.price || "0") * (item.quantity || 0),
+        0
+      );
+    setCartTotal(total);
+  };
+
+  // 计算保存商品的数量
+  useEffect(() => {
+    const count = saveItems
+      .filter((item) => item.cart.type === "saveforlater")
+      .reduce((acc, item) => acc + (item.quantity || 0), 0);
+    setSaveItemCount(count);
+  }, [saveItems]);
 
   // 获取购物车数据
   const fetchCart = useCallback(async () => {
     try {
       if (accessToken) {
         // 如果用户已登录，从后端获取购物车信息
-        const response = await getCartId();
+        const response = await getCartName();
         const cart = response.data;
         // 设置购物车商品和总价
-        setCartItems(cart);
+        setCartItems(cart.filter((item: Product) => item.cart.type === "cart"));
+        setSaveItems(
+          cart.filter((item: Product) => item.cart.type === "saveforlater")
+        );
         calculateTotal(cart);
       }
     } catch (error) {
       console.error("获取购物车信息失败:", error);
     }
   }, [accessToken]);
-
+  // 当 accessToken 变化时，重新获取购物车数据
   useEffect(() => {
     if (accessToken) {
       fetchCart();
     }
   }, [accessToken, fetchCart]);
 
-  // 计算购物车总价
-  const calculateTotal = (cartItems: Product[]) => {
-    const totalCount = cartItems.reduce(
-      (acc, item) => acc + (item.quantity || 0),
-      0
-    );
-    setCartItemCount(totalCount);
-    const total = cartItems.reduce(
-      (acc, item) =>
-        acc + parseFloat(item.product.price || "0") * (item.quantity || 0),
-      0
-    );
-    setCartTotal(Number(total.toFixed(2)).toFixed(2));
+  // 更新物品所在状态
+  const cartStatus = async (productName: string) => {
+    if (!accessToken) {
+      // 从 localStorage 获取购物车数据
+      let cartData: Product[] = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+      );
+      cartData = cartData.map((item) => {
+        if (item.product.name === productName) {
+          // 切换商品状态
+          item.cart.type = item.cart.type === "cart" ? "saveforlater" : "cart";
+        }
+        return item;
+      });
+      // 更新 localStorage 和 React 状态
+      updateLocalStorageAndState(cartData);
+      return;
+    }
+    try {
+      // 调用 getCartStatus，并传递商品名称
+      const response = await putCartitemStatus(productName);
+      const cartData = response;
+      // 过滤购物车商品
+      const cartItem = cartData.filter(
+        (item: Product) => item.cart.type === "cart"
+      );
+      const saveforlater = cartData.filter(
+        (item: Product) => item.cart.type === "saveforlater"
+      );
+      setCartItems(cartItem);
+      setSaveItems(saveforlater);
+      calculateTotal(cartItem);
+    } catch (error) {
+      console.error("获得购物车状态失败", error);
+    }
   };
 
   // 添加商品到购物车
   const addToCart = async (product: Product) => {
     // 如果用户未登录，直接添加到购物车
     if (!accessToken) {
+      // 更新购物车商品数量
       setCartItems((prevItems) => {
+        // 查找购物车中是否有相同的商品
         const existingItemIndex = prevItems.findIndex(
           (item) => item.product.name === product.product.name
         );
+        // 声明更新后的购物车数据
+        let updatedItems;
+        // 如果商品存在于购物车中
         if (existingItemIndex > -1) {
-          // 如果商品存在于购物车中
-          const updatedItems = [...prevItems]; // 复制一份购物车商品
-          updatedItems[existingItemIndex].quantity += 1; // 增加商品数量
-          calculateTotal(updatedItems); // 重新计算总价
-          return updatedItems;
+          // 增加商品数量
+          updatedItems = [...prevItems];
+          updatedItems[existingItemIndex].quantity += 1;
         } else {
-          const updatedItems = [...prevItems, { ...product, quantity: 1 }];
-          calculateTotal(updatedItems);
-          return updatedItems;
+          // 如果商品不存在于购物车中，添加商品
+          updatedItems = [...prevItems, { ...product, quantity: 1 }];
         }
+        // 计算总价
+        calculateTotal(updatedItems);
+        // 从 localStorage 获取当前的购物车数据，如果没有则初始化为空数组
+        const cartData = JSON.parse(localStorage.getItem("cart") || "[]");
+        // 查找 localStorage 中是否存在相同的商品
+        const cartItemIndex = cartData.findIndex(
+          (item: Product) => item.product.name === product.product.name
+        );
+        // 如果存在，增加数量
+        if (cartItemIndex > -1) {
+          cartData[cartItemIndex].quantity += 1;
+        } else {
+          // 如果不存在，新增物品（去掉 {type: "cart"}）
+          cartData.push({ ...product, quantity: 1 });
+        }
+        // 将更新后的购物车数据存储到 localStorage
+        updateLocalStorageAndState(cartData);
+        return updatedItems;
       });
       return;
     }
-    // 如果用户已登录，调用 postCart 添加商品到后端购物车
+    // 如果用户已登录，调用 postCartitem 添加商品到后端购物车
     try {
-      await postCart(product.product.name); // 调用 postCart，并传递商品 ID
+      await postCartitem(product.product.name);
     } catch (error) {
       console.error("添加商品到后端购物车失败:", error);
     }
+    // 检查 saveForLater 中是否有相同名字的物品
+    const itemInSaveForLater = saveItems.find(
+      (item) => item.product.name === product.product.name
+    );
+    if (itemInSaveForLater) {
+      console.error("添加失败：该商品已在 'Save for Later' 中");
+      return;
+    }
+    // 更新购物车商品数量
     setCartItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
         (item) => item.product.name === product.product.name
@@ -97,35 +254,62 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  // 从购物车中删除商品
-  const deleteFromCart = async (product: Product) => {
-    // 如果用户未登录，直接添加到购物车
+  // 从购物车中减少商品
+  const putFromCart = async (product: Product) => {
+    // 如果用户未登录，直接从购物车中减少商品
     if (!accessToken) {
       setCartItems((prevItems) => {
         const existingItemIndex = prevItems.findIndex(
           (item) => item.product.name === product.product.name
         );
+        let updatedItems: Product[] = [...prevItems];
+        // 如果商品存在于购物车中
         if (existingItemIndex > -1) {
-          // 如果商品存在于购物车中
-          const updatedItems = [...prevItems]; // 复制一份购物车商品
+          updatedItems = [...prevItems];
+          // 如果商品数量大于 1
           if (updatedItems[existingItemIndex].quantity > 1) {
-            // 如果商品数量大于 1
-            updatedItems[existingItemIndex].quantity -= 1; // 减少商品数量
+            // 减少商品数量
+            updatedItems[existingItemIndex].quantity -= 1;
           } else {
-            updatedItems.splice(existingItemIndex, 1); // 删除商品
+            // 删除商品
+            updatedItems.splice(existingItemIndex, 1);
           }
-          calculateTotal(updatedItems);
-          return updatedItems;
         }
-        return prevItems;
+        // 计算总价
+        calculateTotal(updatedItems);
+        // 从 localStorage 获取当前的购物车数据，如果没有则初始化为空数组
+        const cartData = JSON.parse(localStorage.getItem("cart") || "[]");
+        // 查找 localStorage 中是否存在相同的商品
+        const cartItemIndex = cartData.findIndex(
+          (item: Product) => item.product.name === product.product.name
+        );
+        // 如果数量大于 1，减少数量
+        if (cartItemIndex > -1) {
+          // 减少商品数量
+          if (cartData[cartItemIndex].quantity > 1) {
+            cartData[cartItemIndex].quantity -= 1;
+          } else {
+            // 如果数量为 1，移除商品
+            cartData.splice(cartItemIndex, 1);
+          }
+        }
+        // 将更新后的购物车数据存储到 localStorage
+        updateLocalStorageAndState(cartData);
+        // 如果购物车为空，移除 localStorage 中的 cart
+        if (cartData.length === 0) {
+          localStorage.removeItem("cart");
+        }
+        return updatedItems;
       });
+      return;
     }
     // 如果用户已登录，调用 putCart 修改后端购物车商品数量
     try {
-      await putCart(product.product.name); // 调用 postCart，并传递商品 ID
+      await putCartitem(product.product.name);
     } catch (error) {
       console.error("添加商品到后端购物车失败:", error);
     }
+    // 更新购物车商品数量
     setCartItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
         (item) => item.product.name === product.product.name
@@ -147,27 +331,54 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   // 从购物车中移除商品
   const removeFromCart = async (product: Product) => {
     if (!accessToken) {
-      setCartItems((prevItems) => {
+      // 如果用户未登录，直接从购物车中移除商品
+      setLocalCartItems((prevItems) => {
         const indexToRemove = prevItems.findIndex(
           (item) => item.product.name === product.product.name
         );
+        let updatedItems;
         if (indexToRemove > -1) {
           // 如果商品存在于购物车中
-          const updatedItems = [...prevItems]; // 复制一份购物车商品
-          const quantityToRemove = updatedItems[indexToRemove].quantity; // 获取要删除的商品数量
-          setCartItemCount((prevCount) =>
-            Math.max(prevCount - quantityToRemove, 0)
-          ); // 更新购物车商品数量
-          updatedItems.splice(indexToRemove, 1); // 删除商品
-          calculateTotal(updatedItems);
-          return updatedItems;
+          updatedItems = [...prevItems];
+          // 删除商品
+          updatedItems.splice(indexToRemove, 1);
+        } else {
+          updatedItems = prevItems;
         }
-        return prevItems;
+        // 计算总价
+        calculateTotal(updatedItems);
+        // 从 localStorage 获取当前的购物车数据，如果没有则初始化为空数组
+        const cartData = JSON.parse(localStorage.getItem("cart") || "[]");
+        // 查找 localStorage 中是否存在相同的商品
+        const cartItemIndex = cartData.findIndex(
+          (item: Product) => item.product.name === product.product.name
+        );
+        // 如果存在，删除商品
+        if (cartItemIndex > -1) {
+          cartData.splice(cartItemIndex, 1);
+          // 检查是否所有类型都为空
+          const hasCartItems = cartData.some(
+            (item: Product) => item.cart.type === "cart"
+          );
+          const hasSaveForLaterItems = cartData.some(
+            (item: Product) => item.cart.type === "saveforlater"
+          );
+
+          // 只有当两种类型都没有物品时才删除 cart
+          if (!hasCartItems && !hasSaveForLaterItems) {
+            localStorage.removeItem("cart");
+          } else {
+            updateLocalStorageAndState(cartData);
+          }
+        }
+        return updatedItems;
       });
+      return;
     }
-    // 如果用户已登录，调用 deleteCart 删除后端购物车商品
+    // 如果用户已登录，调用 deleteCartitem 删除后端购物车商品
     try {
-      await deleteCart(product.product.name); // 调用 deleteCart，并传递商品 ID
+      // 调用 deleteCartitem，并传递商品 ID
+      await deleteCartitem(product.product.name);
     } catch (error) {
       console.error("从后端购物车中删除商品失败:", error);
     }
@@ -189,17 +400,98 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
+  // 从保存到稍后购买中移除商品
+  const removeFromSave = async (product: Product) => {
+    if (!accessToken) {
+      // 如果用户未登录，直接从购物车中移除商品
+      setSaveItems((prevItems) => {
+        const indexToRemove = prevItems.findIndex(
+          (item) => item.product.name === product.product.name
+        );
+        let updatedItems;
+        if (indexToRemove > -1) {
+          // 如果商品存在于购物车中
+          updatedItems = [...prevItems];
+          // 删除商品
+          updatedItems.splice(indexToRemove, 1);
+        } else {
+          updatedItems = prevItems;
+        }
+        // 计算总价
+        calculateTotal(updatedItems);
+        // 从 localStorage 获取当前的购物车数据，如果没有则初始化为空数组
+        const cartData = JSON.parse(localStorage.getItem("cart") || "[]");
+        // 查找 localStorage 中是否存在相同的商品
+        const cartItemIndex = cartData.findIndex(
+          (item: Product) => item.product.name === product.product.name
+        );
+        // 如果存在，删除商品
+        if (cartItemIndex > -1) {
+          cartData.splice(cartItemIndex, 1);
+          // 检查是否所有类型都为空
+          const hasCartItems = cartData.some(
+            (item: Product) => item.cart.type === "cart"
+          );
+          const hasSaveForLaterItems = cartData.some(
+            (item: Product) => item.cart.type === "saveforlater"
+          );
+          // 只有当两种类型都没有物品时才删除 cart
+          if (!hasCartItems && !hasSaveForLaterItems) {
+            localStorage.removeItem("cart");
+          } else {
+            updateLocalStorageAndState(cartData);
+          }
+        }
+        return updatedItems;
+      });
+      return;
+    }
+    // 如果用户已登录，调用 deleteCartitem 删除后端购物车商品
+    try {
+      // 调用 deleteCartitem，并传递商品 ID
+      await deleteCartitem(product.product.name);
+    } catch (error) {
+      console.error("从后端购物车中删除商品失败:", error);
+    }
+    // 更新稍后购买商品的状态
+    setSaveItems((prevItems) => {
+      // 查找要删除的商品
+      const indexToRemove = prevItems.findIndex(
+        (item) => item.product.name === product.product.name
+      );
+      // 如果找到要删除的商品
+      if (indexToRemove > -1) {
+        const updatedItems = [...prevItems];
+        // 删除商品
+        updatedItems.splice(indexToRemove, 1);
+        return updatedItems;
+      }
+      return prevItems;
+    });
+  };
+
   const value = {
+    localCartItems,
+    localSaveItems,
+    localCartCount,
+    localSaveCount,
+    localTotal,
+    accessToken,
     fetchCart,
     cartItems,
     cartItemCount,
     addToCart,
-    deleteFromCart,
+    putFromCart,
     removeFromCart,
+    removeFromSave,
     cartTotal,
     setCartItemCount,
     setCartItems,
     setCartTotal,
+    cartStatus,
+    saveItems,
+    setSaveItems,
+    saveItemCount,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

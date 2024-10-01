@@ -52,4 +52,4 @@ Specification.hasOne(Product, {
   as: "productDetail", // 别名，用于引用关联的 product 表数据
 });
 
-export { Product, Specification };
+export default Product;

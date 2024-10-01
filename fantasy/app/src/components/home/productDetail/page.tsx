@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useProductDetail } from "../../../hooks/useProductDetail.hook/page";
 import { useCart } from "../../../hooks/useCart.hook/page";
 import { newArrivals } from "../../../lists/newArrivals.list/page";
-import LocationDrawer from "../../../drawer/location.drawer/page";
-import PickUpDrawer from "../../../drawer/pickUp.drawer/page";
+import LocationDrawer from "../../drawer/location.drawer/page";
+import PickUpDrawer from "../../drawer/pickUp.drawer/page";
 import Header from "../../layout/header/page";
 import Footer from "../../layout/footer/page";
-
-import { getProduct } from "../../../api/product/page";
 
 import { guitar } from "../../../lists/guitar.list/page";
 
@@ -44,52 +42,6 @@ const ProductDetail: React.FC = () => {
     category: string;
     productName: string;
   }>();
-
-  interface Product {
-    id: string;
-    name: string;
-    condition: string;
-    price: number;
-    specificationDetail: {
-      Condition: string;
-      Brand: string;
-      Model: string;
-      Finish: string;
-      Categories: string;
-      Year: string;
-      Series: string;
-      "Fretboard Material": string;
-      "Pickup Configuration": string;
-      "Scale Length": string;
-      "Body Shape": string;
-      "Right/Left Handed": string;
-      "Number of Strings": string;
-      "Neck Material": string;
-      "Color Family": string;
-      "Model Family": string;
-      "Finish Style": string;
-      "Body Type": string;
-      "Offset Body": string;
-      "Bridge/Tailpiece Type": string;
-      "Neck Construction": string;
-      "Number of Frets": string;
-    };
-  }
-
-  // 从后端获取产品数据
-  const [product, setProduct] = useState<Product | null>(null);
-  useEffect(() => {
-    if (productName) {
-      getProduct(productName)
-        .then((productData) => {
-          // 储存产品数据
-          setProduct(productData);
-        })
-        .catch((error) => {
-          console.error("Error fetching product details:", error);
-        });
-    }
-  }, [productName]);
 
   // 从本地数据获取产品数据
   const guitars = guitar.find((p) => p.name.toString() === productName);
@@ -373,7 +325,6 @@ const ProductDetail: React.FC = () => {
                   {/* Part 1.3 */}
                   <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                     {/* Review */}
-
                     <Box sx={styles.detailstyles.product_detail_frame}>
                       <Box sx={styles.detailstyles.product_detail_title}>
                         <Typography
@@ -407,7 +358,7 @@ const ProductDetail: React.FC = () => {
                           component={"ul"}
                           sx={styles.detailstyles.review_ul}
                         >
-                          {/* {guitars?.review?.list.map((list, index) => (
+                          {guitars?.review?.list.map((list, index) => (
                             <Typography
                               component={"li"}
                               variant="body1"
@@ -416,7 +367,7 @@ const ProductDetail: React.FC = () => {
                             >
                               {list}
                             </Typography>
-                          ))} */}
+                          ))}
                         </Box>
                       </Box>
                       <Typography
@@ -449,8 +400,8 @@ const ProductDetail: React.FC = () => {
                       collapsedSize={0}
                       sx={styles.detailstyles.collapse_border}
                     >
-                      {product &&
-                        Object.keys(product.specificationDetail)
+                      {productHook.product &&
+                        Object.keys(productHook.product.specificationDetail)
                           .filter(
                             (key) =>
                               key !== "id" &&
@@ -478,8 +429,8 @@ const ProductDetail: React.FC = () => {
                                   sx={styles.detailstyles.roboto_14px_02000C}
                                 >
                                   {
-                                    product.specificationDetail[
-                                      key as keyof typeof product.specificationDetail
+                                    productHook.product?.specificationDetail[
+                                      key as keyof typeof productHook.product.specificationDetail
                                     ]
                                   }
                                 </Typography>
@@ -622,22 +573,23 @@ const ProductDetail: React.FC = () => {
 
                 <Box sx={styles.detailstyles.main_right_frame}>
                   {/* Part 1.4 */}
-                  {product && (
+                  {productHook.product && (
                     <Box>
                       <Box sx={styles.detailstyles.titleFrame}>
                         <Typography sx={styles.detailstyles.roboto_30px_02000C}>
-                          {product.name}
+                          {productHook.product.name}
                         </Typography>
                         <Typography
                           variant="body1"
                           sx={styles.detailstyles.roboto_14px_76757C}
                         >
-                          Condition: {product.specificationDetail.Condition}
+                          Condition:{" "}
+                          {productHook.product.specificationDetail.Condition}
                         </Typography>
                       </Box>
                       <Box sx={styles.detailstyles.titleSpace}>
                         <Typography sx={styles.detailstyles.roboto_30px_02000C}>
-                          ${Number(product.price).toFixed(2)}
+                          ${Number(productHook.product.price).toFixed(2)}
                         </Typography>
                         <Typography
                           variant="body1"
@@ -662,12 +614,15 @@ const ProductDetail: React.FC = () => {
                       onClick={() =>
                         cartHook.addToCart({
                           quantity: 1,
+                          id: productHook.product?.id || "",
+                          cart: { type: "cart" },
                           product: {
-                            name: product?.name || "",
-                            price: product?.price.toString() || "",
+                            name: productHook.product?.name || "",
+                            price: productHook.product?.price.toString() || "",
                             specificationDetail: {
                               Condition:
-                                product?.specificationDetail?.Condition || "",
+                                productHook.product?.specificationDetail
+                                  ?.Condition || "",
                             },
                           },
                         })

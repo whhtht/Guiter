@@ -31,7 +31,9 @@ export const putCart = async (productName: string) => {
 export const deleteCart = async (productName: string) => {
   try {
     const encodedProductName = encodeURIComponent(productName);
-    const response = await apiClient.delete(`${API_URL}/cart/${encodedProductName}`);
+    const response = await apiClient.delete(
+      `${API_URL}/cart/${encodedProductName}`
+    );
     console.log("Product deleted from cart:", productName);
     return response.data;
   } catch (error) {
@@ -41,12 +43,25 @@ export const deleteCart = async (productName: string) => {
 };
 
 // 获取购物车ID
-export const getCartId = async () => {
+export const getCartName = async () => {
   try {
     const response = await apiClient.get(`${API_URL}/cart`);
     return response;
   } catch (error) {
-    console.error("获取购物车ID失败:", error);
+    console.error("获取购物车名字失败:", error);
+    throw error;
+  }
+};
+
+// 修改购物车状态
+export const getCartStatus = async (productName: string) => {
+  try {
+    const response = await apiClient.put(`${API_URL}/cart/status`, {
+      productName,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("修改购物车状态失败:", error);
     throw error;
   }
 };

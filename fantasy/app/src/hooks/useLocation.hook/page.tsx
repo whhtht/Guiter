@@ -158,6 +158,25 @@ export const useLocation = (
     }
   }, [zipCode, setOpen, setStoredZipCode, setError]);
 
+  // 从 localStorage 获取并监听邮政编码变化
+  useEffect(() => {
+    const storedPostal = localStorage.getItem("PostalCode");
+    if (storedPostal) {
+      setStoredZipCode(storedPostal);
+    }
+    // 添加 storage 事件监听器
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "PostalCode") {
+        setStoredZipCode(event.newValue);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    // 移除 storage 事件监听器
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return {
     error,
     message,

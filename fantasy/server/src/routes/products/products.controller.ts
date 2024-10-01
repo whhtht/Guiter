@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { Product, Specification } from "./products.model";
+import Product from "./products.model";
+import Specification from "./specification.model";
 
 // 获取产品及其规格信息
 export const getProduct = async (req: Request, res: Response) => {
@@ -8,10 +9,12 @@ export const getProduct = async (req: Request, res: Response) => {
     // 查询产品并关联specification表的信息
     const product = await Product.findOne({
       where: { name: name }, // 根据产品名称查询
+      attributes: ["name", "price"],
       include: [
         {
           model: Specification, // 关联specification表
           as: "specificationDetail", // 设置别名
+          attributes: ["Condition"], // 只返回Condition字段
         },
       ],
     });
