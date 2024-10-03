@@ -34,10 +34,11 @@ export interface CartContextType {
   setCartItems: (product: Product[]) => void;
   setCartItemCount: (count: number) => void;
   setCartTotal: (total: number) => void;
-  cartStatus: (productName: string) => void;
+  cartStatus: (productName: string, type: string) => void;
   saveItems: Product[];
   setSaveItems: (product: Product[]) => void;
   saveItemCount: number;
+  handleLogout: () => void;
 }
 
 // 创建 CartContext

@@ -478,8 +478,10 @@ const Cart: React.FC = () => {
                                 item.product.name,
                                 String(item.id)
                               );
-                              cartHook.cartStatus(item.product.name);
-                              console.log(item.id);
+                              cartHook.cartStatus(
+                                item.product.name,
+                                item.cart.type
+                              );
                             }}
                             sx={{
                               color: "#02000C",
@@ -649,7 +651,10 @@ const Cart: React.FC = () => {
                                 item.product.name,
                                 String(item.id)
                               );
-                              cartHook.cartStatus(item.product.name);
+                              cartHook.cartStatus(
+                                item.product.name,
+                                item.cart.type
+                              );
                             }}
                             sx={{
                               color: "#02000C",
@@ -898,7 +903,10 @@ const Cart: React.FC = () => {
                               >
                                 <Button
                                   onClick={() => {
-                                    cartHook.cartStatus(item.product.name);
+                                    cartHook.cartStatus(
+                                      item.product.name,
+                                      item.cart.type
+                                    );
                                   }}
                                   sx={{
                                     color: "#02000C",
@@ -1041,7 +1049,10 @@ const Cart: React.FC = () => {
                               >
                                 <Button
                                   onClick={() => {
-                                    cartHook.cartStatus(item.product.name);
+                                    cartHook.cartStatus(
+                                      item.product.name,
+                                      item.cart.type
+                                    );
                                   }}
                                   sx={{
                                     color: "#02000C",

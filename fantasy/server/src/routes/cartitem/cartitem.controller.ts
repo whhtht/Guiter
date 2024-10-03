@@ -68,7 +68,7 @@ export const postCartItem = async (req: Request, res: Response) => {
     }
     // 检查购物车物品是否存在
     const existCartItem = await Cartitem.findOne({
-      where: { userId, productId },
+      where: { userId, productId, cartId: cart.id },
     });
     // 添加购物车物品
     let item: Cartitem;
@@ -82,7 +82,47 @@ export const postCartItem = async (req: Request, res: Response) => {
         userId,
         productId,
         quantity: 1,
+        cart: { type: "cart" },
       });
+    }
+    res.status(201).json(item);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: "Failed to add item to cart" });
+  }
+};
+
+// 处理post请求（添加本地购物车物品）
+export const postLocalItem = async (req: Request, res: Response) => {
+  try {
+    const { productId } = await information(req);
+    const { type, quantity } = req.body;
+    const userId = res.locals.userId;
+    let cart = await Cart.findOne({ where: { userId, type } });
+    if (!cart) {
+      // 如果不存在cart，则创建一个新的
+      cart = await Cart.create({ userId, type });
+    }
+    // 检查是否存在相同类型的物品
+    const existingItem = await Cartitem.findOne({
+      where: { cartId: cart.id, productId },
+    });
+    let item: Cartitem;
+    if (existingItem) {
+      // 如果存在相同的物品，增加数量
+      existingItem.quantity += quantity;
+      await existingItem.save();
+      item = existingItem;
+      console.log("Item quantity updated in", type);
+    } else {
+      // 如果没有相同的物品，创建新的记录
+      item = await Cartitem.create({
+        cartId: cart.id,
+        userId,
+        productId,
+        quantity,
+      });
+      console.log("Item added to", type);
     }
     res.status(201).json(item);
   } catch (error) {
@@ -133,6 +173,7 @@ export const putCartItem = async (req: Request, res: Response) => {
 export const cartStatus = async (req: Request, res: Response) => {
   try {
     const userId = res.locals.userId;
+    const { type } = req.body;
     const { productId } = await information(req);
     // 检查用户是否存在
     let cart = await Cart.findOne({ where: { userId, type: "cart" } });
@@ -146,37 +187,56 @@ export const cartStatus = async (req: Request, res: Response) => {
       saveforlater = await Cart.create({ userId, type: "saveforlater" });
     }
     // 检查购物车物品是否存在
-    const existCartItem = await Cartitem.findOne({
-      where: { userId, productId },
+    const cartItem = await Cartitem.findOne({
+      where: { userId, cartId: cart.id, productId },
     });
-    //检查物品是否是在saveforlater中
-    if (existCartItem?.cartId === saveforlater.id) {
-      // 如果是 saveforlater 中的物品，变回 cart
-      const otherSaveForLaterItems = await Cartitem.findAll({
+    const saveItem = await Cartitem.findOne({
+      where: { userId, cartId: saveforlater.id, productId },
+    });
+
+    // 如果 type 为 'cart'，表示要将物品从 cart 移动到 saveforlater
+    if (type === "cart" && cartItem) {
+      // 如果物品已经在 saveforlater 中，增加 saveforlater 中的数量
+      if (saveItem) {
+        await saveItem.update({
+          quantity: saveItem.quantity + cartItem.quantity,
+        });
+        await cartItem.destroy();
+      } else {
+        // 如果物品不在 saveforlater 中，直接将物品从 cart 移动到 saveforlater
+        await cartItem.update({ cartId: saveforlater.id });
+      }
+      // 检查 cart 中是否还有其他商品，如果没有，删除 cart
+      const otherCartItems = await Cartitem.findAll({
+        where: { userId, cartId: cart.id, productId: { [Op.ne]: productId } },
+      });
+      if (otherCartItems.length === 0) {
+        await cart.destroy();
+      }
+    }
+
+    // 如果 type 为 'saveforlater'，表示要将物品从 saveforlater 移动到 cart
+    if (type === "saveforlater" && saveItem) {
+      if (cartItem) {
+        await cartItem.update({
+          quantity: cartItem.quantity + saveItem.quantity,
+        });
+        await saveItem.destroy();
+      } else {
+        await saveItem.update({ cartId: cart.id });
+      }
+      const otherSaveItems = await Cartitem.findAll({
         where: {
           userId,
           cartId: saveforlater.id,
           productId: { [Op.ne]: productId },
         },
       });
-      // 更新 cartItem 的 cartId 为 cart 的 id
-      await existCartItem.update({ cartId: cart.id });
-      // 如果 saveforlater 中没有其他物品，删除 saveforlater
-      if (otherSaveForLaterItems.length === 0) {
+      if (otherSaveItems.length === 0) {
         await saveforlater.destroy();
       }
-    } else {
-      // 如果是 cart 中的物品，变为 saveforlater
-      const otherCartItems = await Cartitem.findAll({
-        where: { userId, cartId: cart.id, productId: { [Op.ne]: productId } },
-      });
-      // 更新 cartItem 的 cartId 为 saveforlater 的 id
-      await existCartItem.update({ cartId: saveforlater.id });
-      // 如果 cart 中没有其他物品，删除 cart
-      if (otherCartItems.length === 0) {
-        await cart.destroy();
-      }
     }
+
     // 返回更新后的购物车物品
     const cartItems = await Cartitem.findAll({
       where: { userId },

@@ -10,6 +10,9 @@ import {
   Radio,
   Input,
   InputAdornment,
+  Collapse,
+  FormControl,
+  Checkbox,
 } from "@mui/material";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -17,6 +20,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import StoreIcon from "@mui/icons-material/Store";
 import SearchIcon from "@mui/icons-material/Search";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { useLocation } from "../../hooks/useLocation.hook/page";
 import { useCart } from "../../hooks/useCart.hook/page";
@@ -100,6 +104,20 @@ const CheckOut: React.FC = () => {
     2
   );
 
+  // 填写信息区域展开与收起
+  const [collapseOpen, setCollapseOpen] = useState(true);
+  // 付款信息输入区域展开与收起
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const handleCollapse = () => {
+    setCollapseOpen((prev) => !prev);
+    setPaymentOpen(true);
+  };
+
+  const [checked, setChecked] = React.useState(false);
+  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+
   return (
     <Box>
       <Grid container>
@@ -169,7 +187,7 @@ const CheckOut: React.FC = () => {
               padding: "0px 72px 0px 72px",
             }}
           >
-            {/* 付款流程 */}
+            {/* 左边付款流程 */}
             <Box
               sx={{
                 width: "57.7%",
@@ -230,247 +248,851 @@ const CheckOut: React.FC = () => {
                   </Button>
                 </Box>
               )}
+
+              {/* 保存填写信息之后的展示 */}
+              <Collapse
+                in={!collapseOpen}
+                onClick={handleCollapse}
+                sx={{ borderBottom: "1px solid #DDDCDE" }}
+              >
+                <Box sx={{ width: "100%", height: "176px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                      gap: "24px",
+                      marginBottom: "24px",
+                      color: "#02000C",
+                    }}
+                  >
+                    <CheckCircleIcon sx={{ width: "22px", height: "22px" }} />
+                    <Typography
+                      sx={{
+                        fontFamily: "Roboto",
+                        fontSize: "30px",
+                        fontWeight: 700,
+                        lineHeight: "40px",
+                        textAlign: "left",
+                        color: "#02000C",
+                      }}
+                    >
+                      Pickup contact info
+                    </Typography>
+                  </Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "16px",
+                      fontWeight: 400,
+                      lineHeight: "24px",
+                      textAlign: "left",
+                      color: "#76757C",
+                    }}
+                  >
+                    Yunong
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "16px",
+                      fontWeight: 400,
+                      lineHeight: "24px",
+                      textAlign: "left",
+                      color: "#76757C",
+                    }}
+                  >
+                    yunong.chen11@msvu.ca
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "16px",
+                      fontWeight: 400,
+                      lineHeight: "24px",
+                      textAlign: "left",
+                      color: "#76757C",
+                    }}
+                  >
+                    647-123-4567
+                  </Typography>
+                </Box>
+              </Collapse>
+
               {/* 付款流程填写区域 */}
-              <Box
+              <Collapse
+                in={collapseOpen}
+                sx={{ height: "100%", borderBottom: "1px solid #DDDCDE" }}
+              >
+                {/* 付款区域简介 */}
+                <Box
+                  sx={{
+                    gap: "4px",
+                    marginBottom: "36px",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "30px",
+                      fontWeight: 700,
+                      lineHeight: "40px",
+                      textAlign: "left",
+                      color: "#02000C",
+                    }}
+                  >
+                    Deliver
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      lineHeight: "22px",
+                      textAlign: "left",
+                      color: "#76757C",
+                    }}
+                  >
+                    Don't have an account? Continue as a guest and provide your
+                    delivery details.
+                  </Typography>
+                </Box>
+
+                {/* 选择配送或者自提方式 */}
+                <Box>
+                  <Typography>Delivery method</Typography>
+                  <RadioGroup
+                    value={selectedOption}
+                    onChange={handleChange}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                      margin: " 16px 0px 32px 0px",
+                    }}
+                  >
+                    {/* 配送 */}
+                    <FormControlLabel
+                      value="delivery"
+                      control={
+                        <Radio
+                          checked={selectedOption === "delivery"}
+                          onChange={handleChange}
+                          value={"delivery"}
+                          sx={{
+                            width: "22px",
+                            height: "22px",
+                            color: "#02000C",
+                            "&.Mui-checked": {
+                              color: "#02000C",
+                            },
+                            margin: "0px 8px 0px 24px",
+                          }}
+                        />
+                      }
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "365px",
+                        height: "72px",
+                        border:
+                          selectedOption === "delivery"
+                            ? "1px solid #02000C"
+                            : "1px solid #DDDCDE",
+                        borderRadius: "4px",
+                        cursor: "default",
+                        margin: "0px auto 0px 0px",
+                      }}
+                      label={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: "8px",
+                          }}
+                        >
+                          <LocalShippingIcon
+                            sx={{
+                              width: "22px",
+                              height: "22px",
+                              margin: "0px 8px 0px 8px",
+                            }}
+                          />
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "16px",
+                              fontWeight: 400,
+                              lineHeight: "24px",
+                              textAlign: "left",
+                              color: "#02000C",
+                            }}
+                          >
+                            Deliver to
+                          </Typography>
+                          <Box
+                            onClick={handleOpenLocation}
+                            sx={{
+                              textDecoration: "underline",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: "Roboto",
+                                fontSize: "16px",
+                                fontWeight: 400,
+                                lineHeight: "24px",
+                                textAlign: "left",
+                                color: "#02000C",
+                              }}
+                            >
+                              {locationFunctions.storedZipCode
+                                ? locationFunctions.storedZipCode
+                                : "M5G 2G4"}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      }
+                    />
+
+                    {/* 自提 */}
+                    <FormControlLabel
+                      value="pickup"
+                      control={
+                        <Radio
+                          checked={selectedOption === "pickup"}
+                          onChange={handleChange}
+                          value={"pickup"}
+                          sx={{
+                            width: "22px",
+                            height: "22px",
+                            color: "#02000C",
+                            "&.Mui-checked": {
+                              color: "#02000C",
+                            },
+                            margin: "0px 8px 0px 24px",
+                          }}
+                        />
+                      }
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "365px",
+                        height: "72px",
+                        border:
+                          selectedOption === "pickup"
+                            ? "1px solid #02000C"
+                            : "1px solid #DDDCDE",
+                        borderRadius: "4px",
+                        cursor: "default",
+                        margin: "0px 0px 0px auto",
+                      }}
+                      label={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: "8px",
+                          }}
+                        >
+                          <StoreIcon
+                            sx={{
+                              width: "22px",
+                              height: "22px",
+                              margin: "0px 8px 0px 8px",
+                            }}
+                          />
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "16px",
+                              fontWeight: 400,
+                              lineHeight: "24px",
+                              textAlign: "left",
+                              color: "#02000C",
+                            }}
+                          >
+                            Pick up at
+                          </Typography>
+                          <Box
+                            onClick={handleOpenPickUp}
+                            sx={{
+                              textDecoration: "underline",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: "Roboto",
+                                fontSize: "16px",
+                                fontWeight: 400,
+                                lineHeight: "24px",
+                                textAlign: "left",
+                                color: "#02000C",
+                              }}
+                            >
+                              Toronto Downtown
+                            </Typography>
+                          </Box>
+                        </Box>
+                      }
+                    />
+                    <LocationDrawer
+                      open={openLocation}
+                      setOpen={setOpenLocation}
+                    />
+                    <PickUpDrawer open={openPickUp} setOpen={setOpenPickUp} />
+                  </RadioGroup>
+                </Box>
+
+                {/* 付款信息输入区域 */}
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "20px",
+                      fontWeight: 500,
+                      lineHeight: "28px",
+                      textAlign: "left",
+                      color: "#02000C",
+                    }}
+                  >
+                    Contact information
+                  </Typography>
+                  {deliveryMethod === "delivery" ? (
+                    // 选择配送,配送信息
+                    <Box>
+                      <Box sx={{ margin: "16px 0px 32px 0px" }}>
+                        <Typography
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "22px",
+                            textAlign: "left",
+                            color: "#76757C",
+                          }}
+                        >
+                          Your email
+                        </Typography>
+                        <Input
+                          sx={{
+                            width: "100%",
+                            height: "48px",
+                            border: "1px solid #02000C",
+                            borderRadius: "4px",
+                            margin: "4px 0px 0px 0px",
+                            // 去掉默认状态下的下划线
+                            "&:before": {
+                              borderBottom: "none",
+                            },
+                            // 去掉 hover 状态下的下划线
+                            "&:hover:not(.Mui-disabled):before": {
+                              borderBottom: "none",
+                            },
+                            // 去掉输入时的下划线
+                            "&:after": {
+                              borderBottom: "none",
+                            },
+                          }}
+                        />
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontFamily: "Roboto",
+                          fontSize: "20px",
+                          fontWeight: 500,
+                          lineHeight: "28px",
+                          textAlign: "left",
+                          color: "#02000C",
+                        }}
+                      >
+                        Shipping address
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          flexDirection: "column",
+                          width: "100%",
+                          height: "266px",
+                          margin: "16px 0px 0px 0px",
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "14px",
+                              fontWeight: 400,
+                              lineHeight: "22px",
+                              textAlign: "left",
+                              color: "#76757C",
+                            }}
+                          >
+                            Full name
+                          </Typography>
+                          <Input
+                            sx={{
+                              width: "100%",
+                              height: "48px",
+                              border: "1px solid #02000C",
+                              borderRadius: "4px",
+                              margin: "4px 0px 0px 0px",
+                              "&:before": {
+                                borderBottom: "none",
+                              },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none",
+                              },
+                              "&:after": {
+                                borderBottom: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "14px",
+                              fontWeight: 400,
+                              lineHeight: "22px",
+                              textAlign: "left",
+                              color: "#76757C",
+                            }}
+                          >
+                            Phone number
+                          </Typography>
+                          <Input
+                            sx={{
+                              width: "100%",
+                              height: "48px",
+                              border: "1px solid #02000C",
+                              borderRadius: "4px",
+                              margin: "4px 0px 0px 0px",
+                              "&:before": {
+                                borderBottom: "none",
+                              },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none",
+                              },
+                              "&:after": {
+                                borderBottom: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "14px",
+                              fontWeight: 400,
+                              lineHeight: "22px",
+                              textAlign: "left",
+                              color: "#76757C",
+                            }}
+                          >
+                            Address
+                          </Typography>
+                          <Input
+                            startAdornment={
+                              <InputAdornment
+                                position="start"
+                                sx={{
+                                  color: "#02000C",
+                                  margin: "0px 12px 0px 12px",
+                                }}
+                              >
+                                <SearchIcon
+                                  sx={{ width: "18px", height: "18px" }}
+                                />
+                              </InputAdornment>
+                            }
+                            placeholder="Search for your address..."
+                            sx={{
+                              width: "100%",
+                              height: "48px",
+                              border: "1px solid #02000C",
+                              borderRadius: "4px",
+                              fontFamily: "Roboto",
+                              fontSize: "16px",
+                              fontWeight: 400,
+                              lineHeight: "24px",
+                              textAlign: "left",
+                              color: "#76757C",
+                              margin: "4px 0px 0px 0px",
+                              "& .MuiInputBase-input": {
+                                fontFamily: "Roboto",
+                              },
+                              "&:before": {
+                                borderBottom: "none",
+                              },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none",
+                              },
+                              "&:after": {
+                                borderBottom: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+                      </Box>
+
+                      {/* 保存地址和联系信息 */}
+                      <Button
+                        onClick={handleCollapse}
+                        sx={{
+                          width: "206px",
+                          height: "48px",
+                          backgroundColor: "#02000C",
+                          border: "1px solid #02000C",
+                          borderRadius: "4px",
+                          textTransform: "none",
+                          margin: "40px 0px 40px 0px",
+                          "&:hover": {
+                            backgroundColor: "#02000C",
+                          },
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "16px",
+                            fontWeight: 500,
+                            lineHeight: "24px",
+                            textAlign: "center",
+                            color: "#FFFFFF",
+                          }}
+                        >
+                          Save & Continue
+                        </Typography>
+                      </Button>
+                    </Box>
+                  ) : (
+                    // 选择自提,自提信息
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          flexDirection: "column",
+                          width: "100%",
+                          height: "266px",
+                          margin: "16px 0px 0px 0px",
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "14px",
+                              fontWeight: 400,
+                              lineHeight: "22px",
+                              textAlign: "left",
+                              color: "#76757C",
+                            }}
+                          >
+                            Full name
+                          </Typography>
+                          <Input
+                            sx={{
+                              width: "100%",
+                              height: "48px",
+                              border: "1px solid #02000C",
+                              borderRadius: "4px",
+                              margin: "4px 0px 0px 0px",
+                              // 去掉默认状态下的下划线
+                              "&:before": {
+                                borderBottom: "none",
+                              },
+                              // 去掉 hover 状态下的下划线
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none",
+                              },
+                              // 去掉输入时的下划线
+                              "&:after": {
+                                borderBottom: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "14px",
+                              fontWeight: 400,
+                              lineHeight: "22px",
+                              textAlign: "left",
+                              color: "#76757C",
+                            }}
+                          >
+                            Your email
+                          </Typography>
+                          <Input
+                            sx={{
+                              width: "100%",
+                              height: "48px",
+                              border: "1px solid #02000C",
+                              borderRadius: "4px",
+                              margin: "4px 0px 0px 0px",
+                              "&:before": {
+                                borderBottom: "none",
+                              },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none",
+                              },
+                              "&:after": {
+                                borderBottom: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontFamily: "Roboto",
+                              fontSize: "14px",
+                              fontWeight: 400,
+                              lineHeight: "22px",
+                              textAlign: "left",
+                              color: "#76757C",
+                            }}
+                          >
+                            Phone number
+                          </Typography>
+                          <Input
+                            sx={{
+                              width: "100%",
+                              height: "48px",
+                              border: "1px solid #02000C",
+                              borderRadius: "4px",
+                              margin: "4px 0px 0px 0px",
+                              "&:before": {
+                                borderBottom: "none",
+                              },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none",
+                              },
+                              "&:after": {
+                                borderBottom: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+                      </Box>
+
+                      {/* 保存地址和联系信息 */}
+                      <Button
+                        onClick={handleCollapse}
+                        sx={{
+                          width: "206px",
+                          height: "48px",
+                          backgroundColor: "#02000C",
+                          border: "1px solid #02000C",
+                          borderRadius: "4px",
+                          textTransform: "none",
+                          margin: "40px 0px 40px 0px",
+                          "&:hover": {
+                            backgroundColor: "#02000C",
+                          },
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "16px",
+                            fontWeight: 500,
+                            lineHeight: "24px",
+                            textAlign: "center",
+                            color: "#FFFFFF",
+                          }}
+                        >
+                          Save & Continue
+                        </Typography>
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+              </Collapse>
+
+              {/* 付款卡号填写 */}
+              <Collapse
+                in={paymentOpen}
                 sx={{
-                  gap: "4px",
-                  marginBottom: "36px",
+                  padding: "40px 0px 0px 0px",
+                  borderBottom: "1px solid #DDDCDE",
                 }}
               >
-                <Typography
-                  sx={{
-                    fontFamily: "Roboto",
-                    fontSize: "30px",
-                    fontWeight: 700,
-                    lineHeight: "40px",
-                    textAlign: "left",
-                    color: "#02000C",
-                  }}
-                >
-                  Deliver
-                </Typography>
-                <Typography
-                  sx={{
-                    fontFamily: "Roboto",
-                    fontSize: "14px",
-                    fontWeight: 400,
-                    lineHeight: "22px",
-                    textAlign: "left",
-                    color: "#76757C",
-                  }}
-                >
-                  Don't have an account? Continue as a guest and provide your
-                  delivery details.
-                </Typography>
-              </Box>
+                {/* 选择支付方式 */}
+                <FormControl sx={{ marginBottom: "32px" }}>
+                  <RadioGroup>
+                    <FormControlLabel
+                      value="Paypal"
+                      control={
+                        <Radio
+                          sx={{
+                            "&.Mui-checked": {
+                              color: "#02000C",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: "8px",
+                          }}
+                        >
+                          <Typography>Paypal</Typography>
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                        </Box>
+                      }
+                    />
+                    <FormControlLabel
+                      value="ApplePay"
+                      control={
+                        <Radio
+                          sx={{
+                            "&.Mui-checked": {
+                              color: "#02000C",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: "8px",
+                          }}
+                        >
+                          <Typography>Apple Pay</Typography>
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                        </Box>
+                      }
+                    />
+                    <FormControlLabel
+                      value="Credit or Debit card"
+                      control={
+                        <Radio
+                          sx={{
+                            "&.Mui-checked": {
+                              color: "#02000C",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: "8px",
+                          }}
+                        >
+                          <Typography>Credit or Debit card</Typography>
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: "42px",
+                              height: "24px",
+                              border: "1px solid #DDDCDE",
+                              borderRadius: "4px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: "120px",
+                              height: "20px",
+                              border: "1px solid #DDDCDE",
+                            }}
+                          />
+                        </Box>
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
 
-              {/* 选择配送或者自提方式 */}
-              <Box>
-                <Typography>Delivery method</Typography>
-                <RadioGroup
-                  value={selectedOption}
-                  onChange={handleChange}
+                {/* 输入卡号信息 */}
+                <Box
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
-                    flexDirection: "row",
-                    margin: " 16px 0px 32px 0px",
+                    flexDirection: "column",
+                    width: "100%",
+                    height: "382px",
                   }}
                 >
-                  {/* 配送 */}
-                  <FormControlLabel
-                    value="delivery"
-                    control={
-                      <Radio
-                        checked={selectedOption === "delivery"}
-                        onChange={handleChange}
-                        value={"delivery"}
-                        sx={{
-                          width: "22px",
-                          height: "22px",
-                          color: "#02000C",
-                          "&.Mui-checked": {
-                            color: "#02000C",
-                          },
-                          margin: "0px 8px 0px 24px",
-                        }}
-                      />
-                    }
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "365px",
-                      height: "72px",
-                      border:
-                        selectedOption === "delivery"
-                          ? "1px solid #02000C"
-                          : "1px solid #DDDCDE",
-                      borderRadius: "4px",
-                      cursor: "default",
-                      margin: "0px auto 0px 0px",
-                    }}
-                    label={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexDirection: "row",
-                          gap: "8px",
-                        }}
-                      >
-                        <LocalShippingIcon
-                          sx={{
-                            width: "22px",
-                            height: "22px",
-                            margin: "0px 8px 0px 8px",
-                          }}
-                        />
-                        <Typography
-                          sx={{
-                            fontFamily: "Roboto",
-                            fontSize: "16px",
-                            fontWeight: 400,
-                            lineHeight: "24px",
-                            textAlign: "left",
-                            color: "#02000C",
-                          }}
-                        >
-                          Deliver to
-                        </Typography>
-                        <Box
-                          onClick={handleOpenLocation}
-                          sx={{
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              color: "#02000C",
-                            }}
-                          >
-                            {locationFunctions.storedZipCode
-                              ? locationFunctions.storedZipCode
-                              : "M5G 2G4"}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    }
-                  />
-
-                  {/* 自提 */}
-                  <FormControlLabel
-                    value="pickup"
-                    control={
-                      <Radio
-                        checked={selectedOption === "pickup"}
-                        onChange={handleChange}
-                        value={"pickup"}
-                        sx={{
-                          width: "22px",
-                          height: "22px",
-                          color: "#02000C",
-                          "&.Mui-checked": {
-                            color: "#02000C",
-                          },
-                          margin: "0px 8px 0px 24px",
-                        }}
-                      />
-                    }
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "365px",
-                      height: "72px",
-                      border:
-                        selectedOption === "pickup"
-                          ? "1px solid #02000C"
-                          : "1px solid #DDDCDE",
-                      borderRadius: "4px",
-                      cursor: "default",
-                      margin: "0px 0px 0px auto",
-                    }}
-                    label={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexDirection: "row",
-                          gap: "8px",
-                        }}
-                      >
-                        <StoreIcon
-                          sx={{
-                            width: "22px",
-                            height: "22px",
-                            margin: "0px 8px 0px 8px",
-                          }}
-                        />
-                        <Typography
-                          sx={{
-                            fontFamily: "Roboto",
-                            fontSize: "16px",
-                            fontWeight: 400,
-                            lineHeight: "24px",
-                            textAlign: "left",
-                            color: "#02000C",
-                          }}
-                        >
-                          Pick up at
-                        </Typography>
-                        <Box
-                          onClick={handleOpenPickUp}
-                          sx={{
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              fontFamily: "Roboto",
-                              fontSize: "16px",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              textAlign: "left",
-                              color: "#02000C",
-                            }}
-                          >
-                            Toronto Downtown
-                          </Typography>
-                        </Box>
-                      </Box>
-                    }
-                  />
-                  <LocationDrawer
-                    open={openLocation}
-                    setOpen={setOpenLocation}
-                  />
-                  <PickUpDrawer open={openPickUp} setOpen={setOpenPickUp} />
-                </RadioGroup>
-              </Box>
-
-              {/* 付款信息输入区域 */}
-              <Box sx={{ borderBottom: "1px solid #DDDCDE" }}>
-                <Typography
-                  sx={{
-                    fontFamily: "Roboto",
-                    fontSize: "20px",
-                    fontWeight: 500,
-                    lineHeight: "28px",
-                    textAlign: "left",
-                    color: "#02000C",
-                  }}
-                >
-                  Contact information
-                </Typography>
-                {deliveryMethod === "delivery" ? (
-                  // 选择配送,配送信息
-                  <Box sx={{ margin: "16px 0px 0px 0px" }}>
+                  <Box>
                     <Typography
                       sx={{
                         fontFamily: "Roboto",
@@ -481,7 +1103,7 @@ const CheckOut: React.FC = () => {
                         color: "#76757C",
                       }}
                     >
-                      Your email
+                      Name on Card
                     </Typography>
                     <Input
                       sx={{
@@ -489,38 +1111,60 @@ const CheckOut: React.FC = () => {
                         height: "48px",
                         border: "1px solid #02000C",
                         borderRadius: "4px",
-                        margin: "4px 0px 32px 0px",
-                        // 去掉默认状态下的下划线
                         "&:before": {
                           borderBottom: "none",
                         },
-                        // 去掉 hover 状态下的下划线
                         "&:hover:not(.Mui-disabled):before": {
                           borderBottom: "none",
                         },
-                        // 去掉输入时的下划线
                         "&:after": {
                           borderBottom: "none",
                         },
                       }}
                     />
+                  </Box>
+
+                  <Box>
                     <Typography
                       sx={{
                         fontFamily: "Roboto",
-                        fontSize: "20px",
-                        fontWeight: 500,
-                        lineHeight: "28px",
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        lineHeight: "22px",
                         textAlign: "left",
-                        color: "#02000C",
+                        color: "#76757C",
                       }}
                     >
-                      Shipping address
+                      Card Number
                     </Typography>
-                    <Box
+                    <Input
                       sx={{
-                        margin: "16px 0px 0px 0px",
+                        width: "100%",
+                        height: "48px",
+                        border: "1px solid #02000C",
+                        borderRadius: "4px",
+                        "&:before": {
+                          borderBottom: "none",
+                        },
+                        "&:hover:not(.Mui-disabled):before": {
+                          borderBottom: "none",
+                        },
+                        "&:after": {
+                          borderBottom: "none",
+                        },
                       }}
-                    >
+                    />
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Box sx={{ width: "49%" }}>
                       <Typography
                         sx={{
                           fontFamily: "Roboto",
@@ -531,7 +1175,7 @@ const CheckOut: React.FC = () => {
                           color: "#76757C",
                         }}
                       >
-                        Full name
+                        Expiration Date
                       </Typography>
                       <Input
                         sx={{
@@ -539,7 +1183,6 @@ const CheckOut: React.FC = () => {
                           height: "48px",
                           border: "1px solid #02000C",
                           borderRadius: "4px",
-                          margin: "4px 0px 16px 0px",
                           "&:before": {
                             borderBottom: "none",
                           },
@@ -551,6 +1194,8 @@ const CheckOut: React.FC = () => {
                           },
                         }}
                       />
+                    </Box>
+                    <Box sx={{ width: "49%" }}>
                       <Typography
                         sx={{
                           fontFamily: "Roboto",
@@ -561,7 +1206,7 @@ const CheckOut: React.FC = () => {
                           color: "#76757C",
                         }}
                       >
-                        Phone number
+                        CVV
                       </Typography>
                       <Input
                         sx={{
@@ -569,60 +1214,6 @@ const CheckOut: React.FC = () => {
                           height: "48px",
                           border: "1px solid #02000C",
                           borderRadius: "4px",
-                          margin: "4px 0px 16px 0px",
-                          "&:before": {
-                            borderBottom: "none",
-                          },
-                          "&:hover:not(.Mui-disabled):before": {
-                            borderBottom: "none",
-                          },
-                          "&:after": {
-                            borderBottom: "none",
-                          },
-                        }}
-                      />
-                      <Typography
-                        sx={{
-                          fontFamily: "Roboto",
-                          fontSize: "14px",
-                          fontWeight: 400,
-                          lineHeight: "22px",
-                          textAlign: "left",
-                          color: "#76757C",
-                        }}
-                      >
-                        Address
-                      </Typography>
-                      <Input
-                        startAdornment={
-                          <InputAdornment
-                            position="start"
-                            sx={{
-                              color: "#02000C",
-                              margin: "0px 12px 0px 12px",
-                            }}
-                          >
-                            <SearchIcon
-                              sx={{ width: "18px", height: "18px" }}
-                            />
-                          </InputAdornment>
-                        }
-                        placeholder="Search for your address..."
-                        sx={{
-                          width: "100%",
-                          height: "48px",
-                          border: "1px solid #02000C",
-                          borderRadius: "4px",
-                          fontFamily: "Roboto",
-                          fontSize: "16px",
-                          fontWeight: 400,
-                          lineHeight: "24px",
-                          textAlign: "left",
-                          color: "#76757C",
-                          margin: "4px 0px 16px 0px",
-                          "& .MuiInputBase-input": {
-                            fontFamily: "Roboto",
-                          },
                           "&:before": {
                             borderBottom: "none",
                           },
@@ -636,9 +1227,8 @@ const CheckOut: React.FC = () => {
                       />
                     </Box>
                   </Box>
-                ) : (
-                  // 选择自提,自提信息
-                  <Box sx={{ margin: "16px 0px 0px 0px" }}>
+
+                  <Box>
                     <Typography
                       sx={{
                         fontFamily: "Roboto",
@@ -649,7 +1239,7 @@ const CheckOut: React.FC = () => {
                         color: "#76757C",
                       }}
                     >
-                      Full name
+                      Billing Address
                     </Typography>
                     <Input
                       sx={{
@@ -657,70 +1247,6 @@ const CheckOut: React.FC = () => {
                         height: "48px",
                         border: "1px solid #02000C",
                         borderRadius: "4px",
-                        margin: "4px 0px 16px 0px",
-                        // 去掉默认状态下的下划线
-                        "&:before": {
-                          borderBottom: "none",
-                        },
-                        // 去掉 hover 状态下的下划线
-                        "&:hover:not(.Mui-disabled):before": {
-                          borderBottom: "none",
-                        },
-                        // 去掉输入时的下划线
-                        "&:after": {
-                          borderBottom: "none",
-                        },
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        lineHeight: "22px",
-                        textAlign: "left",
-                        color: "#76757C",
-                      }}
-                    >
-                      Your email
-                    </Typography>
-                    <Input
-                      sx={{
-                        width: "100%",
-                        height: "48px",
-                        border: "1px solid #02000C",
-                        borderRadius: "4px",
-                        margin: "4px 0px 16px 0px",
-                        "&:before": {
-                          borderBottom: "none",
-                        },
-                        "&:hover:not(.Mui-disabled):before": {
-                          borderBottom: "none",
-                        },
-                        "&:after": {
-                          borderBottom: "none",
-                        },
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        lineHeight: "22px",
-                        textAlign: "left",
-                        color: "#76757C",
-                      }}
-                    >
-                      Phone number
-                    </Typography>
-                    <Input
-                      sx={{
-                        width: "100%",
-                        height: "48px",
-                        border: "1px solid #02000C",
-                        borderRadius: "4px",
-                        margin: "4px 0px 16px 0px",
                         "&:before": {
                           borderBottom: "none",
                         },
@@ -733,9 +1259,46 @@ const CheckOut: React.FC = () => {
                       }}
                     />
                   </Box>
-                )}
-                {/* 保存地址和联系信息 */}
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                      gap: "8px",
+                    }}
+                  >
+                    <Checkbox
+                      checked={checked}
+                      onChange={handleCheck}
+                      sx={{
+                        width: "16px",
+                        height: "16px",
+                        padding: "0px",
+                        color: "#02000C",
+                        "&.Mui-checked": {
+                          color: "#02000C",
+                        },
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        fontFamily: "Roboto",
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        lineHeight: "22px",
+                        textAlign: "left",
+                        color: "02000C",
+                      }}
+                    >
+                      Use shipping address as billing address
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* 保存付款信息 */}
                 <Button
+                  onClick={handleCollapse}
                   sx={{
                     width: "206px",
                     height: "48px",
@@ -743,7 +1306,7 @@ const CheckOut: React.FC = () => {
                     border: "1px solid #02000C",
                     borderRadius: "4px",
                     textTransform: "none",
-                    margin: "24px 0px 40px 0px",
+                    margin: "40px 0px 40px 0px",
                     "&:hover": {
                       backgroundColor: "#02000C",
                     },
@@ -762,19 +1325,11 @@ const CheckOut: React.FC = () => {
                     Save & Continue
                   </Typography>
                 </Button>
-              </Box>
-              {/* 付款卡号填写 */}
-              <Box
-                sx={{
-                  padding: "40px 0px 40px 0px",
-                  borderBottom: "1px solid #DDDCDE",
-                }}
-              >
-                <Typography>Payment</Typography>
-              </Box>
-              <Box sx={{ padding: "300px 0px 0px 0px" }}></Box>
+              </Collapse>
+              <Box sx={{ padding: "300px 0px 0px 0px" }} />
             </Box>
-            {/* 订单信息 */}
+
+            {/* 右边订单信息 */}
             <Box
               sx={{
                 width: "420px",

@@ -13,16 +13,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [saveItems, setSaveItems] = useState<Product[]>([]);
-  const [cartItemCount, setCartItemCount] = useState<number>(0);
-  const [cartTotal, setCartTotal] = useState<number>(0);
-  const [saveItemCount, setSaveItemCount] = useState<number>(0);
-  const accessToken = localStorage.getItem("accessToken");
-
-  // 本地购物车和保存的商品
   const [localCartItems, setLocalCartItems] = useState<Product[]>([]);
   const [localSaveItems, setLocalSaveItems] = useState<Product[]>([]);
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
+  const [saveItemCount, setSaveItemCount] = useState<number>(0);
+  const [cartTotal, setCartTotal] = useState<number>(0);
+  const accessToken = localStorage.getItem("accessToken");
 
-  // 更新购物车数据
+  // 更新本地购物车数据
   const updateCartItems = () => {
     // 从 localStorage 获取购物车数据
     const localCartString = localStorage.getItem("cart");
@@ -37,32 +35,39 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  // useEffect初始化购物车数据
+  // 初始化购物车数据并监听 localStorage 变化
   useEffect(() => {
     // 初始化购物车数据
     updateCartItems();
-    // localstorage变化时，更新购物车数据
+    // localStorage变化时，更新购物车数据
     const handleStorageChange = () => {
       updateCartItems();
     };
-    // 添加事件监听
+    // 添加事件监听器
     window.addEventListener("storage", handleStorageChange);
-    // 添加自定义事件监听
     window.addEventListener("manualUpdate", handleStorageChange);
-    // 清除事件监听
+    // 清除事件监听器
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("manualUpdate", handleStorageChange);
     };
   }, []);
 
-  // 更新 localStorage 并手动触发更新
+  // 手动触发更新 localStorage
   const updateLocalStorageAndState = (newData: Product[]) => {
     // 更新 localStorage
     localStorage.setItem("cart", JSON.stringify(newData));
     // 手动触发自定义事件
-    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event("manualUpdate"));
     // 主动更新 React 状态
+    updateCartItems();
+  };
+
+  // 监听登出并清空购物车
+  const handleLogout = () => {
+    // 手动触发购物车清空事件
+    window.dispatchEvent(new Event("manualUpdate"));
+    // 更新页面购物车显示为空
     updateCartItems();
   };
 
@@ -90,9 +95,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     0
   );
-  // 保留两位小数
   const localTotal = parseFloat(localTotalPrice.toFixed(2));
-  // 计算购物车总价
+
+  // 计算购物车内商品的总价
   const calculateTotal = (items: Product[]) => {
     // 计算购物车商品数量
     const totalCount = items
@@ -107,10 +112,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           acc + parseFloat(item.product.price || "0") * (item.quantity || 0),
         0
       );
-    setCartTotal(total);
+    setCartTotal(parseFloat(total.toFixed(2)));
   };
 
-  // 计算保存商品的数量
+  // 当商品数量发生变化的时候计算保存商品的数量
   useEffect(() => {
     const count = saveItems
       .filter((item) => item.cart.type === "saveforlater")
@@ -136,6 +141,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("获取购物车信息失败:", error);
     }
   }, [accessToken]);
+
   // 当 accessToken 变化时，重新获取购物车数据
   useEffect(() => {
     if (accessToken) {
@@ -144,7 +150,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [accessToken, fetchCart]);
 
   // 更新物品所在状态
-  const cartStatus = async (productName: string) => {
+  const cartStatus = async (productName: string, type: string) => {
     if (!accessToken) {
       // 从 localStorage 获取购物车数据
       let cartData: Product[] = JSON.parse(
@@ -163,7 +169,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     try {
       // 调用 getCartStatus，并传递商品名称
-      const response = await putCartitemStatus(productName);
+      const response = await putCartitemStatus(productName, type);
       const cartData = response;
       // 过滤购物车商品
       const cartItem = cartData.filter(
@@ -227,14 +233,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       await postCartitem(product.product.name);
     } catch (error) {
       console.error("添加商品到后端购物车失败:", error);
-    }
-    // 检查 saveForLater 中是否有相同名字的物品
-    const itemInSaveForLater = saveItems.find(
-      (item) => item.product.name === product.product.name
-    );
-    if (itemInSaveForLater) {
-      console.error("添加失败：该商品已在 'Save for Later' 中");
-      return;
     }
     // 更新购物车商品数量
     setCartItems((prevItems) => {
@@ -377,7 +375,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     // 如果用户已登录，调用 deleteCartitem 删除后端购物车商品
     try {
-      // 调用 deleteCartitem，并传递商品 ID
       await deleteCartitem(product.product.name);
     } catch (error) {
       console.error("从后端购物车中删除商品失败:", error);
@@ -448,21 +445,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     // 如果用户已登录，调用 deleteCartitem 删除后端购物车商品
     try {
-      // 调用 deleteCartitem，并传递商品 ID
       await deleteCartitem(product.product.name);
     } catch (error) {
       console.error("从后端购物车中删除商品失败:", error);
     }
-    // 更新稍后购买商品的状态
     setSaveItems((prevItems) => {
-      // 查找要删除的商品
       const indexToRemove = prevItems.findIndex(
         (item) => item.product.name === product.product.name
       );
-      // 如果找到要删除的商品
       if (indexToRemove > -1) {
         const updatedItems = [...prevItems];
-        // 删除商品
         updatedItems.splice(indexToRemove, 1);
         return updatedItems;
       }
@@ -492,6 +484,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     saveItems,
     setSaveItems,
     saveItemCount,
+    handleLogout,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

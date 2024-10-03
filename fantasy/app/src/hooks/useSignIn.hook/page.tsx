@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { signIn } from "../../api/auth/page";
 import { getCartName } from "../../api/cartitem/page";
 import { useCart } from "../useCart.hook/page";
+import { postLocalCartitem } from "../../api/cartitem/page";
 
 export const useSignIn = () => {
   const { setCartItemCount, fetchCart } = useCart();
@@ -82,7 +83,6 @@ export const useSignIn = () => {
   // 登录验证
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 验证邮箱和密码
     if (!email) {
       setError("Please enter your email address.");
       setEmailError(true);
@@ -117,6 +117,19 @@ export const useSignIn = () => {
       console.log(accessToken);
 
       if (localStorage.getItem("accessToken")) {
+        // Check for cart in localStorage
+        const localCart = localStorage.getItem("cart") || "";
+        if (localCart) {
+          const cartItems = JSON.parse(localCart);
+          for (const item of cartItems) {
+            await postLocalCartitem(
+              item.product.name,
+              item.cart.type,
+              item.quantity
+            );
+          }
+          localStorage.removeItem("cart");
+        }
         try {
           // 调用获取购物车信息的 API
           const cartResponse = await getCartName();

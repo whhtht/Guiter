@@ -50,10 +50,12 @@ const Header: React.FC = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("delivery");
+    localStorage.removeItem("cart");
     cartHook.setCartItemCount(0);
     cartHook.setCartItems([]);
     cartHook.setSaveItems([]);
     cartHook.setCartTotal(0);
+    cartHook.handleLogout();
     handleCloseMenu();
   };
 

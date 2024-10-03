@@ -4,23 +4,10 @@ const API_URL = "http://localhost:3000/api";
 // 获取购物车ID
 export const getCartName = async () => {
   try {
-    const response = await apiClient.get(`${API_URL}/cartitem`);
+    const response = await apiClient.get(`${API_URL}/cartitem/`);
     return response;
   } catch (error) {
     console.error("获取购物车名字失败:", error);
-    throw error;
-  }
-};
-
-// 修改购物车状态
-export const putCartitemStatus = async (productName: string) => {
-  try {
-    const response = await apiClient.put(`${API_URL}/cartitem/status`, {
-      productName,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("修改购物车状态失败:", error);
     throw error;
   }
 };
@@ -33,7 +20,40 @@ export const postCartitem = async (productName: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("添加到购物车失败:", error);
+    console.error("添加物品到购物车失败:", error);
+    throw error;
+  }
+};
+
+// 添加本地物品到购物车
+export const postLocalCartitem = async (
+  productName: string,
+  type: string,
+  quantity: number
+) => {
+  try {
+    const response = await apiClient.post(`${API_URL}/cartitem/local`, {
+      productName,
+      type,
+      quantity,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("添加本地物品到购物车失败:", error);
+    throw error;
+  }
+};
+
+// 修改购物车状态
+export const putCartitemStatus = async (productName: string, type: string) => {
+  try {
+    const response = await apiClient.put(`${API_URL}/cartitem/status`, {
+      productName,
+      type,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("修改购物车状态失败:", error);
     throw error;
   }
 };
