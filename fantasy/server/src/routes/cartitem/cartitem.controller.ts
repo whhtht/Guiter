@@ -50,6 +50,7 @@ export const getCartItems = async (req: Request, res: Response) => {
         },
       ],
     });
+    console.log("cartitems:", cartItems);
     return res.status(200).json(cartItems);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -214,7 +215,6 @@ export const cartStatus = async (req: Request, res: Response) => {
         await cart.destroy();
       }
     }
-
     // 如果 type 为 'saveforlater'，表示要将物品从 saveforlater 移动到 cart
     if (type === "saveforlater" && saveItem) {
       if (cartItem) {

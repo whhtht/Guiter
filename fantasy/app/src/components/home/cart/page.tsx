@@ -62,7 +62,7 @@ const Cart: React.FC = () => {
   }, [openLocation, openPickUp]);
 
   // 计算总价
-  const hst = 0.13;
+  const hst = 0.15;
   const hstTotal = (
     Number(cartHook.accessToken ? cartHook.cartTotal : cartHook.localTotal) *
     hst

@@ -141,6 +141,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("获取购物车信息失败:", error);
     }
   }, [accessToken]);
+  // console.log("cartItems", cartItems);
+  // console.log("saveItems", saveItems);
 
   // 当 accessToken 变化时，重新获取购物车数据
   useEffect(() => {

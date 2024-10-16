@@ -51,4 +51,9 @@ Cartitem.belongsTo(Cart, { foreignKey: "cartId", as: "cart" });
 Cartitem.belongsTo(User, { foreignKey: "userId", as: "user" });
 Cartitem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
+// 反关联其他表
+Cart.hasMany(Cartitem, { foreignKey: "cartId", as: "cartitem" });
+User.hasMany(Cartitem, { foreignKey: "userId", as: "cartitem" });
+Product.hasMany(Cartitem, { foreignKey: "productId", as: "cartitem" });
+
 export default Cartitem;

@@ -1,5 +1,5 @@
 # Production Dockerfile
-FROM --platform=linux/amd64 node:lts-alpine
+FROM node:lts-alpine
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ COPY . .
 RUN yarn build
 
 # Run the server in production mode
-CMD yarn run server:prod
+CMD ["yarn", "run", "server:prod"]
 
 # Remove source code from production image
 RUN rm -Rf src
