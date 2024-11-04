@@ -86,7 +86,7 @@ const ProductDetail: React.FC = () => {
                             zIndex: 0,
                           }}
                         >
-                          {guitars?.image.slice(0, 5).map((img, index) => (
+                          {guitars?.image.slice(0, 5).map((index) => (
                             <ImageListItem
                               key={index}
                               onClick={() =>
@@ -115,7 +115,6 @@ const ProductDetail: React.FC = () => {
                               >
                                 <Box
                                   component="img"
-                                  src={img.image}
                                   loading="lazy"
                                   sx={styles.detailstyles.imageItem}
                                 />
@@ -161,7 +160,7 @@ const ProductDetail: React.FC = () => {
                         <DialogContent>
                           {guitars?.image && (
                             <ImageList cols={3}>
-                              {guitars.image.map((item, index) => (
+                              {guitars.image.map((index) => (
                                 <ImageListItem
                                   key={index}
                                   sx={
@@ -176,7 +175,6 @@ const ProductDetail: React.FC = () => {
                                   >
                                     <Box
                                       component="img"
-                                      src={item.image}
                                       loading="lazy"
                                       sx={styles.detailstyles.imageItem}
                                     />
@@ -196,7 +194,7 @@ const ProductDetail: React.FC = () => {
                           src={
                             guitars?.image?.slice(0, 5)[
                               productHook.selectedImageIndex
-                            ].image
+                            ]
                           }
                         />
                         <IconButton

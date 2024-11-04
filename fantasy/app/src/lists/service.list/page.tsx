@@ -5,7 +5,7 @@ export const serviceItems = [
       backgroundcolor: "#F0F0F0",
       title: "Reliable Shipping",
       text: "We handle each order with care and use trusted delivery services.",
-      image: "/src/images/service.images/frame1.png",
+      image: "",
       Link: "/",
     },
     {
@@ -14,7 +14,7 @@ export const serviceItems = [
       backgroundcolor: "#F0F0F0",
       title: "Expert Customer Service",
       text: "We’re here to help with any questions about guitars, orders, or delivery.",
-      image: "/src/images/service.images/frame2.png",
+      image: "",
       Link: "/",
     },
     {
@@ -23,7 +23,7 @@ export const serviceItems = [
       backgroundcolor: "#F0F0F0",
       title: "In-Store Pick Up",
       text: "We provide flexibility for you to pick up your guitars in person.",
-      image: "/src/images/service.images/frame3.png",
+      image: "",
       Link: "/",
     },
     {
@@ -32,7 +32,7 @@ export const serviceItems = [
       backgroundcolor: "#F0F0F0",
       title: "Pro Selection on Each Guitar",
       text: "Our experts carefully review each guitar to guarantee you the quality.",
-      image: "/src/images/service.images/frame4.png",
+      image: "",
       Link: "/",
     },
   ];

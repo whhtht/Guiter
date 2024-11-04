@@ -28,3 +28,22 @@ export const getProduct = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "查询产品和规格失败" });
   }
 };
+
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.findAll({
+      attributes: ["name", "price"],
+      include: [
+        {
+          model: Specification,
+          as: "specificationDetail",
+          attributes: ["Condition", "Brand"],
+        },
+      ],
+    });
+    return res.status(200).json(products);
+  } catch (error) {
+    console.error("查询产品和规格时出错:", error);
+    return res.status(500).json({ error: "查询产品和规格失败" });
+  }
+};

@@ -4,7 +4,8 @@ import sequelize from "../../config/db";
 class User extends Model {
   public id!: string;
   public email!: string;
-  public password!: string;
+  public name!: string;
+  public status!: string;
   public sub!: string;
 
   public readonly createdAt!: Date;
@@ -23,6 +24,16 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    status: {
+      type: DataTypes.ENUM("active", "inactive", "unverified"),
+      allowNull: false,
+      defaultValue: "unverified",
     },
     sub: {
       type: DataTypes.STRING,

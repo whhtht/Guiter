@@ -1,5 +1,5 @@
 import apiClient from "../refreshToken/page";
-const API_URL = "http://localhost:3000/api";
+import { API_URL } from "../url/page";
 
 // 获取购物车ID
 export const getCartName = async () => {

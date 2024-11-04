@@ -50,7 +50,6 @@ export const getCartItems = async (req: Request, res: Response) => {
         },
       ],
     });
-    console.log("cartitems:", cartItems);
     return res.status(200).json(cartItems);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -78,6 +77,7 @@ export const postCartItem = async (req: Request, res: Response) => {
       await existCartItem.save();
       item = existCartItem;
     } else {
+      // 如果不存在购物车物品，则创建新的购物车物品
       item = await Cartitem.create({
         cartId: cart.id,
         userId,
@@ -278,6 +278,7 @@ export const deleteCartItem = async (req: Request, res: Response) => {
     }
     const existUser = await getUserId(accessToken!);
     const userId = existUser.id;
+    console.log("existUser", existUser);
     // 获取产品名称
     const productName = req.params.productName;
     // 解码产品名称

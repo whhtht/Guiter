@@ -15,9 +15,14 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      password: {
+      name:{
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+      },
+      status:{
+        type: Sequelize.ENUM('active', 'inactive','unverified'),
+        allowNull: false,
+        defaultValue: 'unverified',
       },
       sub:{
         type: Sequelize.STRING,

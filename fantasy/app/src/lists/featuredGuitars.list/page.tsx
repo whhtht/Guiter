@@ -4,7 +4,7 @@ export const featuredGuitars = [
         name: "Vintage 1960s Harmony Rocket H-59 Red Sunburst 3 PU 7/8 VG Condition Lots Of Knobs De Armond DeArmond Gold Foil Pick Ups",
         price: "$399.99",
         condition: "Excellent",
-        image: "/src/images/featuredGuitars.images/rectangle1.png",
+        image: "",
         Link: "/",
       },
       {
@@ -12,7 +12,7 @@ export const featuredGuitars = [
         name: "Epiphone Cortez FT45N 1966",
         price: "$399.99",
         condition: "Excellent",
-        image: "/src/images/featuredGuitars.images/rectangle2.png",
+        image: "",
         Link: "/",
       },
       {
@@ -20,7 +20,7 @@ export const featuredGuitars = [
         name: "Guitar brand and name 3",
         price: "$399.99",
         condition: "Excellent",
-        image: "/src/images/featuredGuitars.images/rectangle3.png",
+        image: "",
         Link: "/",
       },
       {
@@ -28,7 +28,7 @@ export const featuredGuitars = [
         name: "Guitar brand and name 4",
         price: "$399.99",
         condition: "Excellent",
-        image: "/src/images/featuredGuitars.images/rectangle4.png",
+        image: "",
         Link: "/",
       },
       {
@@ -36,7 +36,7 @@ export const featuredGuitars = [
         name: "Guitar brand and name 5",
         price: "$399.99",
         condition: "Excellent",
-        image: "/src/images/featuredGuitars.images/rectangle5.png",
+        image: "",
         Link: "/",
       },
       {

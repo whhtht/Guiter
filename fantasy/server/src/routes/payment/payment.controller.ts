@@ -14,20 +14,22 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 export const userPaymentIntent = async (req: Request, res: Response) => {
-  const userId = res.locals.userId;
+  const email = res.locals.email;
   const paymentMethod = req.body.paymentMethod;
+  const applePayToken = req.body.applePayToken;
   console.log("Payment Method:", paymentMethod);
+  console.log("Apple Pay Token:", applePayToken);
   try {
     // 查找用户购物车中物品的信息
     const cartItems = await Cart.findOne({
       where: {
-        userId: userId,
+        email: email,
         type: "cart",
       },
     });
     const userItems = await Cartitem.findAll({
-      where: { userId: userId, cartId: cartItems.id },
-      attributes: ["cartId", "userId", "productId", "quantity"],
+      where: { email: email, cartId: cartItems.id },
+      attributes: ["cartId", "email", "productId", "quantity"],
     });
     const productPrice = await Product.findAll({
       where: { id: userItems.map((item) => item.productId) },
@@ -53,10 +55,23 @@ export const userPaymentIntent = async (req: Request, res: Response) => {
     const amount = Math.round(parseFloat(totalPrice) * 100);
     const currency = "cad";
     // 创建一个支付意图
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
-    });
+    let paymentIntent: Stripe.PaymentIntent;
+    if (paymentMethod === "applepay") {
+      paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency,
+        payment_method: applePayToken, // 使用Apple Pay生成的token作为payment_method
+        confirm: true, // 立即确认支付
+      });
+    } else {
+      // 处理信用卡支付
+      paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency,
+        payment_method: paymentMethod, // 前端传递的信用卡 paymentMethodId
+        confirm: true,
+      });
+    }
     // 返回给前端用于完成支付
     res.status(200).send({
       success: true,
@@ -72,10 +87,9 @@ export const userPaymentIntent = async (req: Request, res: Response) => {
 };
 
 export const guestPaymentIntent = async (req: Request, res: Response) => {
-  const { cart, paymentMethod } = req.body;
+  const { cart, paymentMethod, applePayToken } = req.body;
   console.log("Payment Method:", paymentMethod);
-  console.log("Cart:", cart);
-
+  console.log("Apple Pay Token:", applePayToken);
   try {
     const calculateTotalPrice = (cart: any[]) => {
       // 使用reduce方法遍历cartItems，计算总价
@@ -86,19 +100,31 @@ export const guestPaymentIntent = async (req: Request, res: Response) => {
       return itemPrice;
     };
     const itemPrice = calculateTotalPrice(cart);
-
     // 计算税费、运费、总价
     const tax = 0.15;
     const shippingFee = 30;
     const hst = parseFloat((itemPrice * tax).toFixed(2));
     const totalPrice = (itemPrice + hst + shippingFee).toFixed(2);
-    const amount = Math.round(parseFloat(totalPrice) * 100);
+    const amount = Math.round(1000 * 100);
     const currency = "cad";
     // 创建一个支付意图
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
-    });
+    let paymentIntent: Stripe.PaymentIntent;
+    if (paymentMethod === "applepay") {
+      paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency,
+        payment_method: applePayToken,
+        confirm: true,
+      });
+    } else {
+      // 处理信用卡支付
+      paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency,
+        payment_method: paymentMethod,
+        confirm: true,
+      });
+    }
     // 返回给前端用于完成支付
     res.status(200).send({
       success: true,

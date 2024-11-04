@@ -44,6 +44,15 @@ const Header: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID as string;
+  const cognitoDomain = import.meta.env.VITE_COGNITO_DOMAIN as string;
+  const signOutRedirectUri = "http://localhost:5173/signout/callback"; // 必须和Cognito控制台中的Allowed sign-out URLs一致
+
+  // 构建Cognito登出URL
+  const cognitoSignOutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
+    signOutRedirectUri
+  )}`;
+
   // 退出登录
   const handleLogout = () => {
     localStorage.removeItem("idToken");
@@ -59,23 +68,13 @@ const Header: React.FC = () => {
     handleCloseMenu();
   };
 
-  const getEmailFromToken = () => {
-    const token = localStorage.getItem("idToken");
-    if (!token) return null;
-    // JWT 格式为三部分: header.payload.signature
-    const payload = token.split(".")[1]; // 取出第二部分 payload
-    if (!payload) return null;
-    // 解码 Base64 编码的 payload
-    const decodedPayload = atob(payload);
-    const payloadObject = JSON.parse(decodedPayload);
-    // 从 payload 中提取邮箱信息 (假设 JWT 中的邮箱字段是 'email')
-    return payloadObject.email;
+  const handleSignOut = () => {
+    window.location.href = cognitoSignOutUrl;
   };
 
   // 获取邮箱的前缀部分
   const getMaskedEmail = () => {
-    const email = getEmailFromToken();
-    if (!email) return null;
+    const email = localStorage.getItem("email") || "";
     // 使用正则表达式，匹配 @ 之前的部分
     const username = email.split("@")[0];
     return username;
@@ -202,7 +201,12 @@ const Header: React.FC = () => {
             <MenuItem>
               <Typography>User Detail</Typography>
             </MenuItem>
-            <MenuItem onClick={handleLogout}>
+            <MenuItem
+              onClick={() => {
+                handleLogout();
+                handleSignOut();
+              }}
+            >
               <Typography>Logic Out</Typography>
             </MenuItem>
           </Menu>

@@ -1,6 +1,5 @@
 import apiClient from "../refreshToken/page";
-
-const API_URL = "http://localhost:3000/api";
+import { API_URL } from "../url/page";
 
 // 创建登录支付意图
 export const userPaymentIntent = async (paymentMethod: string) => {

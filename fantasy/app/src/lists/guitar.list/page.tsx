@@ -93,26 +93,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/image1.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image2.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image3.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image4.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image5.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image6.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -185,17 +166,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/example_image1.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/example_image2.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/example_image3.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -268,11 +239,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/cart1.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -345,26 +312,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/image1.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image2.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image3.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image4.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image5.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image6.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -437,17 +385,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/example_image1.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/example_image2.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/example_image3.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -520,11 +458,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/cart1.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -597,26 +531,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/image1.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image2.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image3.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image4.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image5.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/image6.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -689,17 +604,7 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/example_image1.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/example_image2.png",
-      },
-      {
-        image: "/src/images/classicalGuitar.images/example_image3.png",
-      },
-    ],
+    image: [],
   },
 
   {
@@ -772,10 +677,6 @@ export const guitar = [
         NumberofFrets: "22",
       },
     },
-    image: [
-      {
-        image: "/src/images/classicalGuitar.images/cart1.png",
-      },
-    ],
+    image: [],
   },
 ];

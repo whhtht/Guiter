@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { getProductList } from "../../../api/product/page";
+import { getProducts } from "../../../api/product/page";
 
 import {
   category as categories,
@@ -66,7 +66,7 @@ const ProductDetail: React.FC = () => {
   // 获取后端产品列表
   const [product, setProduct] = useState<Product[]>([]);
   useEffect(() => {
-    getProductList().then((data) => {
+    getProducts().then((data) => {
       setProduct(data);
     });
   }, []);
@@ -202,7 +202,7 @@ const ProductDetail: React.FC = () => {
     // 如果有图片，显示图片，否则显示默认图片
     const image =
       localguitar && localguitar.image.length > 0
-        ? localguitar.image[0].image
+        ? localguitar.image[0]
         : "default-image.jpg";
     return { ...item, image };
   });
@@ -604,7 +604,7 @@ const ProductDetail: React.FC = () => {
                         <Typography
                           sx={styles.list_styles.roboto_20px_000000D9}
                         >
-                          {item.price}
+                          $ {item.price}
                         </Typography>
                       </Box>
                     </Box>

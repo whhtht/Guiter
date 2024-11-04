@@ -1,11 +1,10 @@
 {
     "development": {
       "username": "yunongchen",
-      "password": null,
+      "password": "",
       "database": "fantasy",
       "host": "localhost",
-      "dialect": "postgres",
-      "logging": true
+      "dialect": "postgres"
     },
     "test": {
       "username": "root",

@@ -7,7 +7,7 @@ import User from "../routes/auth/auth.model";
 
 dotenv.config();
 
-// Cognito Client 实例化
+// Cognito 客户端
 const client = new CognitoIdentityProviderClient({
   region: process.env.COGNITO_REGION,
   credentials: {
@@ -45,21 +45,18 @@ export const getUserId = async (accessToken: string) => {
     );
 
     const sub = subAttribute?.Value;
-
     if (!sub) {
       throw new Error("Invalid user token");
     }
 
     // 根据 sub 获取对应的用户
     const existUser = await User.findOne({ where: { sub } });
-
     if (!existUser) {
       throw new Error("User not found");
     }
-
     return existUser;
   } catch (error) {
-    console.error("Error getting user ID:", error);
+    console.error("Error getting user Id:", error);
     throw error;
   }
 };

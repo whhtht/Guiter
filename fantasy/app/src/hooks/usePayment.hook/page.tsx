@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useStripe,
@@ -7,7 +7,7 @@ import {
   CardExpiryElement,
   CardCvcElement,
 } from "@stripe/react-stripe-js";
-// import { PaymentRequest } from "@stripe/stripe-js";
+import { PaymentRequest } from "@stripe/stripe-js";
 import { userPaymentIntent, guestPaymentIntent } from "../../api/payment/page";
 
 export const usePayment = () => {
@@ -16,72 +16,75 @@ export const usePayment = () => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  // const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(
-  //   null
-  // );
 
+  // 苹果支付请求
+  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(
+    null
+  );
   // 初始化 Apple Pay
-  // useEffect(() => {
-  //   if (stripe) {
-  //     const pr = stripe.paymentRequest({
-  //       country: "US",
-  //       currency: "usd",
-  //       total: {
-  //         label: "Total",
-  //         amount: 1000, // 金额，最小单位为分
-  //       },
-  //       requestPayerName: true,
-  //       requestPayerEmail: true,
-  //     });
+  useEffect(() => {
+    if (stripe) {
+      const pr = stripe.paymentRequest({
+        country: "US",
+        currency: "usd",
+        total: {
+          label: "Total",
+          amount: 1000, // 金额，最小单位为分
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
 
-  //     pr.canMakePayment().then((result) => {
-  //       if (result) {
-  //         setPaymentRequest(pr);
-  //       } else {
-  //         console.error("设备不支持 Apple Pay");
-  //         setPaymentStatus("unsupported");
-  //       }
-  //     });
+      pr.canMakePayment().then((result) => {
+        if (result) {
+          setPaymentRequest(pr);
+        } else {
+          console.error("设备不支持 Apple Pay");
+          setPaymentStatus("unsupported");
+        }
+      });
 
-  //     // 处理支付请求
-  //     pr.on("paymentmethod", async (ev) => {
-  //       try {
-  //         const { clientSecret } = await userPaymentIntent("Apple Pay");
-  //         const { error, paymentIntent } = await stripe.confirmCardPayment(
-  //           clientSecret,
-  //           {
-  //             payment_method: ev.paymentMethod.id,
-  //           }
-  //         );
+      // 处理支付请求
+      pr.on("paymentmethod", async (ev) => {
+        try {
+          const { clientSecret } = await userPaymentIntent("Apple Pay");
+          const { error, paymentIntent } = await stripe.confirmCardPayment(
+            clientSecret,
+            {
+              payment_method: ev.paymentMethod.id,
+            }
+          );
 
-  //         if (error) {
-  //           console.error("Apple Pay 支付确认失败:", error);
-  //           ev.complete("fail");
-  //           setPaymentStatus("failed");
-  //         } else if (paymentIntent && paymentIntent.status === "succeeded") {
-  //           console.log("Apple Pay 支付成功");
-  //           ev.complete("success");
-  //           setPaymentStatus("success");
-  //         }
-  //       } catch (error) {
-  //         console.error("Apple Pay 支付失败:", error);
-  //         setPaymentStatus("error");
-  //         ev.complete("fail");
-  //       }
-  //     });
-  //   }
-  // }, [stripe]);
+          if (error) {
+            console.error("Apple Pay 支付确认失败:", error);
+            ev.complete("fail");
+            setPaymentStatus("failed");
+          } else if (paymentIntent && paymentIntent.status === "succeeded") {
+            console.log("Apple Pay 支付成功");
+            ev.complete("success");
+            setPaymentStatus("success");
+          }
+        } catch (error) {
+          console.error("Apple Pay 支付失败:", error);
+          setPaymentStatus("error");
+          ev.complete("fail");
+        }
+      });
+    }
+  }, [stripe]);
 
+  // 处理支付方式变更
   const handlePaymentMethodChange = (method: string) => {
     setPaymentMethod(method);
   };
 
+  // 处理登录用户支付
   const handlePayment = async () => {
     if (!stripe || !elements) {
       console.error("Stripe.js 未加载");
       return;
     }
-
+    // 处理信用卡支付
     if (paymentMethod === "Credit or Debit card") {
       try {
         const { clientSecret } = await userPaymentIntent(paymentMethod);
@@ -116,10 +119,12 @@ export const usePayment = () => {
       } catch (error) {
         console.error("支付失败:", error);
         setPaymentStatus("error");
+        navigate("/error");
       }
     }
   };
 
+  // 处理未登录用户支付
   const handleGuestPayment = async () => {
     const localCartString = localStorage.getItem("cart");
     const cart =
@@ -158,6 +163,7 @@ export const usePayment = () => {
       } catch (error) {
         console.error("支付失败:", error);
         setPaymentStatus("error");
+        navigate("/error");
       }
     }
   };
@@ -168,6 +174,6 @@ export const usePayment = () => {
     paymentStatus,
     handlePayment,
     handleGuestPayment,
-    // paymentRequest, // Apple Pay 支持的请求
+    paymentRequest, // Apple Pay 支持的请求
   };
 };

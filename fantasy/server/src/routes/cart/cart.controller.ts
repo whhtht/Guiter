@@ -5,15 +5,15 @@ import Cart from "./cart.model";
 // 处理 GET 请求 (获取购物车 ID)
 export const getCartId = async (req: Request, res: Response) => {
   try {
-    const userId = res.locals.userId;
-    console.log("userId", userId);
+    const email = res.locals.email;
+    console.log("email", email);
     const cart = await Cart.findAll({
-      where: { userId },
+      where: { email },
       include: [
         {
           model: User,
           as: "user",
-          attributes: ["email", "sub"],
+          attributes: ["userId", "email", "sub"],
         },
       ],
     });
