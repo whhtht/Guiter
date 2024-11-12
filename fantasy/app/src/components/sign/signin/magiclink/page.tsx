@@ -1,43 +1,85 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { magicLink } from "../../../../api/auth/page";
+import { getCartName, postLocalCartitem } from "../../../../api/cartitem/page";
+import { useCart } from "../../../../hooks/useCart.hook/page";
+import { Header } from "../../signlayout/header/page";
+import { Footer } from "../../signlayout/footer/page";
 
 import { Box, Typography } from "@mui/material";
 
 const MagicLink: React.FC = () => {
-  const email = localStorage.getItem("email");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = localStorage.getItem("email") || "";
+  const { setCartItemCount, fetchCart } = useCart();
+  const [isExecuted, setIsExecuted] = useState(false);
+
+  // 从查询参数中获取 tokens
+  const queryParams = new URLSearchParams(location.search);
+  const name = queryParams.get("name") || "";
+  const idToken = queryParams.get("idToken") || "";
+  const accessToken = queryParams.get("accessToken") || "";
+  const refreshToken = queryParams.get("refreshToken") || "";
+  const lastVisitedPath = localStorage.getItem("lastVisitedPath") || "";
+
+  if (idToken && accessToken && refreshToken !== "") {
+    localStorage.setItem("name", name);
+    localStorage.setItem("idToken", idToken);
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
+  }
+  console.log("accessToken:", accessToken);
+
+  // 获取购物车信息
+  useEffect(() => {
+    if (!isExecuted) {
+      const cartInformation = async () => {
+        // 检查 localStorage 中是否有购物车
+        if (localStorage.getItem("accessToken")) {
+          const localCart = localStorage.getItem("cart") || "";
+          if (localCart) {
+            const cartItems = JSON.parse(localCart);
+            for (const item of cartItems) {
+              await postLocalCartitem(
+                item.product.name,
+                item.cart.type,
+                item.quantity
+              );
+            }
+            localStorage.removeItem("cart");
+          }
+          try {
+            // 调用获取购物车信息的 API
+            const cartResponse = await getCartName();
+            const cart = cartResponse.data;
+            // 设置购物车商品数量
+            setCartItemCount(cart.quantity);
+            // 调用 fetchCart 来更新购物车
+            fetchCart();
+          } catch (error) {
+            throw new Error(error as string);
+          }
+          localStorage.removeItem("lastVisitedPath");
+          navigate(lastVisitedPath);
+        }
+      };
+      cartInformation();
+      setIsExecuted(true);
+    }
+  }, [fetchCart, isExecuted, navigate, setCartItemCount, lastVisitedPath]);
+
+  const handleMagicLink = async () => {
+    try {
+      await magicLink(email);
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  };
 
   return (
     <Box>
-      {/* 顶部显示 */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #DDDCDE",
-          padding: "0px 72px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: "72px",
-          }}
-        >
-          <Box component={Link} to="/" sx={{ textDecoration: "none" }}>
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "20px",
-                fontWeight: 500,
-                lineHeight: "28px",
-                textAlign: "left",
-                color: "#02000C",
-              }}
-            >
-              Logo Name
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      <Header />
 
       {/* Magic Link 表单 */}
       <Box
@@ -107,6 +149,7 @@ const MagicLink: React.FC = () => {
             <Typography
               component={Link}
               to="/signin"
+              onClick={() => localStorage.clear()}
               sx={{
                 fontFamily: "Roboto",
                 fontSize: "14px",
@@ -144,6 +187,7 @@ const MagicLink: React.FC = () => {
             Didn’t receive it?
           </Typography>
           <Typography
+            onClick={handleMagicLink}
             sx={{
               fontFamily: "Roboto",
               fontSize: "14px",
@@ -160,14 +204,7 @@ const MagicLink: React.FC = () => {
         </Box>
       </Box>
 
-      {/* 页脚 */}
-      <Box
-        sx={{
-          width: "100%",
-          height: "72px",
-          backgroundColor: "#02000C",
-        }}
-      />
+      <Footer />
     </Box>
   );
 };

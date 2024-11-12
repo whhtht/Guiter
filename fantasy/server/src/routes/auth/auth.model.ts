@@ -5,6 +5,7 @@ class User extends Model {
   public id!: string;
   public email!: string;
   public name!: string;
+  public method!: string;
   public status!: string;
   public sub!: string;
 
@@ -29,6 +30,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    method: {
+      type: DataTypes.ENUM("account", "google", "facebook", "apple"),
+      allowNull: false,
+      defaultValue: "account",
     },
     status: {
       type: DataTypes.ENUM("active", "inactive", "unverified"),

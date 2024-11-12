@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { signIn, resetCode, magicLink } from "../../../../api/auth/page";
 import { getCartName, postLocalCartitem } from "../../../../api/cartitem/page";
 import { useCart } from "../../../../hooks/useCart.hook/page";
+import { Header } from "../../signlayout/header/page";
+import { Footer } from "../../signlayout/footer/page";
 
 import { Box, Typography, Input, Button, IconButton } from "@mui/material";
 
@@ -16,54 +18,59 @@ const Password: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
+  const lastVisitedPath = localStorage.getItem("lastVisitedPath") || "";
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (error) {
+      setError("");
+    }
+  };
 
   // 点击“Continue”按钮时的处理函数
   const handleContinue = async () => {
-    // 检查密码是否为空
-    if (!password) {
-      setError("Please enter your password.");
-    } else {
-      // 调用登录的 API
-      try {
-        const response = await signIn(email, password);
-        const { idToken, accessToken, refreshToken } = response.data;
-        localStorage.setItem("idToken", idToken);
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        console.log("accessToken:", accessToken);
-        // 检查 localStorage 中是否有购物车
-        if (localStorage.getItem("accessToken")) {
-          const localCart = localStorage.getItem("cart") || "";
-          if (localCart) {
-            const cartItems = JSON.parse(localCart);
-            for (const item of cartItems) {
-              await postLocalCartitem(
-                item.product.name,
-                item.cart.type,
-                item.quantity
-              );
-            }
-            localStorage.removeItem("cart");
+    // 调用登录的 API
+    try {
+      const response = await signIn(email, password);
+      const { name, idToken, accessToken, refreshToken } = response.data;
+      localStorage.setItem("name", name);
+      localStorage.setItem("idToken", idToken);
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      console.log("accessToken:", accessToken);
+      // 检查 localStorage 中是否有购物车
+      if (localStorage.getItem("accessToken")) {
+        const localCart = localStorage.getItem("cart") || "";
+        if (localCart) {
+          const cartItems = JSON.parse(localCart);
+          for (const item of cartItems) {
+            await postLocalCartitem(
+              item.product.name,
+              item.cart.type,
+              item.quantity
+            );
           }
-          try {
-            // 调用获取购物车信息的 API
-            const cartResponse = await getCartName();
-            const cart = cartResponse.data;
-            // 设置购物车商品数量
-            setCartItemCount(cart.quantity);
-            // 调用 fetchCart 来更新购物车
-            fetchCart();
-          } catch (error) {
-            setError("Failed to get cart items.");
-          }
+          localStorage.removeItem("cart");
         }
-        navigate("/");
-      } catch (error) {
-        // 显示错误信息
-        const errorResponse = error as { message: string };
-        const errorMessage = errorResponse.message;
-        setError(errorMessage);
+        try {
+          const cartResponse = await getCartName();
+          const cart = cartResponse.data;
+          // 设置购物车商品数量
+          setCartItemCount(cart.quantity);
+          // 调用 fetchCart 来更新购物车
+          fetchCart();
+        } catch (error) {
+          const errorResponse = error as { message: string };
+          const errorMessage = errorResponse.message;
+          setError(errorMessage);
+        }
       }
+      localStorage.removeItem("lastVisitedPath");
+      navigate(lastVisitedPath);
+    } catch (error) {
+      const errorResponse = error as { message: string };
+      const errorMessage = errorResponse.message;
+      setError(errorMessage);
     }
   };
 
@@ -75,19 +82,23 @@ const Password: React.FC = () => {
         navigate("/signin/resetcode");
       }
     } catch (error) {
-      setError("Failed to send reset password code.");
+      const errorResponse = error as { message: string };
+      const errorMessage = errorResponse.message;
+      setError(errorMessage);
     }
   };
 
+  // 点击“Sign in with Magic Link”时的处理函数
   const handleMagicLink = async () => {
     try {
-      console.log(`Magic link has been sent to ${email}`);
       const response = await magicLink(email);
       if (response.status === 200) {
-        console.log(`testttttttttttttttttt`);
+        navigate("/signin/magiclink");
       }
     } catch (error) {
-      setError("Failed to send magic link.");
+      const errorResponse = error as { message: string };
+      const errorMessage = errorResponse.message;
+      setError(errorMessage);
     }
   };
 
@@ -99,42 +110,13 @@ const Password: React.FC = () => {
   // 按下回车键时，调用按钮的点击处理函数
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
-      handleContinue(); // 调用按钮的点击处理函数
+      handleContinue();
     }
   };
 
   return (
     <Box>
-      {/* 顶部显示 */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #DDDCDE",
-          padding: "0px 72px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: "72px",
-          }}
-        >
-          <Box component={Link} to="/" sx={{ textDecoration: "none" }}>
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "20px",
-                fontWeight: 500,
-                lineHeight: "28px",
-                textAlign: "left",
-                color: "#02000C",
-              }}
-            >
-              Logo Name
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      <Header />
 
       {/* 登录表单 */}
       <Box
@@ -186,7 +168,7 @@ const Password: React.FC = () => {
           <Typography
             component={Link}
             to="/signin"
-            onClick={() => localStorage.removeItem("email")}
+            onClick={() => localStorage.clear()}
             sx={{
               fontFamily: "Roboto",
               fontSize: "14px",
@@ -225,7 +207,7 @@ const Password: React.FC = () => {
           <Input
             disableUnderline
             type={showPassword ? "text" : "password"}
-            onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+            onChange={handlePasswordChange}
             endAdornment={
               <IconButton
                 onClick={togglePasswordVisibility}
@@ -354,15 +336,7 @@ const Password: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* 页脚 */}
-      <Box
-        sx={{
-          width: "100%",
-          height: "72px",
-          backgroundColor: "#02000C",
-          margin: "106px 0px 0px 0px",
-        }}
-      />
+      <Footer />
     </Box>
   );
 };

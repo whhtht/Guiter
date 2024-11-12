@@ -1,6 +1,14 @@
-import React, { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  KeyboardEvent,
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { verifySignUpCode, resendSignUpCode } from "../../../../api/auth/page";
+import { Header } from "../../signlayout/header/page";
+import { Footer } from "../../signlayout/footer/page";
 
 import { Box, Typography, Input, Button } from "@mui/material";
 
@@ -9,6 +17,9 @@ const Verification: React.FC = () => {
   const email = localStorage.getItem("email") || "";
   const [error, setError] = useState("");
   const [values, setValues] = useState(Array(6).fill(""));
+  const [timer, setTimer] = useState(0);
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // 使用 useRef 来获取 MUI Input 元素的引用
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
@@ -58,6 +69,8 @@ const Verification: React.FC = () => {
       try {
         const response = await verifySignUpCode(email, code);
         if (response.status === 200) {
+          localStorage.removeItem("email");
+          localStorage.removeItem("method");
           navigate("/signin");
         }
       } catch (error) {
@@ -70,14 +83,32 @@ const Verification: React.FC = () => {
     }
   };
 
-  const [success, setSuccess] = useState("");
+  // 重新发送验证码倒计时
+  useEffect(() => {
+    if (timer > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      setIsResendDisabled(false);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [timer]);
+
   // 处理重新发送验证码
   const handleResend = async () => {
+    setTimer(60); // 设置60秒倒计时
+    setIsResendDisabled(true);
+
     try {
-      const response = await resendSignUpCode(email);
-      if (response.status === 200) {
-        setSuccess("Verification code resent.");
-      }
+      await resendSignUpCode(email);
     } catch (error) {
       setError("Failed to resend verification code.");
     }
@@ -100,36 +131,7 @@ const Verification: React.FC = () => {
 
   return (
     <Box>
-      {/* 顶部显示 */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #DDDCDE",
-          padding: "0px 72px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: "72px",
-          }}
-        >
-          <Box component={Link} to="/" sx={{ textDecoration: "none" }}>
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "20px",
-                fontWeight: 500,
-                lineHeight: "28px",
-                textAlign: "left",
-                color: "#02000C",
-              }}
-            >
-              Logo Name
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      <Header />
 
       {/* 验证码表单 */}
       <Box
@@ -137,7 +139,7 @@ const Verification: React.FC = () => {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-          margin: " 82px 0px 357px 0px",
+          margin: error ? "82px 0px 317px 0px" : " 82px 0px 355px 0px",
           gap: "24px",
         }}
       >
@@ -197,7 +199,7 @@ const Verification: React.FC = () => {
             <Typography
               component={Link}
               to="/signin"
-              onClick={() => localStorage.removeItem("email")}
+              onClick={() => localStorage.clear()}
               sx={{
                 fontFamily: "Roboto",
                 fontSize: "14px",
@@ -220,8 +222,8 @@ const Verification: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             width: "328px",
-            height: "78px",
             margin: "8px 0px",
+            gap: "8px",
           }}
         >
           {/* 输入验证码 */}
@@ -231,7 +233,6 @@ const Verification: React.FC = () => {
               justifyContent: "space-between",
               width: "328px",
               height: "48px",
-              margin: "0px 0px 8px 0px",
             }}
           >
             {values.map((value, index) => (
@@ -257,50 +258,6 @@ const Verification: React.FC = () => {
             ))}
           </Box>
 
-          {/* 重新发送验证码 */}
-          <Box sx={{ display: "flex", gap: "6px" }}>
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "14px",
-                fontWeight: 400,
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#02000C",
-              }}
-            >
-              Didn’t receive it?
-            </Typography>
-            <Typography
-              onClick={handleResend}
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "14px",
-                fontWeight: 400,
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#02000C",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              Resend the code
-            </Typography>
-          </Box>
-          {success && (
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "14px",
-                fontWeight: 400,
-                lineHeight: "22px",
-                textAlign: "left",
-                color: "#00A343",
-              }}
-            >
-              {success}
-            </Typography>
-          )}
           {error && (
             <Typography
               sx={{
@@ -315,6 +272,45 @@ const Verification: React.FC = () => {
               {error}
             </Typography>
           )}
+
+          {/* 重新发送验证码 */}
+          <Box
+            sx={{
+              display: "flex",
+              gap: "6px",
+              margin: error ? "8px 0px 0px 0px" : "0px",
+            }}
+          >
+            <Typography
+              sx={{
+                fontFamily: "Roboto",
+                fontSize: "14px",
+                fontWeight: 400,
+                lineHeight: "22px",
+                textAlign: "left",
+                color: "#02000C",
+              }}
+            >
+              Didn’t receive it?
+            </Typography>
+            <Typography
+              onClick={!isResendDisabled ? handleResend : undefined}
+              sx={{
+                fontFamily: "Roboto",
+                fontSize: "14px",
+                fontWeight: 400,
+                lineHeight: "22px",
+                textAlign: "left",
+                color: "#02000C",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
+              {isResendDisabled
+                ? `Resend code after ${timer}s`
+                : "Resend the code"}
+            </Typography>
+          </Box>
         </Box>
 
         {/* 验证按钮 */}
@@ -327,6 +323,7 @@ const Verification: React.FC = () => {
             borderRadius: "4px",
             backgroundColor: "#02000C",
             textTransform: "none",
+            marginTop: "8px",
             ":hover": { backgroundColor: "#02000C" },
           }}
         >
@@ -345,14 +342,7 @@ const Verification: React.FC = () => {
         </Button>
       </Box>
 
-      {/* 页脚 */}
-      <Box
-        sx={{
-          width: "100%",
-          height: "72px",
-          backgroundColor: "#02000C",
-        }}
-      />
+      <Footer />
     </Box>
   );
 };

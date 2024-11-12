@@ -4,7 +4,7 @@ import Signin from "./components/sign/signin/page";
 import Signup from "./components/sign/signup/page";
 import Verification from "./components/sign/signup/verification/page";
 import Signout from "./components/sign/signout/callback/page";
-import ResetCode from "./components/sign/resetcode/page";
+import ResetCode from "./components/sign/signreset/page";
 import Notfound from "./components/notfound/page";
 import CartProvider from "./provider/page";
 

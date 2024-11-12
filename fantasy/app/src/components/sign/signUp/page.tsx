@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { signUp } from "../../../api/auth/page";
+import { Header } from "../signlayout/header/page";
+import { Footer } from "../signlayout/footer/page";
+
 import {
   Box,
   Input,
@@ -8,7 +12,6 @@ import {
   Button,
   Checkbox,
 } from "@mui/material";
-import { signUp } from "../../../api/auth/page";
 
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -82,32 +85,17 @@ const SignUp: React.FC = () => {
     // 清除错误信息
     setError("");
     setPasswordError("");
-    // 用于标记是否有错误
-    let hasError = false;
-    // 检查密码是否符合规则
-    if (
-      password.length < 8 ||
-      !/[A-Z]/.test(password) ||
-      !/[0-9!@#$%^&*]/.test(password)
-    ) {
-      setPasswordError("Password must meet all the requirements.");
-      hasError = true;
-    }
-    // 检查名字是否为空
-    if (name.trim() === "") {
-      setError("Please enter your full name.");
-      hasError = true;
-    }
-    // 如果有任何错误，停止执行并显示错误信息
-    if (hasError) return;
     // 调用 signUp 注册用户
     try {
-      const response = await signUp(email, password, name)
+      const response = await signUp(email, password, name);
       if (response.status === 200) {
+        localStorage.setItem("method", "account");
         navigate("/signup/verification");
       }
     } catch (error) {
-      setPasswordError("Sign up failed. Please try again.");
+      const errorResponse = error as { passwordError?: string; error?: string };
+      setPasswordError(errorResponse.passwordError || "");
+      setError(errorResponse.error || "");
     }
   };
 
@@ -120,36 +108,7 @@ const SignUp: React.FC = () => {
 
   return (
     <Box>
-      {/* 顶部显示 */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #DDDCDE",
-          padding: "0px 72px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: "72px",
-          }}
-        >
-          <Box component={Link} to="/" sx={{ textDecoration: "none" }}>
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "20px",
-                fontWeight: 500,
-                lineHeight: "28px",
-                textAlign: "left",
-                color: "#02000C",
-              }}
-            >
-              Logo Name
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      <Header />
 
       {/* 注册表单 */}
       <Box
@@ -191,7 +150,7 @@ const SignUp: React.FC = () => {
           <Typography
             component={Link}
             to="/signin"
-            onClick={() => localStorage.removeItem("email")}
+            onClick={() => localStorage.clear()}
             sx={{
               fontFamily: "Roboto",
               fontSize: "16px",
@@ -457,13 +416,7 @@ const SignUp: React.FC = () => {
       </Box>
 
       {/* 页脚 */}
-      <Box
-        sx={{
-          width: "100%",
-          height: "72px",
-          backgroundColor: "#02000C",
-        }}
-      />
+      <Footer />
     </Box>
   );
 };

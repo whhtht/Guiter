@@ -13,6 +13,7 @@ import {
   ThreePartyLoginHandler,
   magicLinkHandler,
   verifyMagicLinkHandler,
+  magicLinkCallbackHandler,
 } from "./auth.controller";
 
 import auth from "middlewares/auth.middleware";
@@ -28,9 +29,10 @@ router.post("/resetCode", resetCodeHandler);
 router.post("/verifyResetCode", verifyResetCodeHandler);
 router.post("/resetPassword", resetPasswordHandler);
 router.post("/refreshToken", refreshTokenHandler);
-router.post("/ThreePartyLogin", ThreePartyLoginHandler);
+router.post("/threePartyLogin", ThreePartyLoginHandler);
 router.post("/magicLink", magicLinkHandler);
-router.get("/verifyMagicLink", verifyMagicLinkHandler);
+router.post("/verifyMagicLink", verifyMagicLinkHandler);
+router.get("/magicLink/callback", magicLinkCallbackHandler);
 router.get("/me", auth, getCurrentUser);
 
 export default router;

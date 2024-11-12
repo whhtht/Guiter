@@ -4,10 +4,13 @@ import { CartProvider } from "../hooks/useCart.hook/provider/page";
 import Home from "../components/home/main/page";
 import Password from "../components/sign/signin/password/page";
 import Magiclink from "../components/sign/signin/magiclink/page";
-import Resetpassword from "../components/sign/resetcode/resetPassword/page";
-import Callback from "../components/sign/callback/page";
+import Resetpassword from "../components/sign/signreset/resetPassword/page";
+import Callback from "../components/sign/signin/callback/page";
 import Productlist from "../components/home/productList/page";
 import Productdetail from "../components/home/productDetail/page";
+import Account from "../components/home/account/page";
+import Profile from "../components/home/account/profile/page";
+import Address from "../components/home/account/address/page";
 import Cart from "../components/home/cart/page";
 import Checkout from "../components/payment/checkout/page";
 import Success from "../components/payment/success/page";
@@ -26,7 +29,12 @@ const Provider: React.FC = () => {
         <Route path="/signin/callback" element={<Callback />} />
         <Route path="/" element={<Home />} />
         <Route path="/productlist/:category" element={<Productlist />} />
-        <Route path="/product/:productName" element={<Productdetail />} />
+        <Route path="/product/:productname" element={<Productdetail />} />
+        <Route path="/account" element={<Account />}>
+          <Route path="profile" element={<Profile />} />
+          <Route path="address" element={<Address />} />
+        </Route>
+        <Route path="/order" element={<Account />} />
         <Route path="/success" element={<Success />} />
         <Route path="/cart" element={<Cart />} />
         <Route

@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import React from "react";
-import Header from "../../layout/header/page";
+import Header from "../../home/layout/header/page";
 
 const Success: React.FC = () => {
   const delivery = localStorage.getItem("delivery");

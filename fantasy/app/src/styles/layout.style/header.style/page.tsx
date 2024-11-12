@@ -7,7 +7,7 @@ const header_frame = {
   width: "100%",
   height: "78px",
   backgroundColor: "#02000C",
-  padding: "16px 72px 16px 72px",
+  padding: "16px 72px",
 };
 
 const navigation_frame = {
@@ -19,18 +19,18 @@ const navigation_frame = {
   height: "48px",
   backgroundColor: "#FFFFFF",
   borderBottom: "1px solid #DDDCDE",
-  padding: "0px 62px 0px 62px",
+  padding: "0px 72px",
 };
 
 const link_frame = {
-  mx: "10px",
+  ml: "10px",
 };
 
 const left_group_frame = {
   display: "flex",
   alignItems: "center",
   height: "100%",
-  margin: "0px 10px 0px 10px",
+  margin: "0px 20px 0px 0px",
   ":hover": {
     backgroundColor: "#FFFFFF",
     borderBottom: "2px solid #02000C",
@@ -48,7 +48,7 @@ const right_group_frame = {
   display: "flex",
   alignItems: "center",
   height: "100%",
-  mx: "10px",
+  ml: "20px",
   ":hover": {
     backgroundColor: "#FFFFFF",
     borderBottom: "2px solid #02000C",
@@ -81,13 +81,11 @@ const logoName = {
 // Button style
 const button_black = {
   display: "flex",
-  justifyContent: "center",
   alignItems: "center",
   width: "100%",
   color: "#FFFFFF",
   backgroundColor: "#02000C",
   textTransform: "none",
-  textDecoration: "none",
   "&:hover": {
     backgroundColor: "#02000C",
   },

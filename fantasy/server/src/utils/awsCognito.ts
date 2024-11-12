@@ -15,13 +15,19 @@ import {
   AdminSetUserPasswordCommand,
   // 第三方删除用户
   AdminDeleteUserCommand,
-  AdminRespondToAuthChallengeCommand,
+  // Magic Link初始化
+  InitiateAuthCommand,
+  // 验证 Magic Link
+  RespondToAuthChallengeCommand,
+  // 验证 Magic类型
+  ChallengeNameType,
+  // 列出用户
+  ListUsersCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 
 // AWS 发送邮件
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-// axios
 import axios from "axios";
 
 import * as dotenv from "dotenv";
@@ -188,8 +194,8 @@ export async function refreshTokens(refreshToken: string) {
 
 // 第三方登陆
 export async function ThreePartyToken(code: string) {
-  const client_id = process.env.COGNITO_CLIENT_ID; // 替换为你的Client ID
-  const redirect_uri = process.env.COGNITO_REDIRECT_URI; // 替换为你的回调URL
+  const client_id = process.env.COGNITO_CLIENT_ID;
+  const redirect_uri = process.env.COGNITO_REDIRECT_URI;
   const data = {
     grant_type: "authorization_code",
     client_id,
@@ -231,83 +237,89 @@ export async function deleteUser(username: string) {
   }
 }
 
-export const initiateAuth = async (email: string) => {
-  try {
-    const command = new AdminInitiateAuthCommand({
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
-      ClientId: process.env.COGNITO_CLIENT_ID,
-      AuthFlow: "CUSTOM_AUTH",
-      AuthParameters: {
-        USERNAME: email,
-      },
-    });
+// Cognito检查用户
+export async function checkUser(email: string) {
+  const params = {
+    UserPoolId: process.env.COGNITO_USER_POOL_ID,
+    Filter: `email = "${email}"`,
+  };
 
+  try {
+    const command = new ListUsersCommand(params);
     const response = await client.send(command);
-    console.log("Initiate auth response:", response);
     return response;
   } catch (error) {
-    console.error("Error initiating auth:", error);
     throw error;
   }
-};
+}
 
-export const respondToAuthChallenge = async (
-  email: string,
-  challengeResponse: string,
-  session: string
-) => {
-  try {
-    const command = new AdminRespondToAuthChallengeCommand({
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
-      ClientId: process.env.COGNITO_CLIENT_ID,
-      ChallengeName: "CUSTOM_CHALLENGE",
-      Session: session,
-      ChallengeResponses: {
-        USERNAME: email,
-        ANSWER: challengeResponse, // 用户提供的回答（Magic Link中的 token）
-      },
-    });
-
-    const response = await client.send(command);
-    console.log("Respond to auth challenge response:", response);
-    return response; // 如果验证成功，response 中会包含用户的 ID Token 和 Access Token
-  } catch (error) {
-    console.error("Error responding to auth challenge:", error);
-    throw error;
-  }
-};
-
-// 魔法链接
-export async function magicLink(
-  email: string,
-  magicToken: string,
-  signature: string
-) {
-  // 将 token 和签名嵌入到链接中
-  const magicLink = `https://yunongchen.com/verify?token=${magicToken}&signature=${signature}&email=${encodeURIComponent(
-    email
-  )}`;
-
-  // 配置 AWS SES 邮件
+// Cognito创建 Magic Link
+export async function createMagicLink(email: string) {
   const params = {
+    ClientId: process.env.COGNITO_CLIENT_ID,
+    AuthFlow: AuthFlowType.CUSTOM_AUTH,
+    AuthParameters: {
+      USERNAME: email,
+      CHALLENGE: "CUSTOM_CHALLENGE",
+    },
+  };
+  try {
+    const command = new InitiateAuthCommand(params);
+    const result = await client.send(command);
+    console.log("Create Magic Link:", result);
+    const username = result.ChallengeParameters.USERNAME;
+    const session = result.Session;
+    const loginUrl = `http://localhost:3000/api/auth/magicLink/callback?username=${username}&session=${session}`;
+    return loginUrl;
+  } catch (error) {
+    console.error("Error generating magic link:", error);
+    throw error;
+  }
+}
+
+// Cognito发送 Magic Link
+export async function sendMagicLink(email: string, loginUrl: string) {
+  const emailParams = {
     Source: "yunong.chen@zmley.com",
     Destination: { ToAddresses: [email] },
     Message: {
-      Subject: { Data: "Your Magic Link" },
+      Subject: { Data: "Your Magic Login Link" },
       Body: {
         Html: {
-          Data: `<p>Click <a href="${magicLink}">here</a> to log in.</p>`,
+          Data: `<p>Click <a href="${loginUrl}">here</a> to log in.</p>`,
         },
       },
     },
   };
 
   try {
-    const command = new SendEmailCommand(params);
+    const command = new SendEmailCommand(emailParams);
     const result = await sesClient.send(command);
     return result;
   } catch (error) {
     console.error("Error generating magic link:", error);
+    throw error;
+  }
+}
+
+// Cognito验证 Magic Link
+export async function verifyMagicLinkToken(username: string, Session: string) {
+  const params = {
+    ClientId: process.env.COGNITO_CLIENT_ID,
+    ChallengeName: ChallengeNameType.CUSTOM_CHALLENGE,
+    ChallengeResponses: {
+      USERNAME: username,
+      ANSWER: "FANTASY",
+    },
+    Session: Session,
+  };
+  try {
+    const command = new RespondToAuthChallengeCommand(params);
+    console.log("command:", command);
+    const result = await client.send(command);
+    console.log("Magic link token verified:", result);
+    return result;
+  } catch (error) {
     throw error;
   }
 }

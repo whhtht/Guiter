@@ -9,9 +9,10 @@ import {
   refreshTokens,
   ThreePartyToken,
   deleteUser,
-  initiateAuth,
-  respondToAuthChallenge,
-  magicLink,
+  createMagicLink,
+  sendMagicLink,
+  verifyMagicLinkToken,
+  checkUser,
 } from "utils/awsCognito";
 
 import crypto from "crypto";
@@ -21,12 +22,7 @@ import NodeCache from "node-cache";
 import User from "./auth.model";
 
 // 初始化 NodeCache 实例，单位为秒
-const cache = new NodeCache({ stdTTL: 300 }); // 设置默认过期时间为5分钟
-
-// 生成随机验证码
-function generateMagicToken() {
-  return crypto.randomBytes(20).toString("hex");
-}
+const cache = new NodeCache({ stdTTL: 300 });
 
 // 解码 JWT获取sub
 function decodeJwt(token: string) {
@@ -45,14 +41,53 @@ export const checkUserHandler = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email } });
-    if (user) {
-      res.status(200).json({ exists: true, message: "User exists." });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      return res.status(400).json({
+        message: "Please enter your email address.",
+      });
+    } else if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Please enter your email address in format: xyz@example.com",
+      });
     } else {
-      res.status(200).json({ exists: false, message: "User not found." });
+      const user = await User.findOne({ where: { email } });
+      if (!user) {
+        res.status(200).json({ exists: false, external: false });
+      }
+      if (user.method === "account") {
+        res.status(200).json({
+          exists: true,
+          external: false,
+          method: user.method,
+        });
+      }
+      if (user.method === "google") {
+        res.status(200).json({
+          exists: true,
+          external: true,
+          method: user.method,
+        });
+      }
+      if (user.method === "facebook") {
+        res.status(200).json({
+          exists: true,
+          external: true,
+          method: user.method,
+        });
+      }
+      if (user.method === "apple") {
+        res.status(200).json({
+          exists: true,
+          external: true,
+          method: user.method,
+        });
+      }
     }
   } catch (error) {
-    res.status(400).json({ message: "Check user failed." });
+    res
+      .status(400)
+      .json({ message: "Error checking email. Please try again." });
   }
 };
 
@@ -61,17 +96,33 @@ export const signUpHandler = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
 
   try {
-    // 调用AWS Cognito注册用户
-    const result = await signUp(email, password);
-    User.create({
-      email,
-      name,
-      status: "unverified",
-      sub: result.UserSub,
-    });
-    res.status(200).json({
-      message: "Sign up successful.",
-    });
+    let passwordError = "";
+    let error = "";
+    if (
+      password.length < 8 ||
+      !/[A-Z]/.test(password) ||
+      !/[0-9!@#$%^&*]/.test(password)
+    ) {
+      passwordError = "Password must meet all the requirements.";
+    }
+    if (!name) {
+      error = "Please enter your name.";
+    }
+    if (passwordError || error) {
+      return res.status(400).json({
+        message: { passwordError, error },
+      });
+    } else {
+      // 调用AWS Cognito注册用户
+      const result = await signUp(email, password);
+      User.create({
+        email,
+        name,
+        status: "unverified",
+        sub: result.UserSub,
+      });
+      res.status(200).json({ message: "Sign up successfully." });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -86,7 +137,7 @@ export const verifySignUpCodeHandler = async (req: Request, res: Response) => {
     if (result.$metadata.httpStatusCode === 200) {
       // 更新用户的 status 为 active
       await User.update({ status: "active" }, { where: { email } });
-      res.status(200).json({ message: "User verify successful." });
+      res.status(200).json({ message: "User verify successfully." });
     } else {
       res.status(404).json({ message: "User verify failed." });
     }
@@ -102,7 +153,7 @@ export const resendSignUpCodeHandler = async (req: Request, res: Response) => {
   try {
     const result = await resendSignUpCode(email);
     if (result.$metadata.httpStatusCode === 200) {
-      res.status(200).json({ message: "Resend code successful." });
+      res.status(200).json({ message: "Resend code successfully." });
     } else {
       res.status(404).json({ message: "Resend code failed." });
     }
@@ -115,23 +166,33 @@ export const resendSignUpCodeHandler = async (req: Request, res: Response) => {
 export const signInHandler = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  try {
-    const result = await signIn(email, password);
-    const { IdToken, AccessToken, RefreshToken } = result.AuthenticationResult;
-    const decodedToken = decodeJwt(IdToken);
-    const user = await User.findOne({ where: { email } });
-    if (user.sub === decodedToken.sub) {
-      console.log("使用账号密码登录成功");
-      res.status(200).json({
-        idToken: IdToken,
-        accessToken: AccessToken,
-        refreshToken: RefreshToken,
-        message: "Sign in successful.",
-      });
+  if (!password) {
+    return res.status(400).json({
+      message: "Please enter your password.",
+    });
+  } else {
+    try {
+      const result = await signIn(email, password);
+      const { IdToken, AccessToken, RefreshToken } =
+        result.AuthenticationResult;
+      const decodedToken = decodeJwt(IdToken);
+      const user = await User.findOne({ where: { email } });
+      const name = user.name;
+      if (user.sub === decodedToken.sub) {
+        res.status(200).json({
+          name: name,
+          idToken: IdToken,
+          accessToken: AccessToken,
+          refreshToken: RefreshToken,
+        });
+      } else {
+        res.status(400).json({
+          message: "Your password isn’t correct. Please try again.",
+        });
+      }
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
-  } catch (error) {
-    console.log("使用账号密码登录失败");
-    res.status(400).json({ message: "Please try the other method." });
   }
 };
 
@@ -141,10 +202,19 @@ export const resetCodeHandler = async (req: Request, res: Response) => {
   const verificationCode = crypto.randomInt(100000, 999999).toString();
 
   try {
-    await sendResetCode(email, verificationCode);
-    // 将验证码暂存到缓存中，有效期5分钟
-    cache.set(email, verificationCode, 300);
-    res.status(200).json({ message: "Reset code successful" });
+    const user = await checkUser(email);
+    const users = user.Users;
+    if (users[0].UserStatus !== "EXTERNAL_PROVIDER") {
+      await sendResetCode(email, verificationCode);
+      // 将验证码暂存到缓存中，有效期5分钟
+      cache.set(email, verificationCode, 300);
+      res.status(200).json({ message: "Reset code successfully" });
+    } else {
+      res.status(400).json({
+        message:
+          "Error to get reset code. Please use another method to sign in.",
+      });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -155,21 +225,29 @@ export const verifyResetCodeHandler = async (req: Request, res: Response) => {
   const { email, code } = req.body;
 
   try {
-    // 从缓存中获取存储的验证码
-    const storedCode = cache.get<string>(email);
-    if (!storedCode) {
+    if (code.length === 0) {
+      return res.status(400).json({ message: "Please enter your code." });
+    } else if (code.length < 6 && code.length > 0) {
       return res
         .status(400)
-        .json({ message: "Verification code has been express." });
-    }
-    if (storedCode === code) {
-      cache.del(email); // 验证成功后删除缓存中的验证码，防止重复使用
-      res.status(200).json({ message: "Verifiy code successful." });
+        .json({ message: "Please enter six digits verification code." });
     } else {
-      res.status(400).json({ message: "Verifiy code failed." });
+      // 从缓存中获取存储的验证码
+      const storedCode = cache.get<string>(email);
+      if (!storedCode) {
+        return res
+          .status(400)
+          .json({ message: "Verification code has been express." });
+      }
+      if (storedCode === code) {
+        // 验证成功后删除缓存中的验证码，防止重复使用
+        cache.del(email);
+        res.status(200).json({ message: "Verifiy code successfully." });
+      } else {
+        res.status(400).json({ message: "Verifiy code failed." });
+      }
     }
   } catch (error) {
-    console.error("验证码验证失败:", error);
     res.status(400).json({
       message: "Reset password failed. Please check your verification code.",
     });
@@ -192,9 +270,8 @@ export const resetPasswordHandler = async (req: Request, res: Response) => {
     } else {
       // 调用 Cognito 来重置密码
       const result = await resetPassword(email, newpassword);
-      console.log("resetPassword result=", result);
       if (result["$metadata"].httpStatusCode === 200) {
-        res.status(200).json({ message: "Password has been reset." });
+        res.status(200).json({ message: "Password reset successfully." });
       }
     }
   } catch (error) {
@@ -246,90 +323,108 @@ export const ThreePartyLoginHandler = async (req: Request, res: Response) => {
     const email = decodedIdToken.email;
     const sub = decodedIdToken.sub;
     const name = decodedIdToken.given_name;
+    const method = decodedIdToken.identities[0].providerName.toLowerCase();
     const user = await User.findOne({ where: { email } });
     if (!user) {
       User.create({
         email,
         name: name,
+        method: method,
         status: "active",
         sub: sub,
       });
-      console.log("使用第三方登录创建新用户");
       res.status(200).json({
+        email: email,
+        name: name,
+        method: method,
         idToken: IdToken,
         accessToken: AccessToken,
         refreshToken: RefreshToken,
-        message: "Google login successful.",
       });
     } else if (user.sub === sub) {
-      console.log("使用第三方登录成功");
       res.status(200).json({
+        email: email,
+        name: name,
+        method: method,
         idToken: IdToken,
         accessToken: AccessToken,
         refreshToken: RefreshToken,
-        message: "Third-party identity provider login successful.",
       });
     } else {
       await deleteUser(username);
-      console.log("使用第三方登录失败,cognnito用户已删除");
       res
         .status(200)
         .json({ message: "Please use an other method to sign in." });
     }
   } catch (error) {
-    console.error("使用第三方登录失败:", error);
     res.status(400).json({ message: error.message });
   }
 };
 
-// 生成魔术链接
+// 创建 Magic Link
 export const magicLinkHandler = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
-    // 生成一个随机 token
-    const magicToken = generateMagicToken();
-
-    // 对 token 进行 HMAC 签名，确保安全性
-    const signature = crypto
-      .createHmac("sha256", "your-secret-key")
-      .update(magicToken)
-      .digest("hex");
-
-    const result = await magicLink(email, magicToken, signature);
-    console.log("Magic link result:", result);
-    res.status(200).json({ message: "Magic link sent successfully" });
+    const user = await checkUser(email);
+    const users = user.Users;
+    if (users[0].UserStatus !== "EXTERNAL_PROVIDER") {
+      const loginUrl = await createMagicLink(email);
+      const result = await sendMagicLink(email, loginUrl);
+      res.status(200).json({
+        message: "Magic link sent successfully.",
+        result,
+      });
+    } else {
+      res.status(400).json({
+        message:
+          "Error to use magic link. Please use another method to sign in.",
+      });
+    }
   } catch (error) {
     console.error("Error generating magic link:", error);
-    res.status(500).json({ error: "Failed to generate magic link" });
+    res.status(400).json({ message: error.message });
   }
 };
 
 // 验证 Magic Link
 export const verifyMagicLinkHandler = async (req: Request, res: Response) => {
-  const { token, email } = req.query as { token: string; email: string };
-  try {
-    // Initiate the auth process to get the session
-    const authResponse = await initiateAuth(email);
-    console.log("Magic link verification initiated:", authResponse);
+  const { ChallengeResponses, Session } = req.body;
 
-    if (authResponse.Session) {
-      // Use token as challenge response
-      const challengeResponse = await respondToAuthChallenge(
-        email,
-        token,
-        authResponse.Session
-      );
-      console.log("Magic link verification response:", challengeResponse);
-      res.status(200).json({
-        message: "Magic link verified successfully",
-        tokens: challengeResponse.AuthenticationResult,
-      });
-    } else {
-      res.status(400).json({ error: "Invalid authentication session" });
-    }
+  try {
+    const result = await verifyMagicLinkToken(
+      ChallengeResponses.USERNAME,
+      Session
+    );
+    return res
+      .status(200)
+      .json({ message: "Magic link token verify successfully.", result });
   } catch (error) {
-    console.error("Error verifying magic link:", error);
-    res.status(500).json({ error: "Failed to verify magic link" });
+    console.error("Magic link token verification failed:", error);
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+// magic link 回调处理
+export const magicLinkCallbackHandler = async (req: Request, res: Response) => {
+  const { username, session } = req.query;
+
+  try {
+    const result = await verifyMagicLinkToken(
+      username as string,
+      session as string
+    );
+
+    const { IdToken, AccessToken, RefreshToken } = result.AuthenticationResult;
+    const decodedIdToken = decodeJwt(IdToken);
+    const email = decodedIdToken.email;
+    const user = await User.findOne({ where: { email } });
+    const name = user.name;
+    return res.redirect(
+      `http://localhost:5173/signin/magicLink?accessToken=${AccessToken}&refreshToken=${RefreshToken}&idToken=${IdToken}&name=${name}`
+    );
+  } catch (error) {
+    console.error("Magic link token verification failed:", error);
+    return res.redirect(`http://localhost:5173/signin?error=${error.message}`);
   }
 };

@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { checkUser } from "../../../api/auth/page";
+import { useNavigate } from "react-router-dom";
+import {
+  checkUser,
+  googleLoginUrl,
+  facebookLoginUrl,
+} from "../../../api/auth/page";
+import { Header } from "../signlayout/header/page";
+import { Footer } from "../signlayout/footer/page";
 
 // Mui Imports
 import { Box, Input, Typography, Button } from "@mui/material";
@@ -17,40 +23,65 @@ const SignIn: React.FC = () => {
   const cognitoDomain = import.meta.env.VITE_COGNITO_DOMAIN as string;
   const redirectUri = import.meta.env.VITE_COGNITO_REDIRECT_URI as string;
 
-  const googleLoginUrl = `${cognitoDomain}/authorize?client_id=${clientId}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+profile&redirect_uri=${redirectUri}&identity_provider=Google`;
-  const facebookLoginUrl = `${cognitoDomain}/authorize?client_id=${clientId}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+profile&redirect_uri=${redirectUri}&identity_provider=Facebook`;
+  const googleUrl = `${cognitoDomain}/authorize?client_id=${clientId}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+profile&redirect_uri=${redirectUri}&identity_provider=Google&login_hint=${email}`;
+  const facebookUrl = `${cognitoDomain}/authorize?client_id=${clientId}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+profile&redirect_uri=${redirectUri}&identity_provider=Facebook&login_hint=${email}`;
 
+  // Google登录处理函数
   const handleGoogleLogin = () => {
     window.location.href = googleLoginUrl;
   };
 
+  // Facebook登录处理函数
   const handleFacebookLogin = () => {
     window.location.href = facebookLoginUrl;
   };
 
   // 点击继续按钮时的处理函数
   const handleContinue = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setError("Please enter your email address.");
-    } else if (!emailRegex.test(email)) {
-      setError("Please enter your email address in format: xyz@example.com");
-      setEmail("");
-    } else {
-      try {
-        // 调用 checkUser 检查邮箱是否存在
-        const response = await checkUser(email);
-        // 如果用户存在，跳转到密码输入页面, 否则跳转到注册页面
-        if (response.status === 200 && response.data.exists === true) {
-          navigate("/signin/password");
-        } else if (response.status === 200 && response.data.exists === false) {
-          navigate("/signup");
-        }
-      } catch (error) {
-        // 如果出现错误，显示错误信息
-        setError("Error checking email. Please try again.");
+    try {
+      const response = await checkUser(email);
+      if (
+        response.status === 200 &&
+        response.data.exists === true &&
+        response.data.external === false &&
+        response.data.method === "account"
+      ) {
+        localStorage.setItem("email", email);
+        localStorage.setItem("method", "account");
+        navigate("/signin/password");
       }
-      localStorage.setItem("email", email);
+      if (
+        response.status === 200 &&
+        response.data.exists === true &&
+        response.data.external === true &&
+        response.data.method === "google"
+      ) {
+        localStorage.setItem("email", email);
+        localStorage.setItem("method", "google");
+        window.location.href = googleUrl;
+      }
+      if (
+        response.status === 200 &&
+        response.data.exists === true &&
+        response.data.external === true &&
+        response.data.method === "facebook"
+      ) {
+        localStorage.setItem("email", email);
+        localStorage.setItem("method", "facebook");
+        window.location.href = facebookUrl;
+      }
+      if (
+        response.status === 200 &&
+        response.data.exists === false &&
+        response.data.external === false
+      ) {
+        localStorage.setItem("email", email);
+        navigate("/signup");
+      }
+    } catch (error) {
+      const errorResponse = error as { message: string };
+      const errorMessage = errorResponse.message;
+      setError(errorMessage);
     }
   };
 
@@ -81,36 +112,7 @@ const SignIn: React.FC = () => {
 
   return (
     <Box>
-      {/* 顶部显示 */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #DDDCDE",
-          padding: "0px 72px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: "72px",
-          }}
-        >
-          <Box component={Link} to="/" sx={{ textDecoration: "none" }}>
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontSize: "20px",
-                fontWeight: 500,
-                lineHeight: "28px",
-                textAlign: "left",
-                color: "#02000C",
-              }}
-            >
-              Logo Name
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      <Header />
 
       {/* 表单 */}
       <Box
@@ -134,6 +136,8 @@ const SignIn: React.FC = () => {
         >
           Sign in or create an account
         </Typography>
+
+        {/* 提示信息 */}
         <Box
           sx={{
             width: "395px",
@@ -364,14 +368,7 @@ const SignIn: React.FC = () => {
         </Button>
       </Box>
 
-      {/* 页脚 */}
-      <Box
-        sx={{
-          width: "100%",
-          height: "72px",
-          backgroundColor: "#02000C",
-        }}
-      />
+      <Footer />
     </Box>
   );
 };

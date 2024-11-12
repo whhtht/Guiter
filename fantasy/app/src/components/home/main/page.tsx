@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
 import { useHome } from "../../../hooks/useHome.hook/page";
-import Header from "../../layout/header/page";
+import Header from "../layout/header/page";
+import Footer from "../layout/footer/page";
 
 // Mui Components
 import { Box, Grid, Button, Typography, IconButton } from "@mui/material";
@@ -20,7 +21,6 @@ import { newArrivals } from "../../../lists/newArrivals.list/page";
 import { serviceItems } from "../../../lists/service.list/page";
 // Category list
 import * as category from "../../../lists/category.list/page";
-import Footer from "../../layout/footer/page";
 
 const Homepage: React.FC = () => {
   // import useHome hook

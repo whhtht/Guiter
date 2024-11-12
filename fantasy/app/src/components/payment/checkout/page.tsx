@@ -105,7 +105,7 @@ const CheckOut: React.FC = () => {
     if (value.length > 3) {
       value = value.slice(0, 3) + " " + value.slice(3); // 在第三个字符后插入空格
     }
-    setZipCode(value); // 更新状态
+    setZipCode(value);
   };
 
   // 优惠券

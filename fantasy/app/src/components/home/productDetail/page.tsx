@@ -3,10 +3,10 @@ import { Link, useParams } from "react-router-dom";
 import { useProductDetail } from "../../../hooks/useProductDetail.hook/page";
 import { useCart } from "../../../hooks/useCart.hook/page";
 import { newArrivals } from "../../../lists/newArrivals.list/page";
-import LocationDrawer from "../../drawer/location.drawer/page";
-import PickUpDrawer from "../../drawer/pickUp.drawer/page";
-import Header from "../../layout/header/page";
-import Footer from "../../layout/footer/page";
+import LocationDrawer from "../drawer/location.drawer/page";
+import PickUpDrawer from "../drawer/pickUp.drawer/page";
+import Header from "../layout/header/page";
+import Footer from "../layout/footer/page";
 
 import { guitar } from "../../../lists/guitar.list/page";
 

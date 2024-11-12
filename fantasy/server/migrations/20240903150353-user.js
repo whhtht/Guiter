@@ -19,6 +19,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      method:{
+        type: Sequelize.ENUM('account', 'google','facebook', 'apple'),
+        allowNull: false,
+        defaultValue: 'account',
+      },
       status:{
         type: Sequelize.ENUM('active', 'inactive','unverified'),
         allowNull: false,

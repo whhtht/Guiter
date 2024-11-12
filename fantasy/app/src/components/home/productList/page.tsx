@@ -30,8 +30,8 @@ import {
   handedness,
   guitar,
 } from "../../../lists/guitar.list/page";
-import Header from "../../layout/header/page";
-import Footer from "../../layout/footer/page";
+import Header from "../layout/header/page";
+import Footer from "../layout/footer/page";
 
 import * as styles from "../../../styles/product.style/product.list/page";
 

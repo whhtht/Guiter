@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../layout/header/page";
-import Footer from "../../layout/footer/page";
+import Header from "../layout/header/page";
+import Footer from "../layout/footer/page";
 import { useCart } from "../../../hooks/useCart.hook/page";
 import { useLocation } from "../../../hooks/useLocation.hook/page";
-import LocationDrawer from "../../drawer/location.drawer/page";
-import PickUpDrawer from "../../drawer/pickUp.drawer/page";
+import LocationDrawer from "../drawer/location.drawer/page";
+import PickUpDrawer from "../drawer/pickUp.drawer/page";
 
 import {
   Box,
