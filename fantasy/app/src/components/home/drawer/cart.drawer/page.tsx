@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../../../hooks/useCart.hook/page";
+import { useCart } from "../../../../hooks/useCart.hook/hook/page";
 import { Drawer, Box, IconButton, Typography, Button } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";

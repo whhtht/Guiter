@@ -6,7 +6,7 @@ import Verification from "./components/sign/signup/verification/page";
 import Signout from "./components/sign/signout/callback/page";
 import ResetCode from "./components/sign/signreset/page";
 import Notfound from "./components/notfound/page";
-import CartProvider from "./provider/page";
+import Provider from "./provider/page";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Route path="/signup/verification" element={<Verification />} />
         <Route path="/signin/resetcode" element={<ResetCode />} />
         <Route path="/signout/callback" element={<Signout />} />
-        <Route path="/*" element={<CartProvider />} />
+        <Route path="/*" element={<Provider />} />
         <Route path="*" element={<Notfound />} />
       </Routes>
     </Router>

@@ -3,23 +3,20 @@ import { getUserId } from "../../utils/auth";
 import Cartitem from "./cartitem.model";
 import Cart from "../cart/cart.model";
 import Product from "../products/products.model";
-import Specification from "../products/specification.model";
 import { Op } from "sequelize";
 
 // 获取产品Id
 const information = async (req: Request) => {
   // 获取产品名称
   const productName = req.body.productName;
-  // 解码产品名称
-  const decodedProductName = decodeURIComponent(productName);
   // 查找产品
-  const product = await Product.findOne({
-    where: { name: decodedProductName },
+  const item = await Product.findOne({
+    where: { name: productName },
   });
-  if (!product) {
+  if (!item) {
     throw new Error("Product not found");
   }
-  const productId = product.id;
+  const productId = item.id;
   return { productId };
 };
 
@@ -39,13 +36,14 @@ export const getCartItems = async (req: Request, res: Response) => {
         {
           model: Product,
           as: "product",
-          attributes: ["name", "price", "specification"],
-          include: [
-            {
-              model: Specification,
-              as: "specificationDetail",
-              attributes: ["Condition"],
-            },
+          attributes: [
+            "name",
+            "category",
+            "quantity",
+            "price",
+            "condition",
+            "brand",
+            "right_left_handed",
           ],
         },
       ],
@@ -114,7 +112,6 @@ export const postLocalItem = async (req: Request, res: Response) => {
       existingItem.quantity += quantity;
       await existingItem.save();
       item = existingItem;
-      console.log("Item quantity updated in", type);
     } else {
       // 如果没有相同的物品，创建新的记录
       item = await Cartitem.create({
@@ -123,7 +120,6 @@ export const postLocalItem = async (req: Request, res: Response) => {
         productId,
         quantity,
       });
-      console.log("Item added to", type);
     }
     res.status(201).json(item);
   } catch (error) {
@@ -250,13 +246,14 @@ export const cartStatus = async (req: Request, res: Response) => {
         {
           model: Product,
           as: "product",
-          attributes: ["name", "price", "specification"],
-          include: [
-            {
-              model: Specification,
-              as: "specificationDetail",
-              attributes: ["Condition"],
-            },
+          attributes: [
+            "name",
+            "category",
+            "quantity",
+            "price",
+            "condition",
+            "brand",
+            "right_left_handed",
           ],
         },
       ],
@@ -278,7 +275,6 @@ export const deleteCartItem = async (req: Request, res: Response) => {
     }
     const existUser = await getUserId(accessToken!);
     const userId = existUser.id;
-    console.log("existUser", existUser);
     // 获取产品名称
     const productName = req.params.productName;
     // 解码产品名称

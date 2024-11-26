@@ -16,8 +16,8 @@ import AppleIcon from "@mui/icons-material/Apple";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID as string;
   const cognitoDomain = import.meta.env.VITE_COGNITO_DOMAIN as string;

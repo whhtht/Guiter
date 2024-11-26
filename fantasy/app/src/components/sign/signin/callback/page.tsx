@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { threePartyLogin } from "../../../../api/auth/page";
 
 import { getCartName, postLocalCartitem } from "../../../../api/cartitem/page";
-import { useCart } from "../../../../hooks/useCart.hook/page";
+import { useCart } from "../../../../hooks/useCart.hook/hook/page";
+import { useProfile } from "../../../../hooks/useProfile.hook/hook/page";
 
 const Callback: React.FC = () => {
   const navigate = useNavigate();
   const { setCartItemCount, fetchCart } = useCart();
+  const { fetchAddress } = useProfile();
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get("code");
   const [accessToken, setAccessToken] = useState("");
@@ -51,6 +53,7 @@ const Callback: React.FC = () => {
             const cart = cartResponse.data;
             setCartItemCount(cart.quantity);
             fetchCart();
+            fetchAddress();
           } catch (error) {
             throw new Error("Failed to get cart items.");
           }
@@ -73,6 +76,7 @@ const Callback: React.FC = () => {
     navigate,
     setCartItemCount,
     fetchCart,
+    fetchAddress,
     lastVisitedPath,
   ]);
 

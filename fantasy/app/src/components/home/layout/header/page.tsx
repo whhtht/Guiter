@@ -23,9 +23,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { cognitoSignOutUrl } from "../../../../api/auth/page";
 import { useHeader } from "../../../../hooks/useHeader.hook/page";
 import { useLocation } from "../../../../hooks/useLocation.hook/page";
-import { useCart } from "../../../../hooks/useCart.hook/page";
-import * as styles from "../../../../styles/layout.style/header.style/page";
-import { headerCategory as categories } from "../../../../lists/guitar.list/page";
+import { useCart } from "../../../../hooks/useCart.hook/hook/page";
+import { useProduct } from "../../../../hooks/useProduct.hook/hook/page";
 import LocationDrawer from "../../drawer/location.drawer/page";
 import PickUpDrawer from "../../drawer/pickUp.drawer/page";
 import ContactUsDrawer from "../../drawer/contactUs.drawer/page";
@@ -36,6 +35,8 @@ const Header: React.FC = () => {
   const headerHook = useHeader();
   const locationHook = useLocation(headerHook.setOpenLocation);
   const cartHook = useCart();
+  const { HeaderCategory, setSelectedCategory, handleFilterChange } =
+    useProduct();
 
   const name = localStorage.getItem("name") || "";
   const firstLetter = name.charAt(0).toUpperCase();
@@ -83,9 +84,45 @@ const Header: React.FC = () => {
     window.location.href = cognitoSignOutUrl;
   };
 
+  // 分类按钮
+  const handleCategoryClick = (value: string) => {
+    setSelectedCategory(value);
+    handleFilterChange({ category: value });
+    if (value === "All Categories") {
+      navigate("/productlist");
+    }
+    if (value === "Classical Guitar") {
+      navigate("/productlist/classical");
+    }
+    if (value === "Acoustic Guitar") {
+      navigate("/productlist/acoustic");
+    }
+    if (value === "Semi-Acoustic Guitar") {
+      navigate("/productlist/semiacoustic");
+    }
+    if (value === "Ukulele") {
+      navigate("/productlist/ukulele");
+    }
+    if (value === "Banjo") {
+      navigate("/productlist/banjo");
+    }
+  };
+
   return (
     <Box>
-      <Box sx={styles.headerstyles.header_frame}>
+      {/* part 1 */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          height: "78px",
+          backgroundColor: "#02000C",
+          padding: "16px 72px",
+        }}
+      >
         {/* Logo Name */}
         <Box
           component={Link}
@@ -101,7 +138,18 @@ const Header: React.FC = () => {
             flexShrink: 0,
           }}
         >
-          <Typography sx={styles.headerstyles.logoName}>Logo Name</Typography>
+          <Typography
+            sx={{
+              fontFamily: "Roboto",
+              fontSize: "24px",
+              fontWeight: 500,
+              lineHeight: "28px",
+              textAlign: "left",
+              color: "#FFFFFF",
+            }}
+          >
+            Logo Name
+          </Typography>
         </Box>
 
         {/* Search Bar */}
@@ -109,7 +157,17 @@ const Header: React.FC = () => {
           <Autocomplete
             freeSolo
             options={headerHook.searchHistory}
-            sx={styles.headerstyles.autocomplete}
+            sx={{
+              borderRadius: "4px",
+              border: "1px solid #02000C",
+              fontFamily: "Roboto",
+              fontSize: "14px",
+              fontWeight: 400,
+              lineHeight: "22px",
+              textAlign: "left",
+              color: "#595959",
+              backgroundColor: "#FFFFFF",
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -161,7 +219,20 @@ const Header: React.FC = () => {
                   </Typography>
                 </Avatar>
               }
-              sx={styles.headerstyles.button_black}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                color: "#FFFFFF",
+                backgroundColor: "#02000C",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#02000C",
+                },
+                "&.Mui-focusVisible": {
+                  boxShadow: "0 0 0 2px #5796dc",
+                },
+              }}
             >
               <Typography
                 sx={{
@@ -182,13 +253,37 @@ const Header: React.FC = () => {
               variant="text"
               disableFocusRipple
               startIcon={
-                <PersonOutlineIcon sx={styles.headerstyles.icon_32px} />
+                <PersonOutlineIcon
+                  sx={{
+                    width: "32px",
+                    height: "32px",
+                  }}
+                />
               }
-              sx={styles.headerstyles.button_black}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                color: "#FFFFFF",
+                backgroundColor: "#02000C",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#02000C",
+                },
+                "&.Mui-focusVisible": {
+                  boxShadow: "0 0 0 2px #5796dc",
+                },
+              }}
             >
               <Typography
-                variant="body1"
-                sx={styles.headerstyles.roboto_16px_FFFFFF}
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                  textAlign: "left",
+                  color: "#FFFFFF",
+                }}
               >
                 Sign In
               </Typography>
@@ -455,7 +550,11 @@ const Header: React.FC = () => {
         </Menu>
 
         {/* 购物车按钮 */}
-        <Box sx={styles.headerstyles.link_frame}>
+        <Box
+          sx={{
+            ml: "10px",
+          }}
+        >
           <Button
             variant="text"
             disableFocusRipple
@@ -478,7 +577,12 @@ const Header: React.FC = () => {
                   },
                 }}
               >
-                <ShoppingCartIcon sx={styles.headerstyles.icon_32px} />
+                <ShoppingCartIcon
+                  sx={{
+                    width: "32px",
+                    height: "32px",
+                  }}
+                />
               </Badge>
             }
             sx={{
@@ -520,28 +624,65 @@ const Header: React.FC = () => {
       </Box>
 
       {/* part 2 */}
-      <Box sx={styles.headerstyles.navigation_frame}>
-        {/* Letf Group Buttons */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "48px",
+          borderBottom: "1px solid #DDDCDE",
+          padding: "0px 72px",
+        }}
+      >
+        {/* 左边按钮 */}
         <Box
           sx={{
             display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             flexDirection: "row",
-            height: "100%",
+            width: "552px",
+            height: "48px",
           }}
         >
-          {categories.map((category, index) => (
-            <Box key={index} sx={styles.headerstyles.left_group_frame}>
+          {HeaderCategory.map((value, index) => (
+            <Box
+              key={index}
+              sx={{
+                borderBottom: "2px solid #FFFFFF",
+                "&:hover": {
+                  borderBottom: "2px solid #02000C",
+                  transition: "width 0.3s ease-in-out",
+                },
+              }}
+            >
               <Button
-                component={Link}
-                to={`/productlist/${category}`}
+                onClick={() => handleCategoryClick(value)}
                 disableFocusRipple
-                sx={styles.headerstyles.button_white}
+                sx={{
+                  height: "45px",
+                  textTransform: "none",
+                  textDecoration: "none",
+                  "&:hover": {
+                    backgroundColor: "#FFFFFF",
+                  },
+                  "&.Mui-focusVisible": {
+                    boxShadow: "0 0 0 2px #5796dc",
+                  },
+                }}
               >
                 <Typography
-                  variant="body1"
-                  sx={styles.headerstyles.roboto_14px_02000C}
+                  sx={{
+                    fontFamily: "Roboto",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    lineHeight: "22px",
+                    textAlign: "left",
+                    color: "#02000C",
+                  }}
                 >
-                  {category}
+                  {value}
                 </Typography>
               </Button>
             </Box>
@@ -549,23 +690,62 @@ const Header: React.FC = () => {
         </Box>
 
         {/* Right Group Buttons */}
-        <Box sx={styles.headerstyles.right_group}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "row",
+            width: "559px",
+            height: "48px",
+          }}
+        >
           {/* Deliver */}
-          <Box sx={styles.headerstyles.right_group_frame}>
+          <Box
+            sx={{
+              borderBottom: "2px solid #FFFFFF",
+              "&:hover": {
+                borderBottom: "2px solid #02000C",
+                transition: "width 0.3s ease-in-out",
+              },
+            }}
+          >
             <Button
               variant="text"
               startIcon={
-                <LocalShippingIcon sx={styles.headerstyles.icon_22px} />
+                <LocalShippingIcon
+                  sx={{
+                    width: "22px",
+                    height: "22px",
+                  }}
+                />
               }
               disableFocusRipple
-              sx={styles.headerstyles.button_white}
+              sx={{
+                height: "45px",
+                color: "#02000C",
+                textTransform: "none",
+                textDecoration: "none",
+                "&:hover": {
+                  backgroundColor: "#FFFFFF",
+                },
+                "&.Mui-focusVisible": {
+                  boxShadow: "0 0 0 2px #5796dc",
+                },
+              }}
               onClick={() => {
                 headerHook.setOpenLocation(true);
               }}
             >
               <Typography
-                variant="body1"
-                sx={styles.headerstyles.roboto_14px_02000C}
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  lineHeight: "22px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
               >
                 Deliver to{" "}
                 {locationHook.storedZipCode
@@ -581,19 +761,51 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Pick up */}
-          <Box sx={styles.headerstyles.right_group_frame}>
+          <Box
+            sx={{
+              borderBottom: "2px solid #FFFFFF",
+              "&:hover": {
+                borderBottom: "2px solid #02000C",
+                transition: "width 0.3s ease-in-out",
+              },
+            }}
+          >
             <Button
               variant="text"
-              startIcon={<StoreIcon sx={styles.headerstyles.icon_22px} />}
+              startIcon={
+                <StoreIcon
+                  sx={{
+                    width: "22px",
+                    height: "22px",
+                  }}
+                />
+              }
               disableFocusRipple
-              sx={styles.headerstyles.button_white}
+              sx={{
+                height: "45px",
+                color: "#02000C",
+                textTransform: "none",
+                textDecoration: "none",
+                "&:hover": {
+                  backgroundColor: "#FFFFFF",
+                },
+                "&.Mui-focusVisible": {
+                  boxShadow: "0 0 0 2px #5796dc",
+                },
+              }}
               onClick={() => {
                 headerHook.setOpenPickUp(true);
               }}
             >
               <Typography
-                variant="body1"
-                sx={styles.headerstyles.roboto_14px_02000C}
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  lineHeight: "22px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
               >
                 Pick up at Toronto Downtown
               </Typography>
@@ -605,21 +817,51 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Contact Us */}
-          <Box sx={styles.headerstyles.right_group_frame}>
+          <Box
+            sx={{
+              borderBottom: "2px solid #FFFFFF",
+              "&:hover": {
+                borderBottom: "2px solid #02000C",
+                transition: "width 0.3s ease-in-out",
+              },
+            }}
+          >
             <Button
               variant="text"
               startIcon={
-                <PhoneEnabledIcon sx={styles.headerstyles.icon_22px} />
+                <PhoneEnabledIcon
+                  sx={{
+                    width: "22px",
+                    height: "22px",
+                  }}
+                />
               }
               disableFocusRipple
-              sx={styles.headerstyles.button_white}
+              sx={{
+                height: "45px",
+                color: "#02000C",
+                textTransform: "none",
+                textDecoration: "none",
+                "&:hover": {
+                  backgroundColor: "#FFFFFF",
+                },
+                "&.Mui-focusVisible": {
+                  boxShadow: "0 0 0 2px #5796dc",
+                },
+              }}
               onClick={() => {
                 headerHook.setOpenContactUs(true);
               }}
             >
               <Typography
-                variant="body1"
-                sx={styles.headerstyles.roboto_14px_02000C}
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  lineHeight: "22px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
               >
                 Contact Us
               </Typography>

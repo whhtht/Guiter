@@ -1,12 +1,15 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
-import Specification from "./specification.model";
 
 class Product extends Model {
   public id!: string;
   public name!: string;
+  public quantity!: number;
   public price!: string;
-  public specification!: string;
+  public condition!: string;
+  public brand!: string;
+  public category!: string;
+  public right_left_handed!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -24,12 +27,28 @@ Product.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     price: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    specification: {
-      type: DataTypes.UUID,
+    condition: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    brand: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    right_left_handed: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
@@ -39,17 +58,5 @@ Product.init(
     tableName: "products",
   }
 );
-
-// 关联specification表
-Product.belongsTo(Specification, {
-  foreignKey: "specification", // 这个字段是 products 表中指向 specification 表的外键
-  as: "specificationDetail", // 别名，用于引用关联的 specification 表数据
-});
-
-// 如果你需要反向关联，设置反向的关联
-Specification.hasOne(Product, {
-  foreignKey: "specification", // specification 表的主键与 products 表的外键一致
-  as: "productDetail", // 别名，用于引用关联的 product 表数据
-});
 
 export default Product;

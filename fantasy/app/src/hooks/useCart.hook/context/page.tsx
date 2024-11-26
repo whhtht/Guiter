@@ -4,14 +4,11 @@ import { createContext } from "react";
 // 定义 Product 类型
 export interface Product {
   quantity: number;
-  id: string;
   cart: { type: string };
   product: {
     name: string;
     price: string;
-    specificationDetail: {
-      Condition: string;
-    };
+    condition: string;
   };
 }
 
@@ -20,8 +17,11 @@ export interface CartContextType {
   accessToken: string | null;
   localCartItems: Product[];
   localSaveItems: Product[];
+  clearCartItems: () => void;
   localCartCount: number | null;
+  // setLocalCartCount: (count: number) => void;
   localSaveCount: number | null;
+  // setLocalSaveCount: (count: number) => void;
   localTotal: number | null;
   fetchCart: () => void;
   cartItems: Product[];

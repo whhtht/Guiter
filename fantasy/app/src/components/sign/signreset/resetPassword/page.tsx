@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { resetPassword, signIn } from "../../../../api/auth/page";
 import { getCartName, postLocalCartitem } from "../../../../api/cartitem/page";
-import { useCart } from "../../../../hooks/useCart.hook/page";
+import { useCart } from "../../../../hooks/useCart.hook/hook/page";
+import { useProfile } from "../../../../hooks/useProfile.hook/hook/page";
 import { Header } from "../../signlayout/header/page";
 import { Footer } from "../../signlayout/footer/page";
 
@@ -15,12 +16,12 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
   const { setCartItemCount, fetchCart } = useCart();
+  const { fetchAddress } = useProfile();
   const email = localStorage.getItem("email") || "";
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const lastVisitedPath = localStorage.getItem("lastVisitedPath") || "";
-  console.log("lastVisitedPath", lastVisitedPath);
 
   // 切换密码可见性
   const togglePasswordVisibility = () => {
@@ -86,6 +87,7 @@ const ResetPassword: React.FC = () => {
             const cart = cartResponse.data;
             setCartItemCount(cart.quantity);
             fetchCart();
+            fetchAddress();
           } catch (error) {
             const errorResponse = error as { message: string };
             const errorMessage = errorResponse.message;

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signIn, resetCode, magicLink } from "../../../../api/auth/page";
 import { getCartName, postLocalCartitem } from "../../../../api/cartitem/page";
-import { useCart } from "../../../../hooks/useCart.hook/page";
+import { useCart } from "../../../../hooks/useCart.hook/hook/page";
+import { useProfile } from "../../../../hooks/useProfile.hook/hook/page";
 import { Header } from "../../signlayout/header/page";
 import { Footer } from "../../signlayout/footer/page";
 
@@ -14,6 +15,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 const Password: React.FC = () => {
   const navigate = useNavigate();
   const { setCartItemCount, fetchCart } = useCart();
+  const { fetchAddress } = useProfile();
   const email = localStorage.getItem("email") || "";
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -57,8 +59,9 @@ const Password: React.FC = () => {
           const cart = cartResponse.data;
           // 设置购物车商品数量
           setCartItemCount(cart.quantity);
-          // 调用 fetchCart 来更新购物车
+          // 调用 fetch 来更新购物车和地址
           fetchCart();
+          fetchAddress();
         } catch (error) {
           const errorResponse = error as { message: string };
           const errorMessage = errorResponse.message;

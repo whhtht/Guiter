@@ -10,11 +10,30 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
+      userId: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       paymentIntentId:{
         type: Sequelize.STRING,
         allowNull: false,
       },
-      user:{
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      status:{
+        type: Sequelize.ENUM('prepar','ship','deliver','pickup','cancel','done'),
+        allowNull: false,
+        defaultValue: 'prepar'
+      },
+      name:{
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -30,9 +49,26 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      type: {
+      
+      address: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      country: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      province: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      city: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      postalCode: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,

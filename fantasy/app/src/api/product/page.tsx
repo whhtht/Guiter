@@ -14,24 +14,24 @@ interface AxiosErrorResponse {
 export const getProduct = async (name: string) => {
   try {
     const response = await axios.get(
-      `${API_URL}/product/${encodeURIComponent(name)}`
+      `${API_URL}/product//item/${encodeURIComponent(name)}`
     );
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    console.error("Get product error:", axiosError);
     throw new Error(axiosError.response?.data.message);
   }
 };
 
-// 获取产品列表
-export const getProducts = async () => {
+// 从数据库中筛选产品
+export const queryProduct = async (filters = {}) => {
   try {
-    const response = await axios.get(`${API_URL}/product`);
+    const response = await axios.get(`${API_URL}/product/query`, {
+      params: filters, // 将筛选条件作为查询参数传递
+    });
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    console.error("Get product list error:", axiosError);
     throw new Error(axiosError.response?.data.message);
   }
 };

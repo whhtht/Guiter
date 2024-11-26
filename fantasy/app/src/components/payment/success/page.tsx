@@ -1,10 +1,23 @@
-import { Box, Button, Typography } from "@mui/material";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import React from "react";
 import Header from "../../home/layout/header/page";
+import { useCart } from "../../../hooks/useCart.hook/hook/page";
+import { useProfile } from "../../../hooks/useProfile.hook/hook/page";
+
+import { Box, Button, Typography } from "@mui/material";
 
 const Success: React.FC = () => {
   const delivery = localStorage.getItem("delivery");
+  const cart = localStorage.getItem("cart");
+  const { fetchCart } = useCart();
+  const { name, address, country, province, city, postalCode } = useProfile();
+
+  useEffect(() => {
+    if (cart === null || cart.length < 0) {
+      localStorage.removeItem("cart");
+    }
+    fetchCart();
+  }, [fetchCart, cart]);
 
   return (
     <Box>
@@ -12,11 +25,10 @@ const Success: React.FC = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
           flexDirection: "column",
-          width: "100%",
-          marginTop: "96px",
+          margin: "96px 0px 0px 72px",
         }}
       >
         <Typography
@@ -50,26 +62,87 @@ const Success: React.FC = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
               flexDirection: "column",
               marginTop: "16px",
               gap: "16px",
             }}
           >
-            <Typography>
-              Shipping to Kelly Chang, 433-633 Yoo Street, Unit 316, M5G2G4,
-              Toronto, ON
-            </Typography>
-            <Typography>Estimated delivery by Sat, Jul 27</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "24px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
+              >
+                Deliver to
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                  color: "#02000C",
+                }}
+              >
+                {name}
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "24px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
+              >
+                , {address}, {city}, {province}, {postalCode}, {country}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexd1: "row", gap: "4px" }}>
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "24px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
+              >
+                Estimated delivery by
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                  color: "#02000C",
+                }}
+              >
+                Sat, Jul 27
+              </Typography>
+            </Box>
           </Box>
         ) : (
           // 自取付款成功
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
               flexDirection: "column",
               marginTop: "16px",
               gap: "16px",
@@ -93,7 +166,7 @@ const Success: React.FC = () => {
                 fontSize: "16px",
                 fontWeight: 400,
                 lineHeight: "24px",
-                textAlign: "center",
+                textAlign: "left",
                 color: "#02000C",
               }}
             >

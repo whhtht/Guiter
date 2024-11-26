@@ -164,3 +164,16 @@ export const magicLink = async (email: string) => {
     throw new Error(axiosError.response?.data.message);
   }
 };
+
+export const changeName = async (email: string, newname: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/changeName`, {
+      email,
+      newname,
+    });
+    return response;
+  } catch (error) {
+    const axiosError = error as AxiosErrorResponse;
+    throw new Error(axiosError.response?.data.message);
+  }
+};

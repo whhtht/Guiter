@@ -24,8 +24,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateCartItems = () => {
     // 从 localStorage 获取购物车数据
     const localCartString = localStorage.getItem("cart");
-    const localCart =
-      typeof localCartString === "string" ? JSON.parse(localCartString) : [];
+    const localCart = localCartString ? JSON.parse(localCartString) : [];
     // 分别设置本地购物车和保存的商品
     setLocalCartItems(
       localCart.filter((item: Product) => item.cart.type === "cart")
@@ -69,6 +68,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     window.dispatchEvent(new Event("manualUpdate"));
     // 更新页面购物车显示为空
     updateCartItems();
+  };
+
+  // 清空本地购物车, 保留稍后购买的商品
+  const clearCartItems = () => {
+    const localCartString = localStorage.getItem("cart");
+    const localCart = localCartString ? JSON.parse(localCartString) : [];
+
+    const saveForLaterItems = localCart.filter(
+      (item: Product) => item.cart.type === "saveforlater"
+    );
+
+    localStorage.setItem("cart", JSON.stringify(saveForLaterItems));
+
+    setLocalCartItems([]);
+    setLocalSaveItems(saveForLaterItems);
   };
 
   // 计算本地购物车商品数量
@@ -141,8 +155,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("获取购物车信息失败:", error);
     }
   }, [accessToken]);
-  // console.log("cartItems", cartItems);
-  // console.log("saveItems", saveItems);
 
   // 当 accessToken 变化时，重新获取购物车数据
   useEffect(() => {
@@ -467,6 +479,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const value = {
     localCartItems,
     localSaveItems,
+    clearCartItems,
     localCartCount,
     localSaveCount,
     localTotal,

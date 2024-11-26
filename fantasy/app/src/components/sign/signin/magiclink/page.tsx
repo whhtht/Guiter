@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { magicLink } from "../../../../api/auth/page";
 import { getCartName, postLocalCartitem } from "../../../../api/cartitem/page";
-import { useCart } from "../../../../hooks/useCart.hook/page";
+import { useCart } from "../../../../hooks/useCart.hook/hook/page";
+import { useProfile } from "../../../../hooks/useProfile.hook/hook/page";
 import { Header } from "../../signlayout/header/page";
 import { Footer } from "../../signlayout/footer/page";
 
@@ -13,6 +14,7 @@ const MagicLink: React.FC = () => {
   const navigate = useNavigate();
   const email = localStorage.getItem("email") || "";
   const { setCartItemCount, fetchCart } = useCart();
+  const { fetchAddress } = useProfile();
   const [isExecuted, setIsExecuted] = useState(false);
 
   // 从查询参数中获取 tokens
@@ -53,10 +55,9 @@ const MagicLink: React.FC = () => {
             // 调用获取购物车信息的 API
             const cartResponse = await getCartName();
             const cart = cartResponse.data;
-            // 设置购物车商品数量
             setCartItemCount(cart.quantity);
-            // 调用 fetchCart 来更新购物车
             fetchCart();
+            fetchAddress();
           } catch (error) {
             throw new Error(error as string);
           }
@@ -67,7 +68,14 @@ const MagicLink: React.FC = () => {
       cartInformation();
       setIsExecuted(true);
     }
-  }, [fetchCart, isExecuted, navigate, setCartItemCount, lastVisitedPath]);
+  }, [
+    fetchCart,
+    fetchAddress,
+    isExecuted,
+    navigate,
+    setCartItemCount,
+    lastVisitedPath,
+  ]);
 
   const handleMagicLink = async () => {
     try {

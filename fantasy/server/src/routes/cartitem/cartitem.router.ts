@@ -12,9 +12,9 @@ import currentUser from "middlewares/auth.middleware";
 
 const router = Router();
 router.get("/", currentUser, getCartItems);
-router.post("/", currentUser, postCartItem);
+router.post("/cart", currentUser, postCartItem);
 router.post("/local", currentUser, postLocalItem);
-router.put("/", currentUser, putCartItem);
+router.put("/cart", currentUser, putCartItem);
 router.put("/status", currentUser, cartStatus);
 router.delete("/:productName", deleteCartItem);
 

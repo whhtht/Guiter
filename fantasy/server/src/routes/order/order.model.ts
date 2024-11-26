@@ -1,15 +1,22 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
 import User from "routes/auth/auth.model";
-import Product from "../products/products.model";
 
 class Order extends Model {
   public id!: string;
+  public userId!: string;
   public paymentIntentId!: string;
-  public user!: string;
-  public product!: string;
-  public price!: number;
-  public quantity!: number;
+  public type!: string;
+  public status!: string;
+  public name!: string;
+  public email!: string;
+  public phone!: string;
+  public total!: string;
+  public address!: string;
+  public country!: string;
+  public province!: string;
+  public city!: string;
+  public postalCode!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -23,25 +30,65 @@ Order.init(
       allowNull: false,
       primaryKey: true,
     },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
     paymentIntentId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    user: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    product: {
+    status: {
+      type: DataTypes.ENUM(
+        "prepar",
+        "ship",
+        "deliver",
+        "pickup",
+        "cancel",
+        "done"
+      ),
+      allowNull: false,
+      defaultValue: "prepar",
+    },
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    price: {
-      type: DataTypes.NUMBER,
+    email: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    quantity: {
-      type: DataTypes.INTEGER,
+    phone: {
+      type: DataTypes.STRING,
       allowNull: false,
+    },
+    total: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    province: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
@@ -50,7 +97,6 @@ Order.init(
   }
 );
 
-Order.belongsTo(User, { foreignKey: "user", as: "user" });
-Order.belongsTo(Product, { foreignKey: "product", as: "product" });
+Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 
 export default Order;

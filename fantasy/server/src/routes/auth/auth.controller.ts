@@ -428,3 +428,21 @@ export const magicLinkCallbackHandler = async (req: Request, res: Response) => {
     return res.redirect(`http://localhost:5173/signin?error=${error.message}`);
   }
 };
+
+export const changeNameHandler = async (req: Request, res: Response) => {
+  const { email, newname } = req.body;
+
+  try {
+    if (!newname) {
+      return res.status(400).json({ message: "Please enter your name." });
+    } else {
+      const user = await User.findOne({ where: { email } });
+      if (user) {
+        await User.update({ name: newname }, { where: { email } });
+        res.status(200).json({ email: email, name: newname });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Error changing name." });
+  }
+};

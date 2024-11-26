@@ -14,6 +14,7 @@ import {
   magicLinkHandler,
   verifyMagicLinkHandler,
   magicLinkCallbackHandler,
+  changeNameHandler,
 } from "./auth.controller";
 
 import auth from "middlewares/auth.middleware";
@@ -33,6 +34,7 @@ router.post("/threePartyLogin", ThreePartyLoginHandler);
 router.post("/magicLink", magicLinkHandler);
 router.post("/verifyMagicLink", verifyMagicLinkHandler);
 router.get("/magicLink/callback", magicLinkCallbackHandler);
+router.post("/changeName", changeNameHandler);
 router.get("/me", auth, getCurrentUser);
 
 export default router;

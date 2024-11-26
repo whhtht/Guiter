@@ -6,7 +6,6 @@ import Cart from "./cart.model";
 export const getCartId = async (req: Request, res: Response) => {
   try {
     const email = res.locals.email;
-    console.log("email", email);
     const cart = await Cart.findAll({
       where: { email },
       include: [

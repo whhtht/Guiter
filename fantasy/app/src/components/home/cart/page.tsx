@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../layout/header/page";
 import Footer from "../layout/footer/page";
-import { useCart } from "../../../hooks/useCart.hook/page";
+import { useCart } from "../../../hooks/useCart.hook/hook/page";
 import { useLocation } from "../../../hooks/useLocation.hook/page";
 import LocationDrawer from "../drawer/location.drawer/page";
 import PickUpDrawer from "../drawer/pickUp.drawer/page";
@@ -85,12 +85,10 @@ const Cart: React.FC = () => {
   };
 
   // 弹窗显示保存商品
-  const [snackbars, setSnackbars] = useState<{ name: string; id: string }[]>(
-    []
-  );
+  const [snackbars, setSnackbars] = useState<{ name: string }[]>([]);
   // 处理保存操作并显示对应的 Snackbar
-  const handleSaveForLater = (name: string, id: string) => {
-    setSnackbars((prevSnackbars) => [...prevSnackbars, { name: name, id: id }]);
+  const handleSaveForLater = (name: string) => {
+    setSnackbars((prevSnackbars) => [...prevSnackbars, { name: name }]);
   };
   // 关闭指定的 Snackbar
   const handleCloseSnackbar = () => {
@@ -444,8 +442,7 @@ const Cart: React.FC = () => {
                                 color: "#76757C",
                               }}
                             >
-                              Condition:{" "}
-                              {item.product.specificationDetail.Condition}
+                              Condition: {item.product.condition}
                             </Typography>
                           </Box>
                           <Typography
@@ -474,10 +471,7 @@ const Cart: React.FC = () => {
                         >
                           <Button
                             onClick={() => {
-                              handleSaveForLater(
-                                item.product.name,
-                                String(item.id)
-                              );
+                              handleSaveForLater(item.product.name);
                               cartHook.cartStatus(
                                 item.product.name,
                                 item.cart.type
@@ -617,8 +611,7 @@ const Cart: React.FC = () => {
                                 color: "#76757C",
                               }}
                             >
-                              Condition:{" "}
-                              {item.product.specificationDetail.Condition}
+                              Condition: {item.product.condition}
                             </Typography>
                           </Box>
                           <Typography
@@ -647,10 +640,7 @@ const Cart: React.FC = () => {
                         >
                           <Button
                             onClick={() => {
-                              handleSaveForLater(
-                                item.product.name,
-                                String(item.id)
-                              );
+                              handleSaveForLater(item.product.name);
                               cartHook.cartStatus(
                                 item.product.name,
                                 item.cart.type
@@ -873,8 +863,7 @@ const Cart: React.FC = () => {
                                     color: "#76757C",
                                   }}
                                 >
-                                  Condition:{" "}
-                                  {item.product.specificationDetail.Condition}
+                                  Condition: {item.product.condition}
                                 </Typography>
                                 <Typography
                                   sx={{
@@ -1019,8 +1008,7 @@ const Cart: React.FC = () => {
                                     color: "#76757C",
                                   }}
                                 >
-                                  Condition:{" "}
-                                  {item.product.specificationDetail.Condition}
+                                  Condition: {item.product.condition}
                                 </Typography>
                                 <Typography
                                   sx={{

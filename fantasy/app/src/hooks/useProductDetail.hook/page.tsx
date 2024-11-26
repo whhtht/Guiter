@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useLocation } from "../useLocation.hook/page";
-import { newArrivals } from "../../lists/newArrivals.list/page";
 import { getProduct } from "../../api/product/page";
-import { MayLikeType, Product } from "./context/page";
 
 export const useProductDetail = () => {
   const { productName } = useParams<{
     productName: string;
   }>();
   // 从后端获取产品数据
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<string>("");
   useEffect(() => {
     if (productName) {
       getProduct(productName)
@@ -60,7 +58,7 @@ export const useProductDetail = () => {
   const [openPickUp, setOpenPickUp] = React.useState(false);
   const locationFunctions = useLocation(setOpenLocation);
   // 猜你喜欢
-  const useItems = (items: MayLikeType[], itemsToShow = 5) => {
+  const useItems = (items: string[], itemsToShow = 5) => {
     const [index, setIndex] = useState(0);
     const handlePrev = () => {
       setIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -80,7 +78,7 @@ export const useProductDetail = () => {
   // 购物车
   const [openCart, setOpenCart] = React.useState(false);
   // 猜你喜欢
-  const mayLike = useItems(newArrivals);
+  const mayLike = useItems([]);
 
   return {
     product,
