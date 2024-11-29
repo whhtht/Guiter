@@ -1,7 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { HashLink } from "react-router-hash-link";
 import { Carousel } from "react-bootstrap";
-import { useHome } from "../../../hooks/useHome.hook/page";
+import { useProduct } from "../../../hooks/useProduct.hook/hook/page";
+import { Product } from "../../../hooks/useProduct.hook/context/page";
 import Header from "../layout/header/page";
 import Footer from "../layout/footer/page";
 
@@ -11,324 +12,728 @@ import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
 // Side picture
 import * as carousel from "../../../lists/side.list/page";
-// Importing styles
-import * as styles from "../../../styles/homepage.style/page";
-// Featured guitars list
-import { featuredGuitars } from "../../../lists/featuredGuitars.list/page";
-// New arrivals list
-import { newArrivals } from "../../../lists/newArrivals.list/page";
 // Service list
 import { serviceItems } from "../../../lists/service.list/page";
-// Category list
-import * as category from "../../../lists/category.list/page";
+
+const useItems = (items: Product[], itemsToShow = 5) => {
+  const [index, setIndex] = useState(0);
+  const handlePrev = () => {
+    setIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  };
+  const handleNext = () => {
+    setIndex((prevIndex) =>
+      prevIndex < items.length - itemsToShow ? prevIndex + 1 : prevIndex
+    );
+  };
+  return {
+    index,
+    itemsToShow,
+    handlePrev,
+    handleNext,
+  };
+};
 
 const Homepage: React.FC = () => {
-  // import useHome hook
-  const homeHook = useHome();
+  const { fetchProduct, featured, newArrival, FliteCategory } = useProduct();
+  const featuredGuitar = useItems(featured);
+  const newArrivalGuitar = useItems(newArrival);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   return (
     <Box>
       <Header />
-      <Grid container>
-        {/* Part 1 */}
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Carousel prevIcon={null} nextIcon={null} variant="dark">
-            {carousel.sides.albums.map((image) => (
-              <Carousel.Item key={image.id} interval={2000}>
-                <Box>
-                  <Box
-                    component="img"
-                    src={image.image}
-                    sx={styles.homeStyles.carouselImage}
-                  />
-                  <Box sx={styles.homeStyles.carouselContent}>
-                    {image.title && (
-                      <Typography sx={styles.homeStyles.roboto_54px_02000C}>
-                        {image.title}
-                      </Typography>
-                    )}
 
-                    {image.subtitle && (
-                      <Box sx={styles.homeStyles.carousel_subtitle}>
-                        <Typography sx={styles.homeStyles.roboto_24px_02000C}>
-                          {image.subtitle}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {image.button && (
-                      <Box style={styles.homeStyles.carousel_button}>
-                        <Button
-                          component={Link}
-                          to={image.to}
-                          variant="text"
-                          disableFocusRipple
-                          sx={styles.homeStyles.buttonStyle_black}
-                        >
-                          <Typography
-                            variant="body1"
-                            sx={styles.homeStyles.roboto_16px}
-                          >
-                            {image.button}
-                          </Typography>
-                        </Button>
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </Grid>
-
-        {/* Part 2 */}
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          {/* Title */}
-          <Box sx={styles.homeStyles.titleStyle}>
-            <Typography variant="h2" sx={styles.homeStyles.roboto_30px_02000C}>
-              Shop our featured guitars
-            </Typography>
-          </Box>
-
-          {/* Shop Items List */}
-          <Box sx={styles.homeStyles.listStyle}>
-            <IconButton
-              onClick={homeHook.handlePrevfeaturedGuitar}
-              sx={styles.homeStyles.leftButton}
-            >
-              <ArrowBackIos sx={styles.homeStyles.arrowBack} />
-            </IconButton>
-            <IconButton
-              onClick={homeHook.handleNextfeaturedGuitar}
-              sx={styles.homeStyles.rightButton}
-            >
-              <ArrowForwardIos sx={styles.homeStyles.arrowForward} />
-            </IconButton>
-            <Box sx={styles.homeStyles.carouselBox}>
-              {featuredGuitars
-                .slice(
-                  homeHook.indexfeaturedGuitar,
-                  homeHook.indexfeaturedGuitar +
-                    homeHook.itemToShowfeaturedGuitar
-                )
-                .map((item) => (
-                  <Box key={item.id} sx={styles.homeStyles.sliceBox}>
-                    {/* Image */}
-                    <Box
-                      component={Link}
-                      to={item.Link}
-                      sx={styles.homeStyles.productList}
-                    >
-                      <Box
-                        component="img"
-                        src={item.image}
-                        sx={styles.homeStyles.imageStyle}
-                      />
-                    </Box>
-                    <Box sx={styles.homeStyles.product_text_frame}>
-                      <Box sx={styles.homeStyles.product_text_name}>
-                        {/* Product name */}
-                        <Typography
-                          component={Link}
-                          to={item.Link}
-                          variant="body1"
-                          sx={styles.homeStyles.roboto_16px_02000C}
-                        >
-                          {item.name}
-                        </Typography>
-                      </Box>
-
-                      {/* Condition */}
-                      <Typography
-                        component={Link}
-                        to={item.Link}
-                        sx={styles.homeStyles.roboto_14px_76757C}
-                      >
-                        Condition: {item.condition}
-                      </Typography>
-
-                      {/* Price */}
-                      <Typography
-                        component={Link}
-                        to={item.Link}
-                        sx={styles.homeStyles.roboto_20px_000000D9}
-                      >
-                        {item.price}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-            </Box>
-          </Box>
-        </Grid>
-
-        {/* Part 3 */}
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          {/* Title */}
-          <Box sx={styles.homeStyles.titleStyle}>
-            <Typography variant="h2" sx={styles.homeStyles.roboto_30px_02000C}>
-              New Arrivals
-            </Typography>
-          </Box>
-
-          {/* New Arrivals List */}
-          <Box sx={styles.homeStyles.listStyle}>
-            <IconButton
-              onClick={homeHook.handlePrevNewArrival}
-              sx={styles.homeStyles.leftButton}
-            >
-              <ArrowBackIos sx={styles.homeStyles.arrowBack} />
-            </IconButton>
-            <IconButton
-              onClick={homeHook.handleNextNewArrival}
-              sx={styles.homeStyles.rightButton}
-            >
-              <ArrowForwardIos sx={styles.homeStyles.arrowForward} />
-            </IconButton>
-            <Box sx={styles.homeStyles.carouselBox}>
-              {newArrivals
-                .slice(
-                  homeHook.indexNewArrival,
-                  homeHook.indexNewArrival + homeHook.itemsToShowNewArrival
-                )
-                .map((item) => (
-                  <Box key={item.id} sx={styles.homeStyles.sliceBox}>
-                    {/* Image */}
-                    <Box
-                      component={Link}
-                      to={item.Link}
-                      sx={styles.homeStyles.productList}
-                    >
-                      <Box
-                        component="img"
-                        src={item.image}
-                        sx={styles.homeStyles.imageStyle}
-                      />
-                    </Box>
-                    <Box sx={styles.homeStyles.product_text_frame}>
-                      <Box sx={styles.homeStyles.product_text_name}>
-                        {/* Product name */}
-                        <Typography
-                          component={Link}
-                          to={item.Link}
-                          sx={styles.homeStyles.roboto_16px_02000C}
-                        >
-                          {item.name}
-                        </Typography>
-                      </Box>
-
-                      {/* Condition */}
-                      <Typography
-                        component={Link}
-                        to={item.Link}
-                        sx={styles.homeStyles.roboto_14px_76757C}
-                      >
-                        Condition: {item.condition}
-                      </Typography>
-
-                      {/* Price */}
-                      <Typography
-                        component={Link}
-                        to={item.Link}
-                        sx={styles.homeStyles.roboto_20px_000000D9}
-                      >
-                        {item.price}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-            </Box>
-          </Box>
-        </Grid>
-
-        {/* Part 4 */}
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          {/* Service */}
-          <Box sx={styles.homeStyles.serviceStyle}>
-            {serviceItems.map((item) => (
-              <Box key={item.id} sx={styles.homeStyles.serviceBox}>
-                {/* Image */}
-                <Box
-                  component={Link}
-                  to={item.Link}
-                  sx={styles.homeStyles.serviceList}
-                >
-                  <Box
-                    component="img"
-                    src={item.image}
-                    sx={styles.homeStyles.imageStyle}
-                  />
-                </Box>
-                {/* Title */}
-                <Box sx={styles.homeStyles.service_text_frame}>
-                  <Typography
-                    component={Link}
-                    to={item.Link}
-                    sx={styles.homeStyles.roboto_20px_000000D9}
-                  >
-                    {item.title}
-                  </Typography>
-                  {/* Text */}
-                  <Typography
-                    component={Link}
-                    to={item.Link}
-                    sx={styles.homeStyles.roboto_14px_02000C}
-                  >
-                    {item.text}
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        </Grid>
-
-        {/* Part 5 */}
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          {/* Title */}
-          <Box sx={styles.homeStyles.titleStyle}>
-            <Typography variant="h2" sx={styles.homeStyles.roboto_30px_02000C}>
-              Browse by category
-            </Typography>
-          </Box>
-          {/* Category */}
-          <Box sx={styles.homeStyles.categoryStyle}>
-            <Box sx={styles.homeStyles.categoryLeft}>
-              {/* Left Name */}
-              <Typography sx={styles.homeStyles.roboto_20px_02000C}>
-                {category.table.classical.name}
-              </Typography>
-
-              {/* Left Image */}
+      {/* Part 1 */}
+      <Carousel prevIcon={null} nextIcon={null} variant="dark">
+        {carousel.sides.albums.map((image) => (
+          <Carousel.Item key={image.id} interval={2000}>
+            <Box>
               <Box
                 component="img"
-                src={category.table.classical.image}
-                sx={styles.homeStyles.categoryLeftImage}
+                src={image.image}
+                sx={{
+                  positions: "relative",
+                  display: "block",
+                  height: "522px",
+                  backgroundColor: "#D9D9D9",
+                }}
               />
+              <Box
+                sx={{
+                  position: "absolute",
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "440px",
+                  top: "110px",
+                  left: "82px",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontFamily: "Roboto",
+                    fontSize: "54px",
+                    fontWeight: 700,
+                    lineHeight: "63px",
+                    textAlign: "left",
+                    color: "#02000C",
+                  }}
+                >
+                  {image.title}
+                </Typography>
+
+                <Box sx={{ margin: "28px 0px 40px 0px" }}>
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "24px",
+                      fontWeight: 400,
+                      lineHeight: "28px",
+                      textAlign: "left",
+                      color: "#02000C",
+                    }}
+                  >
+                    {image.subtitle}
+                  </Typography>
+                </Box>
+
+                <Button
+                  component={HashLink}
+                  to={`${image.to}#top`}
+                  disableFocusRipple
+                  sx={{
+                    width: "232px",
+                    height: "48px",
+                    backgroundColor: "#02000C",
+                    textTransform: "none",
+                    textDecoration: "none",
+                    "&:hover": {
+                      backgroundColor: "#02000C",
+                    },
+                    "&.Mui-focusVisible": {
+                      boxShadow: "0 0 0 2px #5796dc",
+                    },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      lineHeight: "24px",
+                      textAlign: "left",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {image.button}
+                  </Typography>
+                </Button>
+              </Box>
             </Box>
-            <Box sx={styles.homeStyles.categoryRight}>
-              <Grid container spacing={3}>
-                {category.table.filterCategory.map((category) => (
-                  <Grid item key={category.id} xs={6}>
-                    <Box sx={styles.homeStyles.categoryRightBox}>
-                      {/* Right Name */}
-                      <Box sx={styles.homeStyles.category_text_frame}>
-                        <Typography sx={styles.homeStyles.roboto_20px_02000C}>
-                          {category.name}
-                        </Typography>
-                      </Box>
-                      <Box
-                        component="img"
-                        src={category.image}
-                        sx={styles.homeStyles.categoryRightImage}
-                      />
+          </Carousel.Item>
+        ))}
+      </Carousel>
+
+      {/* Title */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          padding: "0px 72px",
+          margin: "56px 0px 0px 0px",
+          gap: "26px",
+        }}
+      >
+        <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontSize: "30px",
+            fontWeight: 700,
+            lineHeight: "40px",
+            textAlign: "left",
+            color: "#02000C",
+          }}
+        >
+          Shop our featured guitars
+        </Typography>
+
+        {/* Shop Items List */}
+        <Box sx={{ position: "relative" }}>
+          <IconButton
+            onClick={featuredGuitar.handlePrev}
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "50px",
+              height: "50px",
+              left: "-23px",
+              top: "35%",
+              backgroundColor: "#FFFFFF",
+              borderRadius: "50px",
+              boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              "&:hover": {
+                backgroundColor: "#FFFFFF",
+              },
+              "&:active": {
+                backgroundColor: "#FFFFFF",
+              },
+            }}
+          >
+            <ArrowBackIos
+              sx={{
+                color: "#02000C",
+                fontSize: "20px",
+                transform: "translateX(20%)",
+              }}
+            />
+          </IconButton>
+          <IconButton
+            onClick={featuredGuitar.handleNext}
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "50px",
+              height: "50px",
+              right: "-23px",
+              top: "35%",
+              PointerEvents: "auto",
+              backgroundColor: "#FFFFFF",
+              borderRadius: "50%",
+              boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              "&:hover": {
+                backgroundColor: "#FFFFFF",
+              },
+              "&:active": {
+                backgroundColor: "#FFFFFF",
+              },
+            }}
+          >
+            <ArrowForwardIos
+              sx={{
+                color: "#02000C",
+                fontSize: "20px",
+                transform: "translateX(10%)",
+              }}
+            />
+          </IconButton>
+          <Box
+            sx={{
+              positions: "relative",
+              display: "flex",
+              justifyContent: "space-between",
+              flexdirection: "row",
+              overflow: "hidden",
+            }}
+          >
+            {featured
+              .slice(
+                featuredGuitar.index,
+                featuredGuitar.index + featuredGuitar.itemsToShow
+              )
+              .map((item, index) => (
+                <Box
+                  component={HashLink}
+                  to={`/product/${encodeURIComponent(item.name)}#top`}
+                  scroll={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "instant",
+                    });
+                  }}
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    width: "252px",
+                    border: "1px solid #FFFFFF",
+                    textDecoration: "none",
+                    padding: "6px 0px 0px 0px",
+                    gap: "12px",
+                    "&:hover": {
+                      boxShadow: " 0px 1px 4px 0px #00000040",
+                      borderRadius: "8px",
+                      border: "1px solid #DDDCDE",
+                    },
+                  }}
+                >
+                  {/* Image */}
+                  <Box
+                    component="img"
+                    sx={{
+                      width: "240px",
+                      height: "240px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "240px",
+                      height: "108px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        margin: "0px 0px 5px 0px",
+                      }}
+                    >
+                      {/* Product name */}
+                      <Typography
+                        sx={{
+                          fontFamily: "Roboto",
+                          fontSize: "16px",
+                          fontWeight: 400,
+                          lineHeight: "24px",
+                          textAlign: "left",
+                          color: "#02000C",
+                        }}
+                      >
+                        {item.name}
+                      </Typography>
                     </Box>
-                  </Grid>
-                ))}
-              </Grid>
+
+                    {/* Condition */}
+                    <Typography
+                      sx={{
+                        fontFamily: "Roboto",
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        lineHeight: "22px",
+                        textAlign: "left",
+                        color: "#76757C",
+                      }}
+                    >
+                      Condition: {item.condition}
+                    </Typography>
+
+                    {/* Price */}
+                    <Typography
+                      sx={{
+                        fontFamily: "Roboto",
+                        fontSize: "20px",
+                        fontWeight: 500,
+                        lineHeight: "28px",
+                        textAlign: "left",
+                        color: "#02000C",
+                      }}
+                    >
+                      $ {item.price}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Title */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          padding: "0px 72px",
+          margin: "56px 0px 0px 0px",
+          gap: "26px",
+        }}
+      >
+        <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontSize: "30px",
+            fontWeight: 700,
+            lineHeight: "40px",
+            textAlign: "left",
+            color: "#02000C",
+          }}
+        >
+          New Arrivals
+        </Typography>
+
+        {/* New Arrivals List */}
+        <Box sx={{ position: "relative" }}>
+          <IconButton
+            onClick={newArrivalGuitar.handlePrev}
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "50px",
+              height: "50px",
+              left: "-23px",
+              top: "35%",
+              backgroundColor: "#FFFFFF",
+              borderRadius: "50px",
+              boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              "&:hover": {
+                backgroundColor: "#FFFFFF",
+              },
+              "&:active": {
+                backgroundColor: "#FFFFFF",
+              },
+            }}
+          >
+            <ArrowBackIos
+              sx={{
+                color: "#02000C",
+                fontSize: "20px",
+                transform: "translateX(20%)",
+              }}
+            />
+          </IconButton>
+          <IconButton
+            onClick={newArrivalGuitar.handleNext}
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "50px",
+              height: "50px",
+              right: "-23px",
+              top: "35%",
+              PointerEvents: "auto",
+              backgroundColor: "#FFFFFF",
+              borderRadius: "50%",
+              boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.2)",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              "&:hover": {
+                backgroundColor: "#FFFFFF",
+              },
+              "&:active": {
+                backgroundColor: "#FFFFFF",
+              },
+            }}
+          >
+            <ArrowForwardIos
+              sx={{
+                color: "#02000C",
+                fontSize: "20px",
+                transform: "translateX(10%)",
+              }}
+            />
+          </IconButton>
+          <Box
+            sx={{
+              positions: "relative",
+              display: "flex",
+              justifyContent: "space-between",
+              flexdirection: "row",
+              overflow: "hidden",
+            }}
+          >
+            {newArrival
+              .slice(
+                newArrivalGuitar.index,
+                newArrivalGuitar.index + newArrivalGuitar.itemsToShow
+              )
+              .map((item, index) => (
+                <Box
+                  component={HashLink}
+                  to={`/product/${encodeURIComponent(item.name)}#top`}
+                  scroll={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "instant",
+                    });
+                  }}
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    width: "252px",
+                    border: "1px solid #FFFFFF",
+                    textDecoration: "none",
+                    padding: "6px 0px 0px 0px",
+                    gap: "12px",
+                    "&:hover": {
+                      color: "#FFFFFF",
+                      boxShadow: " 0px 1px 4px 0px #00000040",
+                      borderRadius: "8px",
+                      border: "1px solid #DDDCDE",
+                    },
+                  }}
+                >
+                  {/* Image */}
+                  <Box
+                    component="img"
+                    sx={{
+                      width: "240px",
+                      height: "240px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "240px",
+                      height: "108px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        margin: "0px 0px 5px 0px",
+                      }}
+                    >
+                      {/* Product name */}
+                      <Typography
+                        sx={{
+                          fontFamily: "Roboto",
+                          fontSize: "16px",
+                          fontWeight: 400,
+                          lineHeight: "24px",
+                          textAlign: "left",
+                          color: "#02000C",
+                        }}
+                      >
+                        {item.name}
+                      </Typography>
+                    </Box>
+
+                    {/* Condition */}
+                    <Typography
+                      sx={{
+                        fontFamily: "Roboto",
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        lineHeight: "22px",
+                        textAlign: "left",
+                        color: "#76757C",
+                      }}
+                    >
+                      Condition: {item.condition}
+                    </Typography>
+
+                    {/* Price */}
+                    <Typography
+                      sx={{
+                        fontFamily: "Roboto",
+                        fontSize: "20px",
+                        fontWeight: 500,
+                        lineHeight: "28px",
+                        textAlign: "left",
+                        color: "#02000C",
+                      }}
+                    >
+                      $ {item.price}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Part 4 */}
+      {/* Service */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          margin: "100px 72px 20px 72px",
+        }}
+      >
+        {serviceItems.map((item, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              textAlign: "center",
+              width: "calc(100% / 4)",
+            }}
+          >
+            <Box
+              component="img"
+              sx={{
+                width: "113px",
+                height: "113px",
+                border: "1px solid #02000C",
+                borderRadius: "90%",
+                margin: "0px 0px 15px 0px",
+              }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                width: "260px",
+                gap: "10px",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "20px",
+                  fontWeight: 500,
+                  lineHeight: "28px",
+                  textAlign: "left",
+                  color: "#02000C",
+                }}
+              >
+                {item.title}
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "Roboto",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  lineHeight: "22px",
+                  textAlign: "center",
+                  color: "#02000C",
+                }}
+              >
+                {item.text}
+              </Typography>
             </Box>
           </Box>
-        </Grid>
-      </Grid>
+        ))}
+      </Box>
+
+      {/* Part 5 */}
+      {/* Title */}
+      <Box sx={{ padding: "0px 72px 0px 72px", margin: "56px 0px 26px 0px" }}>
+        <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontSize: "30px",
+            fontWeight: 700,
+            lineHeight: "40px",
+            textAlign: "left",
+            color: "#02000C",
+          }}
+        >
+          Browse by category
+        </Typography>
+      </Box>
+      {/* Category */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "row",
+          padding: "0px 72px",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "row",
+            width: "432px",
+            height: "374px",
+            background: "#FFEACE",
+            borderRadius: "8px",
+            flexShrink: 0,
+            padding: "0px 10px 0px 50px",
+          }}
+        >
+          {/* Left Name */}
+          <Typography
+            sx={{
+              fontFamily: "Roboto",
+              fontSize: "20px",
+              fontWeight: 500,
+              lineHeight: "28px",
+              textAlign: "left",
+              color: "#02000C",
+            }}
+          >
+            Classical Guitar
+          </Typography>
+
+          {/* Left Image */}
+          <Box
+            component="img"
+            sx={{
+              width: "211px",
+              height: "329px",
+              border: "1px solid #02000C",
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            width: "840px",
+            height: "374px",
+          }}
+        >
+          <Grid container spacing={3}>
+            {FliteCategory.map((category, index) => (
+              <Grid item key={index} xs={6}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    width: "408px",
+                    height: "175px",
+                    borderRadius: "8px",
+                    background: "#FFEACE",
+                    padding: "0px 28px",
+                  }}
+                >
+                  {/* Right Name */}
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "20px",
+                      fontWeight: 500,
+                      lineHeight: "28px",
+                      textAlign: "left",
+                      color: "#02000C",
+                    }}
+                  >
+                    {category}
+                  </Typography>
+                  <Box
+                    component="img"
+                    sx={{
+                      width: "165px",
+                      height: "165px",
+                      border: "1px solid #02000C",
+                    }}
+                  />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
       <Footer />
     </Box>
   );

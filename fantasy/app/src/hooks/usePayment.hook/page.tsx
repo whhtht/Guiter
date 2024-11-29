@@ -197,6 +197,7 @@ export const usePayment = () => {
     payment,
     error,
     setCardName,
+    cardAddress,
     setCardAddress,
     handlePaymentMethodChange,
     handlePayment,

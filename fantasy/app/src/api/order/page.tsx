@@ -151,11 +151,9 @@ export const getUserOrders = async () => {
 };
 
 // 获取订单详情
-export const getOrderDetail = async (ordernumber: string) => {
+export const getOrderDetail = async (orderId: string) => {
   try {
-    const response = await apiClient.post(`${API_URL}/orderitem/detail`, {
-      orderId: ordernumber,
-    });
+    const response = await apiClient.get(`${API_URL}/orderitem/${orderId}`);
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;

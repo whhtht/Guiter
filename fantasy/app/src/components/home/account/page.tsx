@@ -27,7 +27,7 @@ const Account: React.FC = () => {
   }, [location.pathname, fetchOrder]);
 
   return (
-    <Box>
+    <Box id="top">
       <Header />
 
       {/* 账户表单 */}
@@ -605,10 +605,7 @@ const Account: React.FC = () => {
                     {/* 订单详情 */}
                     <Button
                       component={Link}
-                      to="/order/detail"
-                      onClick={() =>
-                        sessionStorage.setItem("ordernumber", item.orderId)
-                      }
+                      to={`/order/${item.orderId}`}
                       sx={{
                         width: "193px",
                         height: "48px",

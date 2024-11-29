@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useOrder } from "../../../../hooks/useOrder.hook/hook/page";
 
 import { Box, Typography, Breadcrumbs, Button, Dialog } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 const Detail: React.FC = () => {
+  const { orderId } = useParams<{ orderId: string }>();
   const accessToken = localStorage.getItem("accessToken");
   const {
     detail,
@@ -16,13 +17,12 @@ const Detail: React.FC = () => {
     hst,
     total,
   } = useOrder();
-  const ordernumber = sessionStorage.getItem("ordernumber") || "";
 
   useEffect(() => {
-    if (accessToken) {
-      handleOrderDetail(ordernumber);
+    if (accessToken && orderId) {
+      handleOrderDetail(orderId);
     }
-  }, [handleOrderDetail, accessToken, ordernumber]);
+  }, [handleOrderDetail, accessToken, orderId]);
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const handleClickOpen = () => {

@@ -6,7 +6,7 @@ const albums = [
     subtitle: "We offer top quality and fair pricing",
     button: "Shop Now",
     image: "",
-    to: "/",
+    to: "/productlist",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ const albums = [
     subtitle: "We offer top quality and fair pricing",
     button: "Shop Now",
     image: "",
-    to: "/",
+    to: "/productlist",
   },
 ];
 

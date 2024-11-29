@@ -1,17 +1,7 @@
-import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
 import { Box, Typography } from "@mui/material";
 
 const NotFoundPage: React.FC = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    document.body.setAttribute("hideHeaderFooter", "true");
-    return () => {
-      document.body.removeAttribute("hideHeaderFooter");
-    };
-  }, []);
-
   return (
     <Box
       sx={{
@@ -27,7 +17,7 @@ const NotFoundPage: React.FC = () => {
         404 - Page Not Found
       </Typography>
       <Typography variant="body1" sx={{ fontSize: "16px" }}>
-        The page {location.pathname} does not exist.
+        The page does not exist.
       </Typography>
     </Box>
   );

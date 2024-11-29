@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import Header from "../layout/header/page";
 import Footer from "../layout/footer/page";
 import { useCart } from "../../../hooks/useCart.hook/hook/page";
@@ -96,7 +96,7 @@ const Cart: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box id="top">
       <Header />
       <Box
         sx={{
@@ -1185,8 +1185,14 @@ const Cart: React.FC = () => {
               <Typography>$ {total} </Typography>
             </Box>
             <Button
-              component={Link}
-              to="/checkout"
+              component={HashLink}
+              to="/checkout#top"
+              scroll={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "instant",
+                });
+              }}
               sx={{
                 width: "100%",
                 height: "48px",

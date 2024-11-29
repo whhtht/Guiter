@@ -32,7 +32,7 @@ const useCollapse = (initialState = true) => {
   };
 };
 
-const ProductDetail: React.FC = () => {
+const ProductList: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -198,9 +198,24 @@ const ProductDetail: React.FC = () => {
     handleFilterChange,
   ]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [selectedBrand, selectedCondition, selectedHandedness]);
+
   return (
     <Box>
+      {/* <Box
+        component="header"
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 2,
+          backgroundColor: "#FFFFFF",
+        }}
+      > */}
       <Header />
+      {/* </Box> */}
+
       <Box
         sx={{
           padding: "16px 72px 16px 72px",
@@ -281,21 +296,7 @@ const ProductDetail: React.FC = () => {
                   <ListItem disablePadding key={index}>
                     <ListItemButton
                       onClick={() => handleCategoryClick(item)}
-                      sx={{
-                        padding: "0px",
-                        //   "&.Mui-selected": {
-                        //     color: "#02000C",
-                        //     backgroundColor: "transparent",
-                        //   },
-                        //   "&.Mui-selected:hover": {
-                        //     color: "#02000C",
-                        //     backgroundColor: "transparent",
-                        //   },
-                        //   "&:hover": {
-                        //     color: "#02000C",
-                        //     backgroundColor: "transparent",
-                        //   },
-                      }}
+                      sx={{ padding: "0px" }}
                     >
                       <ListItemText
                         primary={item}
@@ -770,4 +771,4 @@ const ProductDetail: React.FC = () => {
   );
 };
 
-export default ProductDetail;
+export default ProductList;

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import {
   Box,
   Button,
@@ -21,7 +22,6 @@ import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import { cognitoSignOutUrl } from "../../../../api/auth/page";
-import { useHeader } from "../../../../hooks/useHeader.hook/page";
 import { useLocation } from "../../../../hooks/useLocation.hook/page";
 import { useCart } from "../../../../hooks/useCart.hook/hook/page";
 import { useProduct } from "../../../../hooks/useProduct.hook/hook/page";
@@ -32,11 +32,21 @@ import CartDrawer from "../../drawer/cart.drawer/page";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const headerHook = useHeader();
-  const locationHook = useLocation(headerHook.setOpenLocation);
+  const [openLocation, setOpenLocation] = React.useState(false);
+  const [openPickUp, setOpenPickUp] = React.useState(false);
+  const [openContactUs, setOpenContactUs] = React.useState(false);
+  const [openCart, setOpenCart] = React.useState<boolean>(false);
+  const locationHook = useLocation(setOpenLocation);
   const cartHook = useCart();
-  const { HeaderCategory, setSelectedCategory, handleFilterChange } =
-    useProduct();
+  const {
+    HeaderCategory,
+    setSelectedCategory,
+    handleFilterChange,
+    searchTerm,
+    searchResults,
+    handleSearchChange,
+    handleOptionSelect,
+  } = useProduct();
 
   const name = localStorage.getItem("name") || "";
   const firstLetter = name.charAt(0).toUpperCase();
@@ -63,7 +73,6 @@ const Header: React.FC = () => {
   const handleSignIn = () => {
     const currentPath = window.location.pathname;
     localStorage.setItem("lastVisitedPath", currentPath);
-    navigate("/signin");
   };
 
   // 退出登录
@@ -156,7 +165,16 @@ const Header: React.FC = () => {
         <Box sx={{ flexGrow: 1, height: "40px", mx: "5px" }}>
           <Autocomplete
             freeSolo
-            options={headerHook.searchHistory}
+            inputValue={searchTerm}
+            options={searchResults}
+            onInputChange={(_, newValue) => {
+              handleSearchChange(newValue);
+            }}
+            onChange={(_, newValue) => {
+              if (newValue) {
+                handleOptionSelect(newValue);
+              }
+            }}
             sx={{
               borderRadius: "4px",
               border: "1px solid #02000C",
@@ -174,9 +192,6 @@ const Header: React.FC = () => {
                 placeholder="Find guitars you love..."
                 size="small"
                 variant="outlined"
-                value={headerHook.searchTerm}
-                onChange={(e) => headerHook.setSearchTerm(e.target.value)}
-                onKeyDown={headerHook.handleKeyDown}
                 InputProps={{
                   ...params.InputProps,
                   startAdornment: (
@@ -319,6 +334,14 @@ const Header: React.FC = () => {
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Button
+              component={HashLink}
+              to="/signin#top"
+              scroll={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "instant",
+                });
+              }}
               onClick={handleSignIn}
               sx={{
                 width: "220px",
@@ -445,8 +468,14 @@ const Header: React.FC = () => {
             />
             {/* 我的账户 */}
             <Box
-              component={Link}
-              to="/account"
+              component={HashLink}
+              to="/account#top"
+              scroll={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "instant",
+                });
+              }}
               onClick={handleCloseMenu}
               sx={{
                 display: "flex",
@@ -477,8 +506,14 @@ const Header: React.FC = () => {
             </Box>
             {/* 我的订单 */}
             <Box
-              component={Link}
-              to="/order"
+              component={HashLink}
+              to="/order#top"
+              scroll={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "instant",
+                });
+              }}
               onClick={handleCloseMenu}
               sx={{
                 display: "flex",
@@ -559,7 +594,7 @@ const Header: React.FC = () => {
             variant="text"
             disableFocusRipple
             onClick={() => {
-              headerHook.setOpenCart(true);
+              setOpenCart(true);
             }}
             startIcon={
               <Badge
@@ -616,10 +651,7 @@ const Header: React.FC = () => {
               Cart
             </Typography>
           </Button>
-          <CartDrawer
-            open={headerHook.openCart}
-            setOpen={headerHook.setOpenCart}
-          />
+          <CartDrawer open={openCart} setOpen={setOpenCart} />
         </Box>
       </Box>
 
@@ -734,7 +766,7 @@ const Header: React.FC = () => {
                 },
               }}
               onClick={() => {
-                headerHook.setOpenLocation(true);
+                setOpenLocation(true);
               }}
             >
               <Typography
@@ -754,10 +786,7 @@ const Header: React.FC = () => {
               </Typography>
             </Button>
 
-            <LocationDrawer
-              open={headerHook.openLocation}
-              setOpen={headerHook.setOpenLocation}
-            />
+            <LocationDrawer open={openLocation} setOpen={setOpenLocation} />
           </Box>
 
           {/* Pick up */}
@@ -794,7 +823,7 @@ const Header: React.FC = () => {
                 },
               }}
               onClick={() => {
-                headerHook.setOpenPickUp(true);
+                setOpenPickUp(true);
               }}
             >
               <Typography
@@ -810,10 +839,7 @@ const Header: React.FC = () => {
                 Pick up at Toronto Downtown
               </Typography>
             </Button>
-            <PickUpDrawer
-              open={headerHook.openPickUp}
-              setOpen={headerHook.setOpenPickUp}
-            />
+            <PickUpDrawer open={openPickUp} setOpen={setOpenPickUp} />
           </Box>
 
           {/* Contact Us */}
@@ -850,7 +876,7 @@ const Header: React.FC = () => {
                 },
               }}
               onClick={() => {
-                headerHook.setOpenContactUs(true);
+                setOpenContactUs(true);
               }}
             >
               <Typography
@@ -866,10 +892,7 @@ const Header: React.FC = () => {
                 Contact Us
               </Typography>
             </Button>
-            <ContactUsDrawer
-              open={headerHook.openContactUs}
-              setOpen={headerHook.setOpenContactUs}
-            />
+            <ContactUsDrawer open={openContactUs} setOpen={setOpenContactUs} />
           </Box>
         </Box>
       </Box>

@@ -14,6 +14,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      attribute:{
+        type: Sequelize.ENUM('featured', 'newArrival'),
+        allowNull: false,
+        defaultValue: 'featured',
+      },
       quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,

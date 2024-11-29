@@ -18,7 +18,7 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const Address: React.FC = () => {
-  const [swithBox, setSwithBox] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
     name,
     phone,
@@ -39,9 +39,29 @@ const Address: React.FC = () => {
   const [newpostalcode, setNewPostalCode] = useState<string>("");
   const newcountry = "Canada";
 
+  const [initialData, setInitialData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    country: "",
+    province: "",
+    city: "",
+    postalCode: "",
+  });
+
   // 初始化地址信息
   useEffect(() => {
     if (saveAddress === true) {
+      const data = {
+        name,
+        phone,
+        address,
+        country,
+        province,
+        city,
+        postalCode,
+      };
+      setInitialData(data);
       setNewname(name);
       setNewphone(phone);
       setNewaddress(address);
@@ -51,9 +71,22 @@ const Address: React.FC = () => {
     }
   }, [saveAddress, name, phone, address, country, province, city, postalCode]);
 
+  const resetToInitialState = () => {
+    setNewname(initialData.name);
+    setNewphone(initialData.phone);
+    setNewaddress(initialData.address);
+    setNewProvince(initialData.province);
+    setNewCity(initialData.city);
+    setNewPostalCode(initialData.postalCode);
+  };
+
   // 修改地址信息
-  const handleAddressChange = () => {
-    setSwithBox(!swithBox);
+  const handleCancel = () => {
+    resetToInitialState();
+    setIsEditing(!isEditing);
+  };
+  const handleEdit = () => {
+    setIsEditing(!isEditing);
   };
   const handleNewnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewname(event.target.value);
@@ -105,7 +138,7 @@ const Address: React.FC = () => {
         newcity,
         newpostalcode
       );
-      setSwithBox(!swithBox);
+      setIsEditing(!isEditing);
       fetchAddress();
     } catch (error) {
       const errorResponse = error as { message: string };
@@ -181,7 +214,7 @@ const Address: React.FC = () => {
       </Typography>
 
       {/* 地址信息 */}
-      {swithBox === true ? (
+      {isEditing === true ? (
         <Box
           sx={{
             display: "flex",
@@ -249,6 +282,7 @@ const Address: React.FC = () => {
                 value={newphone}
                 type="text"
                 onChange={handleNewphoneChange}
+                inputProps={{ maxLength: 12 }}
                 sx={{
                   width: "452px",
                   height: "48px",
@@ -451,6 +485,7 @@ const Address: React.FC = () => {
                   value={newpostalcode}
                   type="text"
                   onChange={handlePostalCodeChange}
+                  inputProps={{ maxLength: 7 }}
                   sx={{
                     fontFamily: "Roboto",
                     fontSize: "16px",
@@ -498,7 +533,7 @@ const Address: React.FC = () => {
               </Typography>
             </Button>
             <Typography
-              onClick={handleAddressChange}
+              onClick={handleCancel}
               sx={{
                 fontFamily: "Roboto",
                 fontSize: "14px",
@@ -594,7 +629,7 @@ const Address: React.FC = () => {
 
           {/* 修改按钮 */}
           <Typography
-            onClick={handleAddressChange}
+            onClick={handleEdit}
             sx={{
               fontFamily: "Roboto",
               fontSize: "14px",

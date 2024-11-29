@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { getProduct, queryProduct } from "./products.controller";
+import {
+  searchProducts,
+  getProduct,
+  queryProduct,
+} from "./products.controller";
 
 const router = Router();
 
+router.get("/search", searchProducts);
 router.get("/item/:name", getProduct);
 router.get("/query", queryProduct);
 

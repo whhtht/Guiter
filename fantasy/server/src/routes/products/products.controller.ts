@@ -2,17 +2,37 @@ import { Request, Response } from "express";
 import { Op } from "sequelize";
 import Product from "./products.model";
 
+// 搜索产品
+export const searchProducts = async (req: Request, res: Response) => {
+  const { query } = req.query; // 获取用户输入的搜索关键字
+  console.log("query:", query);
+  try {
+    const products = await Product.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${query}%`, // 模糊匹配查询
+        },
+      },
+      attributes: ["name"], // 仅返回必要的字段
+    });
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(500).json({ error: "Failed to search products" });
+  }
+};
+
 // 获取产品及其规格信息
 export const getProduct = async (req: Request, res: Response) => {
   const { name } = req.params;
-  console.log("req.params:", req.params);
+
   try {
-    // 查询产品并关联specification表的信息
     const product = await Product.findOne({
       where: { name: name },
       attributes: [
         "id",
         "name",
+        "attribute",
         "quantity",
         "price",
         "condition",
@@ -21,14 +41,10 @@ export const getProduct = async (req: Request, res: Response) => {
         "right_left_handed",
       ],
     });
-    if (product) {
-      return res.status(200).json(product);
-    } else {
-      return res.status(404).json({ error: "Product not found" });
-    }
+    return res.status(200).json(product);
   } catch (error) {
     console.error("查询产品和规格时出错:", error);
-    return res.status(500).json({ error: "查询产品和规格失败" });
+    return res.status(400).json({ error: "查询产品和规格失败" });
   }
 };
 
@@ -87,6 +103,7 @@ export const queryProduct = async (req: Request, res: Response) => {
       where: Object.keys(where).length > 0 ? where : undefined,
       attributes: [
         "name",
+        "attribute",
         "quantity",
         "price",
         "condition",

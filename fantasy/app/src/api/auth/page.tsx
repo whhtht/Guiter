@@ -48,7 +48,7 @@ export const signUp = async (email: string, password: string, name: string) => {
     return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponse;
-    console.error("注册error:", axiosError.response?.data.message);
+    console.error("注册error:", axiosError);
     throw axiosError.response?.data.message;
   }
 };

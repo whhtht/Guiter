@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import Header from "../../home/layout/header/page";
 import { useCart } from "../../../hooks/useCart.hook/hook/page";
 import { useProfile } from "../../../hooks/useProfile.hook/hook/page";
@@ -18,6 +18,10 @@ const Success: React.FC = () => {
     }
     fetchCart();
   }, [fetchCart, cart]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   return (
     <Box>
@@ -194,8 +198,14 @@ const Success: React.FC = () => {
             Looking to track your orders more easily? Create an account today!
           </Typography>
           <Button
-            component={Link}
-            to="/signup"
+            component={HashLink}
+            to="/signup#top"
+            scroll={() => {
+              window.scrollTo({
+                top: 0,
+                behavior: "instant",
+              });
+            }}
             sx={{
               width: "180px",
               height: "48px",

@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ProductContext, Product, FilterValues } from "../context/page";
-import { queryProduct } from "../../../api/product/page";
+import { searchProducts, queryProduct } from "../../../api/product/page";
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -12,6 +13,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     "Ukulele",
     "Banjo",
   ];
+  const FliteCategory = HeaderCategory.slice(1, 5);
 
   const Category = [
     "All Categories",
@@ -45,6 +47,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   ];
 
   const [product, setProduct] = useState<Product[]>([]);
+  const [featured, setFeatured] = useState<Product[]>([]);
+  const [newArrival, setNewArrival] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
@@ -55,6 +59,12 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await queryProduct(filters);
       const sortedResponse = [...response].sort((a, b) =>
         a.name.localeCompare(b.name)
+      );
+      setFeatured(
+        sortedResponse.filter((item) => item.attribute === "featured")
+      );
+      setNewArrival(
+        sortedResponse.filter((item) => item.attribute === "newArrival")
       );
       setProduct(sortedResponse);
     } catch (error) {
@@ -101,8 +111,64 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     [product]
   );
 
+  // 搜索框
+  const navigate = useNavigate();
+  const location = useLocation();
+  const defaultOptions = useMemo(
+    () => [
+      "Classical Guitar - Gibson X00345",
+      "Classical Nelson X784534",
+      "Classion 56X45634",
+    ],
+    []
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<string[]>(defaultOptions);
+
+  // 重置搜索
+  const resetSearch = useCallback(() => {
+    setSearchTerm("");
+    setSearchResults(defaultOptions);
+  }, [defaultOptions]);
+  useEffect(() => {
+    resetSearch();
+  }, [location.pathname, resetSearch]);
+
+  // 处理搜索框变化
+  const handleSearchChange = async (value: string) => {
+    setSearchTerm(value);
+
+    if (value.length > 0) {
+      try {
+        const products = await searchProducts(value);
+        const results = products.map((item: { name: string }) => item.name);
+        setSearchResults(results);
+      } catch (error) {
+        setSearchResults(defaultOptions);
+      }
+    } else {
+      setSearchResults(defaultOptions);
+    }
+  };
+
+  // 处理点击搜索结果
+  const handleOptionSelect = async (option: string) => {
+    try {
+      const response = await searchProducts(option);
+      const product = response[0].name;
+      if (option === product) {
+        navigate(`/product/${encodeURIComponent(option)}`);
+      } else {
+        navigate(`/producterror`);
+      }
+    } catch (error) {
+      navigate(`/producterror`);
+    }
+  };
+
   const value = {
     HeaderCategory,
+    FliteCategory,
     Category,
     Brand,
     Condition,
@@ -111,6 +177,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchProduct,
     product,
     setProduct,
+    featured,
+    newArrival,
     minPrice,
     setMinPrice,
     maxPrice,
@@ -119,6 +187,10 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     setSelectedCategory,
     handleFilterChange,
     handleSort,
+    searchTerm,
+    searchResults,
+    handleSearchChange,
+    handleOptionSelect,
   };
   return (
     <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

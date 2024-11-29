@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { getProduct } from "../../../api/product/page";
 
 import { useCart } from "../../../hooks/useCart.hook/hook/page";
-import { newArrivals } from "../../../lists/newArrivals.list/page";
 import LocationDrawer from "../drawer/location.drawer/page";
 import PickUpDrawer from "../drawer/pickUp.drawer/page";
 import Header from "../layout/header/page";
@@ -39,12 +39,16 @@ import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 const ProductDetail: React.FC = () => {
   const { productname } = useParams();
   const cartHook = useCart();
-  const { images } = useProduct();
+  const { images, newArrival, fetchProduct } = useProduct();
 
   // 选择的图片索引
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const [detail, setDetail] = useState<Product | null>(null);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   // 获取产品信息
   useEffect(() => {
@@ -102,7 +106,7 @@ const ProductDetail: React.FC = () => {
   const locationFunctions = useLocation(setOpenLocation);
 
   // 猜你喜欢
-  const useItems = (items: string[], itemsToShow = 5) => {
+  const useItems = (items: Product[], itemsToShow = 5) => {
     const [index, setIndex] = useState(0);
     const handlePrev = () => {
       setIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -120,10 +124,10 @@ const ProductDetail: React.FC = () => {
     };
   };
   // 猜你喜欢
-  const mayLike = useItems([]);
+  const mayLike = useItems(newArrival);
 
   return (
-    <Box>
+    <Box id="top">
       <Header />
 
       <Box sx={{ margin: "18px 72px 0px 72px" }}>
@@ -863,8 +867,14 @@ const ProductDetail: React.FC = () => {
               }}
             >
               <Button
-                component={Link}
-                to={`/cart`}
+                component={HashLink}
+                to={`/cart#top`}
+                scroll={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "instant",
+                  });
+                }}
                 onClick={() =>
                   cartHook.addToCart({
                     quantity: 1,
@@ -1114,7 +1124,7 @@ const ProductDetail: React.FC = () => {
                 alignItems: "center",
                 width: "50px",
                 height: "50px",
-                left: "-19px",
+                left: "-23px",
                 top: "38%",
                 backgroundColor: "#FFFFFF",
                 borderRadius: "50%",
@@ -1146,7 +1156,7 @@ const ProductDetail: React.FC = () => {
                 alignItems: "center",
                 width: "50px",
                 height: "50px",
-                right: "-17px",
+                right: "-23px",
                 top: "38%",
                 PointerEvents: "auto",
                 backgroundColor: "#FFFFFF",
@@ -1173,64 +1183,73 @@ const ProductDetail: React.FC = () => {
             <Box
               sx={{
                 display: "flex",
+                justifyContent: "space-between",
                 flexdirection: "row",
                 overflow: "hidden",
               }}
             >
-              {newArrivals
+              {newArrival
                 .slice(mayLike.index, mayLike.index + mayLike.itemsToShow)
-                .map((item) => (
+                .map((item, index) => (
                   <Box
-                    key={item.id}
+                    component={HashLink}
+                    to={`/product/${encodeURIComponent(item.name)}#top`}
+                    scroll={() => {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "instant",
+                      });
+                    }}
+                    key={index}
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       flexDirection: "column",
-                      width: "calc(100% / 5)",
+                      border: "1px solid #FFFFFF",
+                      textDecoration: "none",
+                      padding: "6px 0px 0px 0px",
+                      gap: "12px",
                     }}
                   >
-                    <Box component={Link} to={item.Link}>
-                      <Box
-                        component="img"
-                        src={item.image}
-                        sx={{
-                          width: "250px",
-                          height: "250px",
-                        }}
-                      />
-                    </Box>
+                    <Box
+                      component="img"
+                      sx={{
+                        width: "240px",
+                        height: "240px",
+                      }}
+                    />
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
-                        width: "250px",
+                        width: "240px",
+                        height: "108px",
                       }}
                     >
-                      <Typography
-                        component={Link}
-                        to={item.Link}
+                      <Box
                         sx={{
                           display: "-webkit-box",
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: "vertical",
                           textOverflow: "ellipsis",
                           width: "250px",
-                          height: "48px",
-                          fontFamily: "Roboto",
-                          fontSize: "16px",
-                          fontWeight: 400,
-                          lineHeight: "24px",
-                          textAlign: "left",
-                          textDecoration: "none",
-                          color: "#02000C",
                           overflow: "hidden",
                         }}
                       >
-                        {item.name}
-                      </Typography>
+                        <Typography
+                          sx={{
+                            fontFamily: "Roboto",
+                            fontSize: "16px",
+                            fontWeight: 400,
+                            lineHeight: "24px",
+                            textAlign: "left",
+                            color: "#02000C",
+                          }}
+                        >
+                          {item.name}
+                        </Typography>
+                      </Box>
                       <Typography
-                        component={Link}
-                        to={item.Link}
                         sx={{
                           fontFamily: "Roboto",
                           fontSize: "14px",
@@ -1238,22 +1257,18 @@ const ProductDetail: React.FC = () => {
                           lineHeight: "22px",
                           textAlign: "left",
                           color: "#76757C",
-                          textDecoration: "none",
                         }}
                       >
                         Condition: {item.condition}
                       </Typography>
                       <Typography
-                        component={Link}
-                        to={item.Link}
                         sx={{
                           fontFamily: "Roboto",
                           fontSize: "20px",
                           fontWeight: 500,
                           lineHeight: "28px",
                           textAlign: "left",
-                          color: "#000000D9",
-                          textDecoration: "none",
+                          color: "#02000C",
                         }}
                       >
                         {item.price}

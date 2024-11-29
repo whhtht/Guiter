@@ -28,9 +28,9 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const handleOrderDetail = useCallback(async (ordernumber: string) => {
+  const handleOrderDetail = useCallback(async (orderId: string) => {
     try {
-      const response = await getOrderDetail(ordernumber);
+      const response = await getOrderDetail(orderId);
       const data = response.data[0];
       setDetail(data);
       const totalQuantity = data.products.reduce(

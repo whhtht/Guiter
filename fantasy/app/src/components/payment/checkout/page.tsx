@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { postAddress, changeAddress } from "../../../api/address/page";
 import {
   postUserDeliver,
@@ -202,7 +203,15 @@ const CheckOut: React.FC = () => {
   // 选择邮寄地址和信用卡地址是否一致
   const [checked, setChecked] = React.useState(false);
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    const ischecked = event.target.checked;
+    setChecked(ischecked);
+    if (checked === true) {
+      paymentHook.setCardAddress("");
+    } else {
+      paymentHook.setCardAddress(
+        `${address}, ${province}, ${city}, ${postalCode}, ${country}`
+      );
+    }
   };
 
   // 选择配送支付
@@ -332,7 +341,7 @@ const CheckOut: React.FC = () => {
   );
 
   return (
-    <Box sx={{ height: "1600px", backgroundColor: "#FAFAFA" }}>
+    <Box id="top" sx={{ height: "1600px", backgroundColor: "#FAFAFA" }}>
       {/* 支付导航栏显示 */}
       <Box
         sx={{
@@ -442,8 +451,14 @@ const CheckOut: React.FC = () => {
                   orders.
                 </Typography>
                 <Button
-                  component={Link}
-                  to="/signin"
+                  component={HashLink}
+                  to="/signin#top"
+                  scroll={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "instant",
+                    });
+                  }}
                   state={{ from: window.location.pathname }}
                   sx={{
                     textTransform: "none",
@@ -1313,7 +1328,7 @@ const CheckOut: React.FC = () => {
                         }}
                       >
                         {name} <br />
-                        {address}, {province}, {city}, {postalCode}, Canada
+                        {address}, {province}, {city}, {postalCode}, {country}
                         <br />
                         {phone}
                       </Typography>
@@ -1890,6 +1905,7 @@ const CheckOut: React.FC = () => {
                           onChange={(e) =>
                             paymentHook.setCardAddress(e.target.value)
                           }
+                          value={paymentHook.cardAddress}
                           sx={{
                             width: "100%",
                             height: "48px",

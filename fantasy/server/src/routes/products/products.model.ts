@@ -4,6 +4,7 @@ import sequelize from "../../config/db";
 class Product extends Model {
   public id!: string;
   public name!: string;
+  public attribute!: string;
   public quantity!: number;
   public price!: string;
   public condition!: string;
@@ -26,6 +27,11 @@ Product.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    attribute: {
+      type: DataTypes.ENUM("featured", "newArrival"),
+      allowNull: false,
+      defaultValue: "featured",
     },
     quantity: {
       type: DataTypes.INTEGER,

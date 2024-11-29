@@ -1,12 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { useCart } from "../../../../hooks/useCart.hook/hook/page";
 import { Drawer, Box, IconButton, Typography, Button } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
-import * as styles from "../../../../styles/drawer.style/page";
 
 interface DrawerProps {
   open: boolean;
@@ -24,7 +23,11 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
         onClose={() => {
           setOpen(false);
         }}
-        sx={styles.drawerstyles.drawer_page}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+        }}
       >
         <Box
           sx={{
@@ -36,21 +39,29 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
         >
           {/* Top */}
           <Box>
-            <Box sx={styles.drawerstyles.drawer_frame}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
               <IconButton
                 onClick={() => {
                   setOpen(false);
                 }}
               >
-                <CloseIcon
-                  fontSize="large"
-                  sx={styles.drawerstyles.drawer_iconcolor}
-                />
+                <CloseIcon fontSize="large" sx={{ color: "#02000C" }} />
               </IconButton>
             </Box>
             <Typography
-              variant="h6"
-              sx={styles.drawerstyles.roboto_20px_02000C}
+              sx={{
+                fontFamily: "Roboto",
+                fontSize: "20px",
+                fontWeight: 500,
+                lineHeight: "28px",
+                textAlign: "left",
+                color: "#02000C",
+              }}
             >
               Your shopping cart (
               {cartHook.accessToken
@@ -142,7 +153,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                           color: "#76757C",
                         }}
                       >
-                        {item.product.specificationDetail?.Condition}
+                        {item.product.condition}
                       </Typography>
                       <Box
                         sx={{
@@ -272,7 +283,7 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
                           color: "#76757C",
                         }}
                       >
-                        {item.product.specificationDetail?.Condition}
+                        {item.product.condition}
                       </Typography>
                       <Box
                         sx={{
@@ -404,8 +415,14 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
             }}
           >
             <Button
-              component={Link}
-              to="/cart"
+              component={HashLink}
+              to="/cart#top"
+              scroll={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "instant",
+                });
+              }}
               sx={{
                 width: "170px",
                 height: "48px",
@@ -425,8 +442,14 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
               </Typography>
             </Button>
             <Button
-              component={Link}
-              to="/checkout"
+              component={HashLink}
+              to="/checkout#top"
+              scroll={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "instant",
+                });
+              }}
               sx={{
                 width: "170px",
                 height: "48px",

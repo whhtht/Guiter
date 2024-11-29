@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { useProduct } from "../../../../hooks/useProduct.hook/hook/page";
 
 import {
@@ -15,6 +16,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const AllCategories: React.FC = () => {
+  const location = useLocation();
   const { selectedCategory, product, handleSort } = useProduct();
 
   // 排序逻辑
@@ -50,8 +52,12 @@ const AllCategories: React.FC = () => {
     page * itemsPerPage
   );
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname, selectedSort]);
+
   return (
-    <Box>
+    <Box id="top">
       <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         {/* 分类标题 */}
         <Typography
@@ -228,8 +234,14 @@ const AllCategories: React.FC = () => {
             {displayedProducts.map((item, index) => (
               <Box key={index}>
                 <Box
-                  component={Link}
-                  to={`/product/${encodeURIComponent(item.name)}`}
+                  component={HashLink}
+                  to={`/product/${encodeURIComponent(item.name)}#top`}
+                  scroll={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "instant",
+                    });
+                  }}
                   sx={{
                     display: "flex",
                     flexDirection: "column",

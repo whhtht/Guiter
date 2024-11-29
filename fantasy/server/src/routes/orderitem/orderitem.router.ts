@@ -3,6 +3,6 @@ import { getOrderDetail } from "./orderitem.controller";
 
 const router = Router();
 
-router.post("/detail", getOrderDetail);
+router.get("/:orderId", getOrderDetail);
 
 export default router;

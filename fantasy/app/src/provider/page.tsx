@@ -19,6 +19,7 @@ import Detail from "../components/home/account/detail/page";
 import Cart from "../components/home/cart/page";
 import Checkout from "../components/payment/checkout/page";
 import Success from "../components/payment/success/page";
+import Notfound from "../components/notfound/page";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -50,7 +51,7 @@ const Provider: React.FC = () => {
                 <Route path="address" element={<Address />} />
               </Route>
               <Route path="/order" element={<Account />}>
-                <Route path="detail" element={<Detail />} />
+                <Route path=":orderId" element={<Detail />} />
               </Route>
               <Route path="/success" element={<Success />} />
               <Route path="/cart" element={<Cart />} />
@@ -62,6 +63,7 @@ const Provider: React.FC = () => {
                   </Elements>
                 }
               />
+              <Route path="*" element={<Notfound />} />
             </Routes>
           </OrderProvider>
         </ProductProvider>

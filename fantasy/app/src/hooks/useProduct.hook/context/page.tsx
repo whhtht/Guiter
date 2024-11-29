@@ -2,6 +2,7 @@ import { createContext } from "react";
 
 export interface Product {
   name: string;
+  attribute: string;
   quantity: number;
   price: number;
   condition: string;
@@ -19,6 +20,7 @@ export type FilterValues = {
 
 export interface ProductContextType {
   HeaderCategory: string[];
+  FliteCategory: string[];
   Category: string[];
   Brand: string[];
   Condition: string[];
@@ -28,6 +30,8 @@ export interface ProductContextType {
   handleFilterChange: (filters: FilterValues) => void;
   product: Product[];
   setProduct: (product: Product[]) => void;
+  featured: Product[];
+  newArrival: Product[];
   minPrice: string;
   setMinPrice: (price: string) => void;
   maxPrice: string;
@@ -35,6 +39,10 @@ export interface ProductContextType {
   selectedCategory: string | null;
   setSelectedCategory: (category: string | null) => void;
   handleSort: (sortOption: string) => void;
+  searchTerm: string;
+  searchResults: string[];
+  handleSearchChange: (value: string) => void;
+  handleOptionSelect: (option: string) => void;
 }
 
 // 创建 ProductContext

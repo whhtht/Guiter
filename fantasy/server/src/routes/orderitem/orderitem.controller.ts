@@ -14,8 +14,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 // 获取订单详情
 export const getOrderDetail = async (req: Request, res: Response) => {
-  const orderId = req.body.orderId;
-
+  const orderId = req.params.orderId;
   try {
     const order = await Order.findAll({
       where: { id: orderId },
@@ -29,7 +28,6 @@ export const getOrderDetail = async (req: Request, res: Response) => {
         ? paymentIntent.latest_charge
         : "";
     const charge = await stripe.charges.retrieve(latestChargeId);
-    console.log("charge:", charge);
     const type = charge.payment_method_details.type;
     const brand = charge.payment_method_details.card.brand;
     const last4 = charge.payment_method_details.card.last4;
