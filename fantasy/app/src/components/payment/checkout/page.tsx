@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import { postAddress, changeAddress } from "../../../api/address/page";
 import {
   postUserDeliver,
@@ -341,7 +340,7 @@ const CheckOut: React.FC = () => {
   );
 
   return (
-    <Box id="top" sx={{ height: "1600px", backgroundColor: "#FAFAFA" }}>
+    <Box sx={{ height: "1600px", backgroundColor: "#FAFAFA" }}>
       {/* 支付导航栏显示 */}
       <Box
         sx={{
@@ -451,14 +450,8 @@ const CheckOut: React.FC = () => {
                   orders.
                 </Typography>
                 <Button
-                  component={HashLink}
-                  to="/signin#top"
-                  scroll={() => {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "instant",
-                    });
-                  }}
+                  component={Link}
+                  to="/signin"
                   state={{ from: window.location.pathname }}
                   sx={{
                     textTransform: "none",

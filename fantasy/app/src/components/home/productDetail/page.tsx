@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
+import { Link, useParams } from "react-router-dom";
 import { getProduct } from "../../../api/product/page";
 
 import { useCart } from "../../../hooks/useCart.hook/hook/page";
@@ -127,7 +126,7 @@ const ProductDetail: React.FC = () => {
   const mayLike = useItems(newArrival);
 
   return (
-    <Box id="top">
+    <Box>
       <Header />
 
       <Box sx={{ margin: "18px 72px 0px 72px" }}>
@@ -867,14 +866,8 @@ const ProductDetail: React.FC = () => {
               }}
             >
               <Button
-                component={HashLink}
-                to={`/cart#top`}
-                scroll={() => {
-                  window.scrollTo({
-                    top: 0,
-                    behavior: "instant",
-                  });
-                }}
+                component={Link}
+                to={`/cart`}
                 onClick={() =>
                   cartHook.addToCart({
                     quantity: 1,
@@ -1192,14 +1185,8 @@ const ProductDetail: React.FC = () => {
                 .slice(mayLike.index, mayLike.index + mayLike.itemsToShow)
                 .map((item, index) => (
                   <Box
-                    component={HashLink}
-                    to={`/product/${encodeURIComponent(item.name)}#top`}
-                    scroll={() => {
-                      window.scrollTo({
-                        top: 0,
-                        behavior: "instant",
-                      });
-                    }}
+                    component={Link}
+                    to={`/product/${item.name}`}
                     key={index}
                     sx={{
                       display: "flex",

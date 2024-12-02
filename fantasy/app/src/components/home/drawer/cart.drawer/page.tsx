@@ -1,5 +1,5 @@
 import React from "react";
-import { HashLink } from "react-router-hash-link";
+import { Link } from "react-router-dom";
 import { useCart } from "../../../../hooks/useCart.hook/hook/page";
 import { Drawer, Box, IconButton, Typography, Button } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -415,14 +415,8 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
             }}
           >
             <Button
-              component={HashLink}
-              to="/cart#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
+              component={Link}
+              to="/cart"
               sx={{
                 width: "170px",
                 height: "48px",
@@ -442,14 +436,8 @@ const CartDrawer: React.FC<DrawerProps> = ({ open, setOpen }) => {
               </Typography>
             </Button>
             <Button
-              component={HashLink}
-              to="/checkout#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
+              component={Link}
+              to="/checkout"
               sx={{
                 width: "170px",
                 height: "48px",

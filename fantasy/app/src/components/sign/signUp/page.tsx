@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
+import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../../api/auth/page";
 import { Header } from "../signlayout/header/page";
 import { Footer } from "../signlayout/footer/page";
@@ -108,7 +107,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <Box id="top">
+    <Box>
       <Header />
 
       {/* 注册表单 */}
@@ -149,14 +148,8 @@ const SignUp: React.FC = () => {
             {email}
           </Typography>
           <Typography
-            component={HashLink}
-            to="/signin#top"
-            scroll={() => {
-              window.scrollTo({
-                top: 0,
-                behavior: "instant",
-              });
-            }}
+            component={Link}
+            to="/signin"
             onClick={() => localStorage.clear()}
             sx={{
               fontFamily: "Roboto",
@@ -386,14 +379,8 @@ const SignUp: React.FC = () => {
           >
             By creating an account, you agree to our{" "}
             <Typography
-              component={HashLink}
-              to="/privacy#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
+              component={Link}
+              to="/privacy"
               sx={{
                 fontFamily: "Roboto",
                 fontSize: "14px",
@@ -409,14 +396,8 @@ const SignUp: React.FC = () => {
             </Typography>{" "}
             and{" "}
             <Typography
-              component={HashLink}
-              to="/terms#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
+              component={Link}
+              to="/terms"
               sx={{
                 fontFamily: "Roboto",
                 fontSize: "14px",

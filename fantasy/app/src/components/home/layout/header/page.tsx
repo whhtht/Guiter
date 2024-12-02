@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import {
   Box,
   Button,
@@ -73,6 +72,7 @@ const Header: React.FC = () => {
   const handleSignIn = () => {
     const currentPath = window.location.pathname;
     localStorage.setItem("lastVisitedPath", currentPath);
+    navigate("/signin");
   };
 
   // 退出登录
@@ -334,14 +334,6 @@ const Header: React.FC = () => {
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Button
-              component={HashLink}
-              to="/signin#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
               onClick={handleSignIn}
               sx={{
                 width: "220px",
@@ -468,14 +460,8 @@ const Header: React.FC = () => {
             />
             {/* 我的账户 */}
             <Box
-              component={HashLink}
-              to="/account#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
+              component={Link}
+              to="/account"
               onClick={handleCloseMenu}
               sx={{
                 display: "flex",
@@ -506,14 +492,8 @@ const Header: React.FC = () => {
             </Box>
             {/* 我的订单 */}
             <Box
-              component={HashLink}
-              to="/order#top"
-              scroll={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "instant",
-                });
-              }}
+              component={Link}
+              to="/order"
               onClick={handleCloseMenu}
               sx={{
                 display: "flex",

@@ -111,7 +111,7 @@ const SignIn: React.FC = () => {
   }, []);
 
   return (
-    <Box id="top">
+    <Box>
       <Header />
 
       {/* 表单 */}

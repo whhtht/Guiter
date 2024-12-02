@@ -27,7 +27,7 @@ const Account: React.FC = () => {
   }, [location.pathname, fetchOrder]);
 
   return (
-    <Box id="top">
+    <Box>
       <Header />
 
       {/* 账户表单 */}

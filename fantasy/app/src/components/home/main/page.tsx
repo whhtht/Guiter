@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HashLink } from "react-router-hash-link";
+import { Link } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
 import { useProduct } from "../../../hooks/useProduct.hook/hook/page";
 import { Product } from "../../../hooks/useProduct.hook/context/page";
@@ -37,6 +37,21 @@ const Homepage: React.FC = () => {
   const { fetchProduct, featured, newArrival, FliteCategory } = useProduct();
   const featuredGuitar = useItems(featured);
   const newArrivalGuitar = useItems(newArrival);
+
+  const featuredGuitarCount = featured.slice(
+    featuredGuitar.index,
+    featuredGuitar.index + featuredGuitar.itemsToShow
+  );
+  const featuredGuitarPlaceholder = Math.max(0, 5 - featuredGuitarCount.length);
+
+  const newArrivalGuitarCount = newArrival.slice(
+    newArrivalGuitar.index,
+    newArrivalGuitar.index + newArrivalGuitar.itemsToShow
+  );
+  const newArrivalGuitarPlaceholder = Math.max(
+    0,
+    5 - newArrivalGuitarCount.length
+  );
 
   useEffect(() => {
     fetchProduct();
@@ -100,8 +115,8 @@ const Homepage: React.FC = () => {
                 </Box>
 
                 <Button
-                  component={HashLink}
-                  to={`${image.to}#top`}
+                  component={Link}
+                  to={image.to}
                   disableFocusRipple
                   sx={{
                     width: "232px",
@@ -235,110 +250,104 @@ const Homepage: React.FC = () => {
               overflow: "hidden",
             }}
           >
-            {featured
-              .slice(
-                featuredGuitar.index,
-                featuredGuitar.index + featuredGuitar.itemsToShow
-              )
-              .map((item, index) => (
+            {featuredGuitarCount.map((item, index) => (
+              <Box
+                component={Link}
+                to={`/product/${encodeURIComponent(item.name)}`}
+                key={index}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  width: "252px",
+                  border: "1px solid #FFFFFF",
+                  textDecoration: "none",
+                  padding: "6px 0px 0px 0px",
+                  gap: "12px",
+                  "&:hover": {
+                    boxShadow: " 0px 1px 4px 0px #00000040",
+                    borderRadius: "8px",
+                    border: "1px solid #DDDCDE",
+                  },
+                }}
+              >
+                {/* Image */}
                 <Box
-                  component={HashLink}
-                  to={`/product/${encodeURIComponent(item.name)}#top`}
-                  scroll={() => {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "instant",
-                    });
+                  component="img"
+                  sx={{
+                    width: "240px",
+                    height: "240px",
+                    borderRadius: "8px",
                   }}
-                  key={index}
+                />
+                <Box
                   sx={{
                     display: "flex",
-                    alignItems: "center",
                     flexDirection: "column",
-                    width: "252px",
-                    border: "1px solid #FFFFFF",
-                    textDecoration: "none",
-                    padding: "6px 0px 0px 0px",
-                    gap: "12px",
-                    "&:hover": {
-                      boxShadow: " 0px 1px 4px 0px #00000040",
-                      borderRadius: "8px",
-                      border: "1px solid #DDDCDE",
-                    },
+                    width: "240px",
+                    height: "108px",
                   }}
                 >
-                  {/* Image */}
-                  <Box
-                    component="img"
-                    sx={{
-                      width: "240px",
-                      height: "240px",
-                      borderRadius: "8px",
-                    }}
-                  />
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "240px",
-                      height: "108px",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      margin: "0px 0px 5px 0px",
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                        margin: "0px 0px 5px 0px",
-                      }}
-                    >
-                      {/* Product name */}
-                      <Typography
-                        sx={{
-                          fontFamily: "Roboto",
-                          fontSize: "16px",
-                          fontWeight: 400,
-                          lineHeight: "24px",
-                          textAlign: "left",
-                          color: "#02000C",
-                        }}
-                      >
-                        {item.name}
-                      </Typography>
-                    </Box>
-
-                    {/* Condition */}
+                    {/* Product name */}
                     <Typography
                       sx={{
                         fontFamily: "Roboto",
-                        fontSize: "14px",
+                        fontSize: "16px",
                         fontWeight: 400,
-                        lineHeight: "22px",
-                        textAlign: "left",
-                        color: "#76757C",
-                      }}
-                    >
-                      Condition: {item.condition}
-                    </Typography>
-
-                    {/* Price */}
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "20px",
-                        fontWeight: 500,
-                        lineHeight: "28px",
+                        lineHeight: "24px",
                         textAlign: "left",
                         color: "#02000C",
                       }}
                     >
-                      $ {item.price}
+                      {item.name}
                     </Typography>
                   </Box>
+
+                  {/* Condition */}
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      lineHeight: "22px",
+                      textAlign: "left",
+                      color: "#76757C",
+                    }}
+                  >
+                    Condition: {item.condition}
+                  </Typography>
+
+                  {/* Price */}
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "20px",
+                      fontWeight: 500,
+                      lineHeight: "28px",
+                      textAlign: "left",
+                      color: "#02000C",
+                    }}
+                  >
+                    $ {item.price}
+                  </Typography>
                 </Box>
-              ))}
+              </Box>
+            ))}
+            {Array.from({
+              length: featuredGuitarPlaceholder,
+            }).map((_, index) => (
+              <Box key={`placeholder-${index}`} sx={{ width: "252px" }} />
+            ))}
           </Box>
         </Box>
       </Box>
@@ -442,111 +451,105 @@ const Homepage: React.FC = () => {
               overflow: "hidden",
             }}
           >
-            {newArrival
-              .slice(
-                newArrivalGuitar.index,
-                newArrivalGuitar.index + newArrivalGuitar.itemsToShow
-              )
-              .map((item, index) => (
+            {newArrivalGuitarCount.map((item, index) => (
+              <Box
+                component={Link}
+                to={`/product/${encodeURIComponent(item.name)}`}
+                key={index}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  width: "252px",
+                  border: "1px solid #FFFFFF",
+                  textDecoration: "none",
+                  padding: "6px 0px 0px 0px",
+                  gap: "12px",
+                  "&:hover": {
+                    color: "#FFFFFF",
+                    boxShadow: " 0px 1px 4px 0px #00000040",
+                    borderRadius: "8px",
+                    border: "1px solid #DDDCDE",
+                  },
+                }}
+              >
+                {/* Image */}
                 <Box
-                  component={HashLink}
-                  to={`/product/${encodeURIComponent(item.name)}#top`}
-                  scroll={() => {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "instant",
-                    });
+                  component="img"
+                  sx={{
+                    width: "240px",
+                    height: "240px",
+                    borderRadius: "8px",
                   }}
-                  key={index}
+                />
+                <Box
                   sx={{
                     display: "flex",
-                    alignItems: "center",
                     flexDirection: "column",
-                    width: "252px",
-                    border: "1px solid #FFFFFF",
-                    textDecoration: "none",
-                    padding: "6px 0px 0px 0px",
-                    gap: "12px",
-                    "&:hover": {
-                      color: "#FFFFFF",
-                      boxShadow: " 0px 1px 4px 0px #00000040",
-                      borderRadius: "8px",
-                      border: "1px solid #DDDCDE",
-                    },
+                    width: "240px",
+                    height: "108px",
                   }}
                 >
-                  {/* Image */}
-                  <Box
-                    component="img"
-                    sx={{
-                      width: "240px",
-                      height: "240px",
-                      borderRadius: "8px",
-                    }}
-                  />
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "240px",
-                      height: "108px",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      margin: "0px 0px 5px 0px",
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                        margin: "0px 0px 5px 0px",
-                      }}
-                    >
-                      {/* Product name */}
-                      <Typography
-                        sx={{
-                          fontFamily: "Roboto",
-                          fontSize: "16px",
-                          fontWeight: 400,
-                          lineHeight: "24px",
-                          textAlign: "left",
-                          color: "#02000C",
-                        }}
-                      >
-                        {item.name}
-                      </Typography>
-                    </Box>
-
-                    {/* Condition */}
+                    {/* Product name */}
                     <Typography
                       sx={{
                         fontFamily: "Roboto",
-                        fontSize: "14px",
+                        fontSize: "16px",
                         fontWeight: 400,
-                        lineHeight: "22px",
-                        textAlign: "left",
-                        color: "#76757C",
-                      }}
-                    >
-                      Condition: {item.condition}
-                    </Typography>
-
-                    {/* Price */}
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontSize: "20px",
-                        fontWeight: 500,
-                        lineHeight: "28px",
+                        lineHeight: "24px",
                         textAlign: "left",
                         color: "#02000C",
                       }}
                     >
-                      $ {item.price}
+                      {item.name}
                     </Typography>
                   </Box>
+
+                  {/* Condition */}
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      lineHeight: "22px",
+                      textAlign: "left",
+                      color: "#76757C",
+                    }}
+                  >
+                    Condition: {item.condition}
+                  </Typography>
+
+                  {/* Price */}
+                  <Typography
+                    sx={{
+                      fontFamily: "Roboto",
+                      fontSize: "20px",
+                      fontWeight: 500,
+                      lineHeight: "28px",
+                      textAlign: "left",
+                      color: "#02000C",
+                    }}
+                  >
+                    $ {item.price}
+                  </Typography>
                 </Box>
-              ))}
+              </Box>
+            ))}
+            {Array.from({
+              length: newArrivalGuitarPlaceholder,
+            }).map((_, index) => (
+              <Box key={`placeholder-${index}`} sx={{ width: "252px" }} />
+            ))}
           </Box>
         </Box>
       </Box>

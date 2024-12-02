@@ -5,11 +5,13 @@ import Signup from "./components/sign/signup/page";
 import Verification from "./components/sign/signup/verification/page";
 import Signout from "./components/sign/signout/callback/page";
 import ResetCode from "./components/sign/signreset/page";
+import ScrollToTop from "./components/scoll/page";
 import Provider from "./provider/page";
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
