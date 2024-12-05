@@ -1,0 +1,14 @@
+"development": {
+      "username": "postgres",
+      "password": "fantasydatabase",
+      "database": "fantasy",
+      "host": "fantasy.cx64wi86o4bz.us-east-2.rds.amazonaws.com",
+      "dialect": "postgres",
+      "logging": true,
+      "dialectOptions": {
+    "ssl": {
+      "require": true,
+      "rejectUnauthorized": false
+    }
+  }
+    },
